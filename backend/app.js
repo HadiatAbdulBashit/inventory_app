@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require('dotenv');
 const { notFound, errorHandler } = require('./middleware/error.middleware')
+const cookieParser = require('cookie-parser');
+
 
 dotenv.config()
 
@@ -14,6 +16,7 @@ var corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(cookieParser());
 
 // parse requests of content-type - application/json
 app.use(express.json());
