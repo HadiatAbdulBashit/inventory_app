@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING
         },
         role: {
-            type: Sequelize.STRING
+            type: Sequelize.CHAR(1)
         }
     });
 
