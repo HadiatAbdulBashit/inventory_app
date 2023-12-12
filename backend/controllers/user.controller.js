@@ -55,15 +55,19 @@ exports.findAll = (req, res) => {
 
 // Find a single User with an id
 exports.findOne = (req, res) => {
-    const id = req.params.id;
+    const uuid = req.params.id;
 
-    User.findByPk(id)
+    User.findOne({
+        where: {
+            uuid: uuid
+        }
+    })
         .then(data => {
             if (data) {
                 res.send(data);
             } else {
                 res.status(404).send({
-                    message: `Cannot find User with id=${id}.`
+                    message: `Cannot find User with id=${uuid}.`
                 });
             }
         })
