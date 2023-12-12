@@ -1,8 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const dotenv = require('dotenv');
+const { notFound, errorHandler } = require('./middleware/error.middleware')
+
+dotenv.config()
 
 const app = express();
+const PORT = dotenv.PORT || 8080;
 
 var corsOptions = {
   origin: "http://localhost:8081"
@@ -31,8 +36,9 @@ db.sequelize.sync()
   });
 
 require("./routes/user.routes")(app);
-// set port, listen for requests
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
+
+app.use(notFound);
+app.use(errorHandler);
+
+// listen for requests
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}.`));
