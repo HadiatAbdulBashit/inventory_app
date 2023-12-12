@@ -17,7 +17,7 @@ exports.authUser = asyncHandler(async (req, res) => {
     });
 
     if (user && (await argon2.verify(user.password, password))) {
-        generateToken(res, user.id);
+        generateToken(res, user.uuid);
 
         res.json({
             id: user.id,

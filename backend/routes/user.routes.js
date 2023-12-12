@@ -1,3 +1,5 @@
+const { protect } = require('../middleware/auth.middleware');
+
 module.exports = app => {
     const users = require("../controllers/user.controller.js");
   
@@ -21,5 +23,5 @@ module.exports = app => {
     // Create a new Tutorial
     router.delete("/", users.deleteAll);
   
-    app.use('/api/users', router);
+    app.use('/api/users', protect, router);
   };
