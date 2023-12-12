@@ -1,5 +1,13 @@
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("user", {
+        uuid:{
+            type: Sequelize.STRING,
+            defaultValue: Sequelize.UUIDV4,
+            allowNull: false,
+            validate:{
+                notEmpty: true
+            }
+        },
         name: {
             type: Sequelize.STRING
         },
@@ -12,6 +20,8 @@ module.exports = (sequelize, Sequelize) => {
         role: {
             type: Sequelize.CHAR(1)
         }
+    },{
+        freezeTableName: true
     });
 
     return User;

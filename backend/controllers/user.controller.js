@@ -1,9 +1,10 @@
 const db = require("../models");
 const User = db.users;
 const Op = db.Sequelize.Op;
+const argon2 = require("argon2");
 
 // Create and Save a new User
-exports.create = (req, res) => {
+exports.create = async(req, res) => {
     // Validate request
     if (!req.body.username) {
         res.status(400).send({
@@ -12,11 +13,13 @@ exports.create = (req, res) => {
         return;
     }
 
+    const hashPassword = await argon2.hash(req.body.password);
+
     // Create a User
     const user = {
         username: req.body.username,
         name: req.body.name,
-        password: req.body.password,
+        password: hashPassword,
         role: req.body.role,
     };
 
