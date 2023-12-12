@@ -20,10 +20,6 @@ module.exports = app => {
   
     // Create a new Tutorial
     router.delete("/", users.deleteAll);
-
-    // =================== Auth ================
-
-    router.post('/auth', users.authUser);
   
     app.use('/api/users', router);
   };

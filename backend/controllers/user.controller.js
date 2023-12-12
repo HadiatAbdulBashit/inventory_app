@@ -1,7 +1,6 @@
 const db = require("../models");
 const User = db.users;
 const Op = db.Sequelize.Op;
-const asyncHandler = require('express-async-handler');
 
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -138,10 +137,3 @@ exports.deleteAll = (req, res) => {
             });
         });
 };
-
-// @desc    Auth user & get token
-// @route   POST /api/users/auth
-// @access  Only Super Admin
-exports.authUser = asyncHandler(async (req, res) => {
-    res.status(200).json({ message: 'Success' });
-});

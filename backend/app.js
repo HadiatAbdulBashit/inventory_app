@@ -36,6 +36,7 @@ db.sequelize.sync()
   });
 
 require("./routes/user.routes")(app);
+require("./routes/auth.routes")(app);
 
 app.use(notFound);
 app.use(errorHandler);
