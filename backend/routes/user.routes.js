@@ -1,4 +1,4 @@
-const { protect } = require('../middleware/auth.middleware');
+const { protect, onlyAdmin } = require('../middleware/auth.middleware');
 
 module.exports = app => {
     const users = require("../controllers/user.controller.js");
@@ -15,7 +15,7 @@ module.exports = app => {
     router.get("/:id", users.findOne);
   
     // Update a Tutorial with id
-    router.put("/:id", users.update);
+    router.put("/:id", onlyAdmin, users.update);
   
     // Delete a Tutorial with id
     router.delete("/:id", users.delete);
