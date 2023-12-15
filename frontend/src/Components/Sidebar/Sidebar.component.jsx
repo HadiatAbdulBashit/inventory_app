@@ -3,18 +3,22 @@ import {
     Menu,
     MenuItem,
 } from 'react-pro-sidebar';
-import { FaBars, FaMagnifyingGlass, FaRegUser } from 'react-icons/fa6';
+import { RiDashboardLine, RiInboxUnarchiveLine, RiInboxArchiveLine, RiArchive2Line } from "react-icons/ri";
 import { Link } from 'react-router-dom';
+import style from './Sidebar.module.css'
 
 const SidebarMenu = ({ collapsed }) => {
 
     return (
-        <Sidebar collapsed={collapsed} width="200px">
+        <Sidebar collapsed={collapsed} width="210px">
             <Menu>
-                <MenuItem component={<Link to="/documentation" />} icon={<FaBars />}> Documentation</MenuItem>
-                <MenuItem component={<Link to="/calendar" />} icon={<FaMagnifyingGlass />}> Calendar</MenuItem>
-                <MenuItem component={<Link to="/e-commerce" />} icon={<FaRegUser />}> E-commerce</MenuItem>
-                <MenuItem> Examples</MenuItem>
+                <hr />
+                <MenuItem className={style.appName} icon={<RiArchive2Line />}> Inventory App </MenuItem>
+                <hr />
+                <MenuItem component={<Link to="/dashboard" />} icon={<RiDashboardLine />}>Dashboard</MenuItem>
+                <MenuItem component={<Link to="/purchases" />} icon={<RiInboxArchiveLine />}>Purchases</MenuItem>
+                <MenuItem component={<Link to="/sales" />} icon={<RiInboxUnarchiveLine />}>Sales</MenuItem>
+                <MenuItem> Thanks </MenuItem>
             </Menu>
         </Sidebar>
     )
