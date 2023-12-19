@@ -3,7 +3,7 @@ import {
     Menu,
     MenuItem,
 } from 'react-pro-sidebar';
-import { RiDashboardLine, RiInboxUnarchiveLine, RiInboxArchiveLine, RiArchive2Line } from "react-icons/ri";
+import { RiDashboardLine, RiInboxUnarchiveLine, RiInboxArchiveLine, RiArchive2Line, RiGroupLine } from "react-icons/ri";
 import { Link } from 'react-router-dom';
 import style from './Sidebar.module.css'
 
@@ -18,7 +18,8 @@ const SidebarMenu = ({ collapsed }) => {
                 <MenuItem component={<Link to="/dashboard" />} icon={<RiDashboardLine />}>Dashboard</MenuItem>
                 <MenuItem component={<Link to="/purchases" />} icon={<RiInboxArchiveLine />}>Purchases</MenuItem>
                 <MenuItem component={<Link to="/sales" />} icon={<RiInboxUnarchiveLine />}>Sales</MenuItem>
-                <MenuItem> Thanks </MenuItem>
+                <hr />
+                <MenuItem component={<Link to="/user" />} icon={<RiGroupLine />}>Users</MenuItem>
             </Menu>
         </Sidebar>
     )
