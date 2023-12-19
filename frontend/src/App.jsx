@@ -1,6 +1,8 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
 import { useState } from 'react';
+import { ToastContainer } from 'react-toastify';
 
+import 'react-toastify/dist/ReactToastify.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css'
 
@@ -32,6 +34,7 @@ function App() {
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <RouterProvider router={router} />
+      <ToastContainer />
     </UserContext.Provider>
   )
 }
