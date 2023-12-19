@@ -11,6 +11,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import Root from "./Containers/Root/Root.container";
 import LandingPage from './Containers/LandingPage/LandingPage.container';
 import Login from './Containers/Login/Login.container';
+import ProtectedRoute from './Containers/ProtectedRoute/ProtectedRoute.container';
 
 import UserContext from './Contexts/UserContext';
 
@@ -25,8 +26,12 @@ function App() {
     createRoutesFromElements(
       <>
         <Route path='/' element={<LandingPage />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/dashboard' element={<Root />} />
+        <Route element={<ProtectedRoute routeRoleisLoggedIn={false} />}>
+          <Route path='/login' element={<Login />} />
+        </Route>
+        <Route element={<ProtectedRoute routeRoleisLoggedIn={true} />}>
+          <Route path='/dashboard' element={<Root />} />
+        </Route>
       </>
     )
   )
