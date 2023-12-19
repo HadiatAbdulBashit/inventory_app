@@ -25,8 +25,7 @@ const Login = () => {
       setLoading(true)
       const response = await axios.post('/api/auth', data);
       toast.success('Hai ' + response.data.name)
-      console.log(response);
-      setUser(response.data)
+      setUser({...response.data, isLoggedIn: true})
       navigate('/dashboard')
     } catch (error) {
       toast.error(error.response.data.message);
