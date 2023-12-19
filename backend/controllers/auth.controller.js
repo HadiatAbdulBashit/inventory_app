@@ -20,9 +20,10 @@ exports.authUser = asyncHandler(async (req, res) => {
         generateToken(res, user.uuid);
 
         res.json({
-            id: user.id,
+            uuid: user.uuid,
             name: user.name,
             username: user.username,
+            role: user.role,
         });
     } else {
         res.status(401);
