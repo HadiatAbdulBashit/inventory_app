@@ -1,4 +1,5 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
+import { useState } from 'react';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css'
@@ -9,18 +10,30 @@ import Root from "./Containers/Root/Root.container";
 import LandingPage from './Containers/LandingPage/LandingPage.container';
 import Login from './Containers/Login/Login.container';
 
+import UserContext from './Contexts/UserContext';
+
 function App() {
+  const [user, setUser] = useState({
+    username: '',
+    isLoggedIn: false,
+    role: 'guest'
+  })
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
         <Route path='/' element={<LandingPage />} />
-        <Route path='/login' element={<Login />}/>
+        <Route path='/login' element={<Login />} />
         <Route path='/dashboard' element={<Root />} />
       </>
     )
   )
 
-  return <RouterProvider router={router} />
+  return (
+    <UserContext.Provider value={{ user, setUser }}>
+      <RouterProvider router={router} />
+    </UserContext.Provider>
+  )
 }
 
 export default App
