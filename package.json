@@ -29,7 +29,6 @@
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
-    "react-pro-sidebar": "^1.1.0-alpha.1",
     "sequelize": "^6.35.1"
   },
   "devDependencies": {
