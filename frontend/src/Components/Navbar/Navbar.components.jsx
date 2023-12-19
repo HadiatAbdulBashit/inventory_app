@@ -1,4 +1,5 @@
 import { FaBars, FaRegUser } from 'react-icons/fa6';
+import { Link } from 'react-router-dom';
 
 const Navbar = ({ setCollapsed, collapsed }) => {
     return (
@@ -12,9 +13,13 @@ const Navbar = ({ setCollapsed, collapsed }) => {
                         <FaRegUser />
                     </a>
                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a className="dropdown-item" href="/acount">Acount</a></li>
+                        <li>
+                            <Link className="dropdown-item" to={"/acount"}>Acount</Link>
+                        </li>
                         <li><hr className="dropdown-divider" /></li>
-                        <li><a className="dropdown-item" href="#">Logout</a></li>
+                        <li>
+                            <Link className="dropdown-item" to={'/'}>Logout</Link>
+                        </li>
                     </ul>
                 </li>
             </ul>
