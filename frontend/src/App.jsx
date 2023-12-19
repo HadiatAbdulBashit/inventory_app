@@ -17,9 +17,7 @@ import UserContext from './Contexts/UserContext';
 
 function App() {
   const [user, setUser] = useState({
-    username: '',
     isLoggedIn: false,
-    role: 'guest'
   })
 
   const router = createBrowserRouter(
