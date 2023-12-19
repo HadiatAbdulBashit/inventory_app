@@ -1,0 +1,8 @@
+.linkBack {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background-color: var(--color-three);
+    padding: 5px 10px;
+    border-radius: 5px;
+}

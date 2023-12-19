@@ -1,8 +1,37 @@
+import { Link } from "react-router-dom"
+import { useContext } from 'react';
+import { useForm } from "react-hook-form";
+
+import UserContext from '../../Contexts/UserContext';
+
+import style from './Login.module.css'
+
 const Login = () => {
+  const { setUser } = useContext(UserContext)
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm()
+
+  const handleFormSubmit = (data) => {
+    console.log(data);
+    setUser({
+      username: data.username,
+      isLoggedIn: true
+    })
+  }
+
   return (
     <section className="text-center d-flex align-items-center flex-column">
+      <Link to={'/'} className={style.linkBack}>Back to Home</Link>
 
-      <div className="p-5 bg-image" style={{ background: 'linear-gradient(130deg, var(--color-one) 0%, var(--color-four) 100%)', height: '100vh', width: '100%' }}></div>
+      <div className="p-5 bg-image" style={{
+        background: 'linear-gradient(130deg, var(--color-one) 0%, var(--color-four) 100%)',
+        height: '100vh',
+        width: '100%'
+      }}></div>
 
       <div className="card mx-4 mx-md-5 shadow-5-strong col-10 col-sm-8 col-md-6 col-lg-5 col-xl-4" style={{
         marginTop: '-80vh',
@@ -12,25 +41,38 @@ const Login = () => {
         <div className="card-body py-5 px-md-5">
           <div className="row d-flex justify-content-center">
             <div className="col-10">
-              <h2 className="fw-bold mb-5">Sign up</h2>
-              <form>
+              <h2 className="fw-bold mb-5">Log In</h2>
+              <form onSubmit={handleSubmit(handleFormSubmit)}>
                 <div className="form-floating mb-3">
-                  <input type="text" className="form-control" id="floatingInput" placeholder="name@example.com" />
+                  <input type="text" className="form-control" id="floatingInput" placeholder="Username"
+                    {...register('username', { required: 'Username is Require' })}
+                  />
                   <label htmlFor="floatingInput">Username</label>
                 </div>
+                {errors.username && (
+                  <div className="invalid-feedback text-start mb-3 mx-1" style={{ display: 'block'}}>
+                    {errors.username.message}
+                  </div>
+                )}
+
                 <div className="form-floating mb-3">
-                  <input type="password" className="form-control" id="floatingPassword" placeholder="Password" />
+                  <input type="password" className="form-control" id="floatingPassword" placeholder="Password"
+                    {...register('password', { required: 'Password is Require' })}
+                  />
                   <label htmlFor="floatingPassword">Password</label>
                 </div>
-
-                {/* <!-- Submit button --> */}
+                {errors.password && (
+                  <div className="invalid-feedback text-start mb-3 mx-1" style={{ display: 'block'}}>
+                    {errors.password.message}
+                  </div>
+                )}
                 <div className="d-grid">
-                  <button type="submit" className="btn color-one color-one-hover btn-block mb-4">
+                  <button type="submit" className="btn color-one color-one-hover btn-block mb-4 py-3">
                     Login
                   </button>
                 </div>
                 <p>
-                <a href="#">Forgot password?</a>
+                  <a href="#">Forgot password?</a>
                 </p>
               </form>
             </div>
