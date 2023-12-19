@@ -1,13 +1,18 @@
-import { Link } from "react-router-dom"
-import { useContext } from 'react';
+import { Link, useNavigate } from "react-router-dom"
+import { useContext, useState } from 'react';
 import { useForm } from "react-hook-form";
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 import UserContext from '../../Contexts/UserContext';
 
-import style from './Login.module.css'
+import style from './Login.module.css';
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const { setUser } = useContext(UserContext)
+  const [loading, setLoading] = useState(false)
 
   const {
     register,
@@ -15,12 +20,18 @@ const Login = () => {
     formState: { errors },
   } = useForm()
 
-  const handleFormSubmit = (data) => {
-    console.log(data);
-    setUser({
-      username: data.username,
-      isLoggedIn: true
-    })
+  const handleFormSubmit = async (data) => {
+    try {
+      setLoading(true)
+      const response = await axios.post('/api/auth', data);
+      toast.success('Hai ' + response.data.name)
+      console.log(response);
+      setUser(response.data)
+      navigate('/dashboard')
+    } catch (error) {
+      toast.error(error.response.data.message);
+      setLoading(false)
+    }
   }
 
   return (
@@ -50,7 +61,7 @@ const Login = () => {
                   <label htmlFor="floatingInput">Username</label>
                 </div>
                 {errors.username && (
-                  <div className="invalid-feedback text-start mb-3 mx-1" style={{ display: 'block'}}>
+                  <div className="invalid-feedback text-start mb-3 mx-1" style={{ display: 'block' }}>
                     {errors.username.message}
                   </div>
                 )}
@@ -62,13 +73,22 @@ const Login = () => {
                   <label htmlFor="floatingPassword">Password</label>
                 </div>
                 {errors.password && (
-                  <div className="invalid-feedback text-start mb-3 mx-1" style={{ display: 'block'}}>
+                  <div className="invalid-feedback text-start mb-3 mx-1" style={{ display: 'block' }}>
                     {errors.password.message}
                   </div>
                 )}
                 <div className="d-grid">
-                  <button type="submit" className="btn color-one color-one-hover btn-block mb-4 py-3">
-                    Login
+                  <button type="submit" className="btn color-one color-one-hover btn-block mb-4 py-3" disabled={loading}>
+                    {
+                      loading ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                          <span className="visually-hidden" role="status">Loading...</span>
+                        </>
+                      ) : (
+                        'Login'
+                      )
+                    }
                   </button>
                 </div>
                 <p>
