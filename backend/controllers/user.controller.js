@@ -1,7 +1,10 @@
-const db = require("../models");
-const User = db.users;
-const Op = db.Sequelize.Op;
 const argon2 = require("argon2");
+const { Sequelize } = require('sequelize');
+
+const db = require("../models");
+
+const User = db.users;
+const Op = Sequelize.Op;
 
 // Create and Save a new User
 exports.create = async(req, res) => {
