@@ -1,5 +1,7 @@
-module.exports = (sequelize, Sequelize) => {
-    const User = sequelize.define("user", {
+const { Sequelize } = require('sequelize');
+
+module.exports = (table) => {
+    const User = table.define("user", {
         uuid:{
             type: Sequelize.STRING,
             defaultValue: Sequelize.UUIDV4,

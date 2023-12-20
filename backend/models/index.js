@@ -1,7 +1,10 @@
 const dbConfig = require("../config/db.config.js");
-
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
+const User  = require("./user.model.js");
+const Transaction = require("./transactionIn.model.js")
+const Goods = require("./goods.model.js")
+
+const table = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   dialect: dbConfig.dialect,
   operatorsAliases: 0,
@@ -16,9 +19,10 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 
 const db = {};
 
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
+db.sequelize = table;
 
-db.users = require("./user.model.js")(sequelize, Sequelize);
+db.users = User(table);
+db.transaction = Transaction(table);
+db.goods = Goods(table);
 
 module.exports = db;
