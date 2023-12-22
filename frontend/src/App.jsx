@@ -18,6 +18,10 @@ import Item from './Containers/Item/Item.container';
 import UserContext from './Contexts/UserContext';
 import { useEffect } from 'react';
 import axios from 'axios';
+import Purchase from './Containers/Purchase/Purchase.container';
+import Sale from './Containers/Sale/Sale.container';
+import User from './Containers/User/User.container';
+import Acount from './Containers/Acount/Acount.container';
 
 function App() {
   const [user, setUser] = useState({
@@ -47,6 +51,10 @@ function App() {
           <Route path='/dashboard' element={<Root />}>
             <Route index element={<Dashboard />} />
             <Route path='item' element={<Item />} />
+            <Route path='purchase' element={<Purchase />} />
+            <Route path='sale' element={<Sale />} />
+            <Route path='user' element={<User />} />
+            <Route path='acount' element={<Acount />} />
           </Route>
         </Route>
       </>
@@ -56,7 +64,7 @@ function App() {
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <RouterProvider router={router} />
-      <ToastContainer />
+      <ToastContainer position='bottom-right' />
     </UserContext.Provider>
   )
 }

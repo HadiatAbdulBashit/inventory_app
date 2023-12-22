@@ -26,7 +26,7 @@ const Login = () => {
       const response = await axios.post('/api/auth', data);
       toast.success('Hai ' + response.data.name)
       setUser({...response.data, isLoggedIn: true})
-      localStorage.setItem('user', '{isLoggedIn: true}')
+      localStorage.setItem('user', JSON.stringify({isLoggedIn: true}))
       navigate('/dashboard')
     } catch (error) {
       toast.error(error.response.data.message);

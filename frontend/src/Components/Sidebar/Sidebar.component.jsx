@@ -3,7 +3,7 @@ import {
     Menu,
     MenuItem,
 } from 'react-pro-sidebar';
-import { RiDashboardLine, RiInboxUnarchiveLine, RiInboxArchiveLine, RiArchive2Line, RiGroupLine } from "react-icons/ri";
+import { RiDashboardLine, RiInboxUnarchiveLine, RiInboxArchiveLine, RiArchive2Line, RiGroupLine, RiBox3Line } from "react-icons/ri";
 import { Link } from 'react-router-dom';
 import style from './Sidebar.module.css'
 
@@ -16,10 +16,12 @@ const SidebarMenu = ({ collapsed }) => {
                 <MenuItem className={style.appName} icon={<RiArchive2Line />}> Inventory App </MenuItem>
                 <hr />
                 <MenuItem component={<Link to="/dashboard" />} icon={<RiDashboardLine />}>Dashboard</MenuItem>
-                <MenuItem component={<Link to="/purchases" />} icon={<RiInboxArchiveLine />}>Purchases</MenuItem>
-                <MenuItem component={<Link to="/sales" />} icon={<RiInboxUnarchiveLine />}>Sales</MenuItem>
+                <MenuItem component={<Link to="/dashboard/purchase" />} icon={<RiInboxArchiveLine />}>Purchases</MenuItem>
+                <MenuItem component={<Link to="/dashboard/sale" />} icon={<RiInboxUnarchiveLine />}>Sales</MenuItem>
                 <hr />
-                <MenuItem component={<Link to="/user" />} icon={<RiGroupLine />}>Users</MenuItem>
+                <MenuItem component={<Link to="/dashboard/item" />} icon={<RiBox3Line />}>Items</MenuItem>
+                <hr />
+                <MenuItem component={<Link to="/dashboard/user" />} icon={<RiGroupLine />}>Users</MenuItem>
             </Menu>
         </Sidebar>
     )

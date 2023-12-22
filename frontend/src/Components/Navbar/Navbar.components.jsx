@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { FaBars, FaRegUser } from 'react-icons/fa6';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -9,8 +9,6 @@ import UserContext from '../../Contexts/UserContext';
 import style from './Navbar.module.css'
 
 const Navbar = ({ setCollapsed, collapsed }) => {
-    const navigate = useNavigate();
-
     const { setUser } = useContext(UserContext)
 
     const handleLogout = async () => {
@@ -19,7 +17,6 @@ const Navbar = ({ setCollapsed, collapsed }) => {
             toast.success(response.data.message)
             setUser({ isLoggedIn: false })
             localStorage.setItem('user', null)
-            navigate('/')
         } catch (error) {
             toast.error(error.response.data.message);
         }
@@ -37,7 +34,7 @@ const Navbar = ({ setCollapsed, collapsed }) => {
                     </a>
                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <li>
-                            <Link className="dropdown-item" to={"/acount"}>Acount</Link>
+                            <Link className="dropdown-item" to={"/dashboard/acount"}>Acount</Link>
                         </li>
                         <li><hr className="dropdown-divider" /></li>
                         <li>
