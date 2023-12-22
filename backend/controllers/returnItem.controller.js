@@ -2,62 +2,62 @@ const { Sequelize } = require('sequelize');
 
 const db = require("../models");
 
+const ReturnItem = db.returnItem;
 const Sale = db.sale;
-const User = db.user;
 const Op = Sequelize.Op;
 
-// Create and Save a new Sale
+// Create and Save a new ReturnItem
 exports.create = async(req, res) => {
     // Validate request
-    if (!req.body.customer) {
+    if (!req.body.saleId) {
         res.status(400).send({
-            message: "Customer can not be empty!"
+            message: "saleId can not be empty!"
         });
         return;
     }
 
-    // Save Sale in the database
-    Sale.create({...req.body, userId: req.user.id})
+    // Save ReturnItem in the database
+    ReturnItem.create({...req.body, userId: req.user.id})
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while creating the Sale."
+                    err.message || "Some error occurred while creating the Return Item."
             });
         });
 };
 
-// Retrieve all Sale from the database.
+// Retrieve all ReturnItem from the database.
 exports.findAll = (req, res) => {
     const title = req.query.title;
     var condition = title ? { title: { [Op.iLike]: `%${title}%` } } : null;
 
-    Sale.findAll({ where: condition })
+    ReturnItem.findAll({ where: condition })
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while retrieving sale."
+                    err.message || "Some error occurred while retrieving return item."
             });
         });
 };
 
-// Find a single Sale with an id
+// Find a single ReturnItem with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
 
-    Sale.findOne({
+    ReturnItem.findOne({
         where: {
             id: id
         },
         include: [{
-            model: User,
-            attributes: ['name', 'role'],
-            as: 'user', // Specify the alias for the association
+            model: Sale,
+            attributes: ['customer'],
+            as: 'sale', // Specify the alias for the association
         }]
     })
         .then(data => {
@@ -65,63 +65,63 @@ exports.findOne = (req, res) => {
                 res.send(data);
             } else {
                 res.status(404).send({
-                    message: `Cannot find Sale with id=${id}.`
+                    message: `Cannot find ReturnItem with id=${id}.`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving Sale with id=" + id
+                message: "Error retrieving ReturnItem with id=" + id
             });
         });
 };
 
-// Update a Sale by the id in the request
+// Update a ReturnItem by the id in the request
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    Sale.update(req.body, {
+    ReturnItem.update(req.body, {
         where: { id: id }
     })
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "Sale was updated successfully."
+                    message: "ReturnItem was updated successfully."
                 });
             } else {
                 res.send({
-                    message: `Cannot update Sale with id=${id}. Maybe Sale was not found or req.body is empty!`
+                    message: `Cannot update ReturnItem with id=${id}. Maybe Return Item was not found or req.body is empty!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error updating Sale with id=" + id
+                message: "Error updating ReturnItem with id=" + id
             });
         });
 };
 
-// Delete a Sale with the specified id in the request
+// Delete a ReturnItem with the specified id in the request
 exports.delete = (req, res) => {
     const id = req.params.id;
 
-    Sale.destroy({
+    ReturnItem.destroy({
         where: { id: id }
     })
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "Sale was deleted successfully!"
+                    message: "ReturnItem was deleted successfully!"
                 });
             } else {
                 res.send({
-                    message: `Cannot delete Sale with id=${id}. Maybe Sale was not found!`
+                    message: `Cannot delete Return Item with id=${id}. Maybe ReturnItem was not found!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Could not delete Sale with id=" + id
+                message: "Could not delete ReturnItem with id=" + id
             });
         });
 };

@@ -43,6 +43,7 @@ require("./routes/auth.routes")(app);
 require("./routes/item.routes")(app);
 require("./routes/purchase.routes")(app);
 require("./routes/sale.routes")(app);
+require("./routes/returnItem.routes")(app);
 
 app.use(notFound);
 app.use(errorHandler);

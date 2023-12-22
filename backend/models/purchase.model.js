@@ -19,6 +19,10 @@ module.exports = (table) => {
             type: Sequelize.FLOAT,
             allowNull: false,
         },
+        status: {
+            type: Sequelize.ENUM('success', 'canceled'),
+            allowNull: false,
+        },
     }, {
         freezeTableName: true
     });

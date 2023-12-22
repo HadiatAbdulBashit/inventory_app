@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize');
 
 module.exports = (table) => {
-    const Sale = table.define("sale", {
+    const returnItem = table.define("returnItem", {
         id: {
             type: Sequelize.STRING,
             defaultValue: Sequelize.UUIDV4,
@@ -11,21 +11,17 @@ module.exports = (table) => {
                 notEmpty: true
             }
         },
-        customer: {
+        totalItem: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+        },
+        description: {
             type: Sequelize.STRING,
-            allowNull: false,
-        },
-        totalPrice: {
-            type: Sequelize.FLOAT,
-            allowNull: false,
-        },
-        status: {
-            type: Sequelize.ENUM('success', 'success with return', 'canceled'),
-            allowNull: false,
+            allowNull: true,
         },
     }, {
         freezeTableName: true
     });
 
-    return Sale;
+    return returnItem;
 };
