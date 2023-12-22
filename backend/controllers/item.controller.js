@@ -97,7 +97,7 @@ exports.update = (req, res) => {
 
 // Delete a Item with the specified id in the request
 exports.delete = (req, res) => {
-    const uuid = req.params.id;
+    const id = req.params.id;
 
     Item.destroy({
         where: { id: id }
