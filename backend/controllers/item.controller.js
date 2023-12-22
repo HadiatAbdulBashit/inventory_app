@@ -3,10 +3,10 @@ const { Sequelize } = require('sequelize');
 
 const db = require("../models");
 
-const Goods = db.goods;
+const Item = db.item;
 const Op = Sequelize.Op;
 
-// Create and Save a new Goods
+// Create and Save a new Item
 exports.create = async(req, res) => {
     // Validate request
     if (!req.body.name) {
@@ -16,25 +16,25 @@ exports.create = async(req, res) => {
         return;
     }
 
-    // Save Goods in the database
-    Goods.create(req.body)
+    // Save Item in the database
+    Item.create(req.body)
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while creating the Goods."
+                    err.message || "Some error occurred while creating the Item."
             });
         });
 };
 
-// Retrieve all Goods from the database.
+// Retrieve all Item from the database.
 exports.findAll = (req, res) => {
     const name = req.query.name;
     var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
 
-    Goods.findAll({ where: condition })
+    Item.findAll({ where: condition })
         .then(data => {
             res.send(data);
         })
@@ -46,11 +46,11 @@ exports.findAll = (req, res) => {
         });
 };
 
-// Find a single Goods with an id
+// Find a single Item with an id
 exports.findOne = (req, res) => {
     const uuid = req.params.id;
 
-    Goods.findOne({
+    Item.findOne({
         where: {
             uuid: uuid
         }
@@ -60,80 +60,63 @@ exports.findOne = (req, res) => {
                 res.send(data);
             } else {
                 res.status(404).send({
-                    message: `Cannot find Goods with id=${uuid}.`
+                    message: `Cannot find Item with id=${uuid}.`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving Goods with id=" + id
+                message: "Error retrieving Item with id=" + id
             });
         });
 };
 
-// Update a Goods by the id in the request
+// Update a Item by the id in the request
 exports.update = (req, res) => {
     const uuid = req.params.id;
 
-    Goods.update(req.body, {
+    Item.update(req.body, {
         where: { uuid: uuid }
     })
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "Goods was updated successfully."
+                    message: "Item was updated successfully."
                 });
             } else {
                 res.send({
-                    message: `Cannot update Goods with id=${uuid}. Maybe Goods was not found or req.body is empty!`
+                    message: `Cannot update Item with id=${uuid}. Maybe Item was not found or req.body is empty!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error updating Goods with id=" + uuid
+                message: "Error updating Item with id=" + uuid
             });
         });
 };
 
-// Delete a Goods with the specified id in the request
+// Delete a Item with the specified id in the request
 exports.delete = (req, res) => {
     const uuid = req.params.id;
 
-    Goods.destroy({
+    Item.destroy({
         where: { uuid: uuid }
     })
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "Goods was deleted successfully!"
+                    message: "Item was deleted successfully!"
                 });
             } else {
                 res.send({
-                    message: `Cannot delete Goods with id=${uuid}. Maybe Goods was not found!`
+                    message: `Cannot delete Item with id=${uuid}. Maybe Item was not found!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Could not delete Goods with id=" + uuid
-            });
-        });
-};
-
-// Delete all Goods from the database.
-exports.deleteAll = (req, res) => {
-    Goods.destroy({
-        where: {},
-        truncate: false
-    })
-        .then(nums => {
-            res.send({ message: `${nums} Goods were deleted successfully!` });
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while removing all users."
+                message: "Could not delete Item with id=" + uuid
             });
         });
 };
