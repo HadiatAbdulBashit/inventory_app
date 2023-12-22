@@ -6,6 +6,8 @@ import { toast } from 'react-toastify';
 
 import UserContext from '../../Contexts/UserContext';
 
+import style from './Navbar.module.css'
+
 const Navbar = ({ setCollapsed, collapsed }) => {
     const navigate = useNavigate();
 
@@ -23,8 +25,8 @@ const Navbar = ({ setCollapsed, collapsed }) => {
     }
 
     return (
-        <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-            <button className="btn text-white ms-2" onClick={() => setCollapsed(!collapsed)}>
+        <nav className={"sb-topnav navbar navbar-expand " + style.navContainer}>
+            <button className="btn text-black ms-2" onClick={() => setCollapsed(!collapsed)}>
                 <FaBars />
             </button>
             <ul className="navbar-nav ms-auto me-3 me-lg-4">

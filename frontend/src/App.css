@@ -3,6 +3,7 @@
   --color-two: #DCBFFF;
   --color-three: #E5D4FF;
   --color-four: #F1EAFF;
+  --color-five: rgb(249, 249, 249, 0.7);
 }
 
 * {
