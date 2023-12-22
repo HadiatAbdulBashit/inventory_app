@@ -1,11 +1,12 @@
 const { Sequelize } = require('sequelize');
 
 module.exports = (table) => {
-    const Goods = table.define("goods", {
-        uuid:{
+    const Item = table.define("item", {
+        id:{
             type: Sequelize.STRING,
             defaultValue: Sequelize.UUIDV4,
             allowNull: false,
+            primaryKey: true,
             validate:{
                 notEmpty: true
             }
@@ -16,16 +17,9 @@ module.exports = (table) => {
         unit: {
             type: Sequelize.STRING
         },
-        stock: {
-            type: Sequelize.INTEGER,
-            defaultValue: 0
-        },
-        price: {
-            type: Sequelize.FLOAT
-        },
     },{
         freezeTableName: true
     });
 
-    return Goods;
+    return Item;
 };
