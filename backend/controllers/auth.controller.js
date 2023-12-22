@@ -5,7 +5,7 @@ const argon2 = require("argon2");
 const asyncHandler = require('express-async-handler');
 
 // @desc    Auth user & get token
-// @route   POST /api/users/auth
+// @route   POST /api/auth
 // @access  Only Super Admin
 exports.authUser = asyncHandler(async (req, res) => {
     const { username, password } = req.body;
@@ -31,8 +31,20 @@ exports.authUser = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc    get user / get user from token
+// @route   get /api/auth/me
+// @access  Private
+exports.getUser = asyncHandler(async (req, res) => {
+    if (req.user) {
+        res.json(req.user);
+    } else {
+        res.status(401);
+        throw new Error('Invalid email or password');
+    }
+});
+
 // @desc    Logout user / clear cookie
-// @route   POST /api/users/logout
+// @route   POST /api/auth/logout
 // @access  Public
 exports.logoutUser = (req, res) => {
     res.cookie('jwt', '', {

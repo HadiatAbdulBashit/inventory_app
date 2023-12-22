@@ -15,7 +15,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
       const decoded = jwt.verify(token, dotenv.JWT_SECRET || 'ljk&*(GHT^E^%@');
 
       req.user = await User.findOne({
-        attributes: ['id', 'name', 'username'],
+        attributes: ['id', 'name', 'username', 'role'],
         where: {
           id: decoded.userId
         }
