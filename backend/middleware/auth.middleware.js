@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 const db = require("../models");
-const User = db.users;
+const User = db.user;
 const dotenv = require('dotenv');
 dotenv.config()
 
@@ -15,9 +15,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
       const decoded = jwt.verify(token, dotenv.JWT_SECRET || 'ljk&*(GHT^E^%@');
 
       req.user = await User.findOne({
-        attributes: ['uuid', 'name', 'username'],
+        attributes: ['id', 'name', 'username'],
         where: {
-          uuid: decoded.userId
+          id: decoded.userId
         }
       });
 

@@ -1,6 +1,6 @@
 const { generateToken } = require('../utils/generate.token')
 const db = require("../models");
-const User = db.users;
+const User = db.user;
 const argon2 = require("argon2");
 const asyncHandler = require('express-async-handler');
 
@@ -17,10 +17,10 @@ exports.authUser = asyncHandler(async (req, res) => {
     });
 
     if (user && (await argon2.verify(user.password, password))) {
-        generateToken(res, user.uuid);
+        generateToken(res, user.id);
 
         res.json({
-            uuid: user.uuid,
+            id: user.id,
             name: user.name,
             username: user.username,
             role: user.role,

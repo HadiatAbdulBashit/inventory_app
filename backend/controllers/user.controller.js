@@ -3,7 +3,7 @@ const { Sequelize } = require('sequelize');
 
 const db = require("../models");
 
-const User = db.users;
+const User = db.user;
 const Op = Sequelize.Op;
 
 // Create and Save a new User
@@ -58,11 +58,11 @@ exports.findAll = (req, res) => {
 
 // Find a single User with an id
 exports.findOne = (req, res) => {
-    const uuid = req.params.id;
+    const id = req.params.id;
 
     User.findOne({
         where: {
-            uuid: uuid
+            id: id
         }
     })
         .then(data => {
@@ -70,7 +70,7 @@ exports.findOne = (req, res) => {
                 res.send(data);
             } else {
                 res.status(404).send({
-                    message: `Cannot find User with id=${uuid}.`
+                    message: `Cannot find User with id=${id}.`
                 });
             }
         })

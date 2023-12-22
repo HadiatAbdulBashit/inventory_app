@@ -1,4 +1,3 @@
-const argon2 = require("argon2");
 const { Sequelize } = require('sequelize');
 
 const db = require("../models");
@@ -48,11 +47,11 @@ exports.findAll = (req, res) => {
 
 // Find a single Item with an id
 exports.findOne = (req, res) => {
-    const uuid = req.params.id;
+    const id = req.params.id;
 
     Item.findOne({
         where: {
-            uuid: uuid
+            id: id
         }
     })
         .then(data => {
@@ -60,7 +59,7 @@ exports.findOne = (req, res) => {
                 res.send(data);
             } else {
                 res.status(404).send({
-                    message: `Cannot find Item with id=${uuid}.`
+                    message: `Cannot find Item with id=${id}.`
                 });
             }
         })
@@ -73,10 +72,10 @@ exports.findOne = (req, res) => {
 
 // Update a Item by the id in the request
 exports.update = (req, res) => {
-    const uuid = req.params.id;
+    const id = req.params.id;
 
     Item.update(req.body, {
-        where: { uuid: uuid }
+        where: { id: id }
     })
         .then(num => {
             if (num == 1) {
@@ -85,13 +84,13 @@ exports.update = (req, res) => {
                 });
             } else {
                 res.send({
-                    message: `Cannot update Item with id=${uuid}. Maybe Item was not found or req.body is empty!`
+                    message: `Cannot update Item with id=${id}. Maybe Item was not found or req.body is empty!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error updating Item with id=" + uuid
+                message: "Error updating Item with id=" + id
             });
         });
 };
@@ -101,7 +100,7 @@ exports.delete = (req, res) => {
     const uuid = req.params.id;
 
     Item.destroy({
-        where: { uuid: uuid }
+        where: { id: id }
     })
         .then(num => {
             if (num == 1) {
@@ -110,13 +109,13 @@ exports.delete = (req, res) => {
                 });
             } else {
                 res.send({
-                    message: `Cannot delete Item with id=${uuid}. Maybe Item was not found!`
+                    message: `Cannot delete Item with id=${id}. Maybe Item was not found!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Could not delete Item with id=" + uuid
+                message: "Could not delete Item with id=" + id
             });
         });
 };
