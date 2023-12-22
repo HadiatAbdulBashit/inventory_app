@@ -2,10 +2,11 @@ const { Sequelize } = require('sequelize');
 
 module.exports = (table) => {
     const User = table.define("user", {
-        uuid:{
+        id:{
             type: Sequelize.STRING,
             defaultValue: Sequelize.UUIDV4,
             allowNull: false,
+            primaryKey: true,
             validate:{
                 notEmpty: true
             }
