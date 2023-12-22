@@ -18,6 +18,7 @@ const Navbar = ({ setCollapsed, collapsed }) => {
             const response = await axios.post('/api/auth/logout');
             toast.success(response.data.message)
             setUser({ isLoggedIn: false })
+            localStorage.setItem('user', null)
             navigate('/')
         } catch (error) {
             toast.error(error.response.data.message);

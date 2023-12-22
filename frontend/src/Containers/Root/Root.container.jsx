@@ -6,7 +6,7 @@ import Sidebar from '../../Components/Sidebar/Sidebar.component';
 import style from './Root.module.css'
 
 const Root = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   return (
     <div className={style.wrapper}>
