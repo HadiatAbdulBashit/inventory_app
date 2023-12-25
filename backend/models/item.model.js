@@ -17,6 +17,9 @@ module.exports = (table) => {
         unit: {
             type: Sequelize.STRING
         },
+        imageUrl: {
+            type: Sequelize.STRING
+        },
     },{
         freezeTableName: true
     });
