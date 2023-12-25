@@ -4,6 +4,7 @@ const cors = require("cors");
 const dotenv = require('dotenv');
 const { notFound, errorHandler } = require('./middleware/error.middleware')
 const cookieParser = require('cookie-parser');
+const FileUpload = require("express-fileupload");
 
 
 dotenv.config()
@@ -17,12 +18,15 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use(FileUpload());
 
 // parse requests of content-type - application/json
 app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+
+app.use(express.static("backend/public"));
 
 // simple route
 app.get("/", (req, res) => {
