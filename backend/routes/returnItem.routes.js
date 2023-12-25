@@ -4,19 +4,19 @@ const router = require("express").Router();
 
 module.exports = app => {
   
-    // Create a new returnItem
+    // Create a new Return Item
     router.post("/", returnItem.create);
   
-    // Retrieve all returnItem
+    // Retrieve all Return Item
     router.get("/", returnItem.findAll);
   
-    // Retrieve a single returnItem with id 
+    // Retrieve a single Return Item with id 
     router.get("/:id", returnItem.findOne);
   
-    // Update a returnItem with id
+    // Update a Return Item with id
     router.put("/:id", returnItem.update);
   
-    // Delete a returnItem with id
+    // Delete a Return Item with id
     router.delete("/:id", returnItem.delete);
   
     app.use('/api/return', protect, router);

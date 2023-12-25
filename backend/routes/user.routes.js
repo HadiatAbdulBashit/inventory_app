@@ -5,22 +5,22 @@ module.exports = app => {
   
     const router = require("express").Router();
   
-    // Create a new Tutorial
+    // Create a new User
     router.post("/", users.create);
   
     // Retrieve all Users
     router.get("/", users.findAll);
   
-    // Retrieve a single Tutorial with id
+    // Retrieve a single User with id
     router.get("/:id", users.findOne);
   
-    // Update a Tutorial with id
+    // Update a User with id
     router.put("/:id", onlyAdmin, users.update);
   
-    // Delete a Tutorial with id
+    // Delete a User with id
     router.delete("/:id", users.delete);
   
-    // Create a new Tutorial
+    // Create all User
     router.delete("/", users.deleteAll);
   
     app.use('/api/users', protect, router);

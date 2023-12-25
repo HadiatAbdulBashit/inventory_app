@@ -4,19 +4,19 @@ const router = require("express").Router();
 
 module.exports = app => {
   
-    // Create a new Tutorial
+    // Create a new Item
     router.post("/", item.create);
   
-    // Retrieve all Users
+    // Retrieve all Item
     router.get("/", item.findAll);
   
-    // Retrieve a single Tutorial with id
+    // Retrieve a single Item with id
     router.get("/:id", item.findOne);
   
-    // Update a Tutorial with id
+    // Update a Item with id
     router.put("/:id", item.update);
   
-    // Delete a Tutorial with id
+    // Delete a Item with id
     router.delete("/:id", item.delete);
   
     app.use('/api/item', protect, router);
