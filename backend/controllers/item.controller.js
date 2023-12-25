@@ -1,4 +1,6 @@
 const { Sequelize } = require('sequelize');
+const path = require("path");
+const fs = require("fs");
 
 const db = require("../models");
 
@@ -6,26 +8,37 @@ const Item = db.item;
 const Op = Sequelize.Op;
 
 // Create and Save a new Item
-exports.create = async(req, res) => {
+exports.create = async (req, res) => {
     // Validate request
     if (!req.body.name) {
-        res.status(400).send({
-            message: "Content can not be empty!"
+        return res.status(400).send({
+            message: "Name can not be empty!"
         });
-        return;
     }
+    if (req.files === null) return res.status(400).json({ msg: "No File Uploaded" });
+    const file = req.files.image;
+    const fileSize = file.data.length;
+    const ext = path.extname(file.name);
+    const fileName = file.md5 + ext;
+    const url = `${req.protocol}://${req.get("host")}/images/items/${fileName}`;
+    const allowedType = ['.png', '.jpg', '.jpeg'];
 
-    // Save Item in the database
-    Item.create(req.body)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
+    if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ msg: "Invalid format Images" });
+    if (fileSize > 2000000) return res.status(422).json({ msg: "Image must be less than 2 MB" });
+
+    file.mv(`./backend/public/images/items/${fileName}`, async (err) => {
+        if (err) return res.status(500).json({ msg: err.message });
+        try {
+            // Save Item in the database
+            await Item.create({ name: req.body.name, unit: req.body.unit, imageUrl: url });
+            res.status(201).json({ msg: "Item saved" });
+        } catch (error) {
             res.status(500).send({
                 message:
                     err.message || "Some error occurred while creating the Item."
             });
-        });
+        }
+    })
 };
 
 // Retrieve all Item from the database.
@@ -71,51 +84,80 @@ exports.findOne = (req, res) => {
 };
 
 // Update a Item by the id in the request
-exports.update = (req, res) => {
-    const id = req.params.id;
+exports.update = async (req, res) => {
+    const item = await Item.findOne({
+        where: {
+            id: req.params.id
+        }
+    });
+    if (!item) return res.status(404).json({ msg: "No Data Found" });
 
-    Item.update(req.body, {
-        where: { id: id }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "Item was updated successfully."
-                });
-            } else {
-                res.send({
-                    message: `Cannot update Item with id=${id}. Maybe Item was not found or req.body is empty!`
-                });
-            }
+    let fileName = "";
+    if (req.files === null) {
+        const splitUrl = item.imageUrl.split('/');
+        fileName = splitUrl[splitUrl.length - 1];
+    } else {
+        const file = req.files.image;
+        const fileSize = file.data.length;
+        const ext = path.extname(file.name);
+        fileName = file.md5 + ext;
+        const allowedType = ['.png', '.jpg', '.jpeg'];
+
+        if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ msg: "Invalid format Images" });
+        if (fileSize > 2000000) return res.status(422).json({ msg: "Image must be less than 2 MB" });
+
+        // Delete Image
+        const splitUrl = item.imageUrl.split('/');
+        const imageName = splitUrl[splitUrl.length - 1];
+        const filePath = `./backend/public/images/items/${imageName}`;
+        fs.unlinkSync(filePath);
+
+        // Save image
+        file.mv(`./backend/public/images/items/${fileName}`, async (err) => {
+            if (err) return res.status(500).json({ msg: err.message });
         })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error updating Item with id=" + id
-            });
+    }
+    const url = `${req.protocol}://${req.get("host")}/images/items/${fileName}`;
+
+    try {
+        // Update Item to the database
+        await Item.update({ name: req.body.name, unit: req.body.unit, imageUrl: url }, {
+            where: {
+                id: req.params.id
+            }
         });
+        res.status(201).json({ msg: "Item Updated" });
+    } catch (error) {
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while creating the Item."
+        });
+    }
 };
 
 // Delete a Item with the specified id in the request
-exports.delete = (req, res) => {
-    const id = req.params.id;
+exports.delete = async (req, res) => {
+    const item = await Item.findOne({
+        where: {
+            id: req.params.id
+        }
+    });
+    if (!item) return res.status(404).json({ msg: "No Data Found" });
 
-    Item.destroy({
-        where: { id: id }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "Item was deleted successfully!"
-                });
-            } else {
-                res.send({
-                    message: `Cannot delete Item with id=${id}. Maybe Item was not found!`
-                });
+    try {
+        const splitUrl = item.imageUrl.split('/');
+        const imageName = splitUrl[splitUrl.length - 1];
+        const filePath = `./backend/public/images/items/${imageName}`;
+        fs.unlinkSync(filePath);
+        await Item.destroy({
+            where: {
+                id: req.params.id
             }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Could not delete Item with id=" + id
-            });
         });
+        res.status(200).json({ msg: "Item Deleted Successfuly" });
+    } catch (error) {
+        res.status(500).send({
+            message: "Could not delete Item with id=" + req.params.id
+        });
+    }
 };
