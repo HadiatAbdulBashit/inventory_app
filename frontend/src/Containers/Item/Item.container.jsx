@@ -33,8 +33,6 @@ const AddItem = () => {
           <tr>
             <th scope="col">No</th>
             <th scope="col">Name</th>
-            <th scope="col">Unit</th>
-            <th scope="col">Stock</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -43,13 +41,11 @@ const AddItem = () => {
             <tr key={item.id}>
               <th scope="row">{index + 1}</th>
               <td>{item.name}</td>
-              <td>{item.unit}</td>
-              <td></td>
               <td>
-                <Link to={`${item.id}`} className="btn btn-info">
+                <Link to={`${item.id}`} className="btn btn-info me-1">
                   Detail
                 </Link>
-                <Link to={`${item.id}/edit`} className="btn btn-primary">
+                <Link to={`${item.id}/edit`} className="btn btn-primary me-1">
                   Edit
                 </Link>
                 <button
