@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import ItemForm from "../../Components/ItemForm/ItemForm.component";
 
-const AddProduct = () => {
+const AddItem = () => {
     const navigate = useNavigate();
     const { reset } = useForm()
 
@@ -44,4 +44,4 @@ const AddProduct = () => {
     );
 };
 
-export default AddProduct;
+export default AddItem;
