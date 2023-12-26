@@ -1,6 +1,7 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
+import axios from 'axios';
 
 import 'react-toastify/dist/ReactToastify.css';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -14,14 +15,13 @@ import Login from './Containers/Login/Login.container';
 import ProtectedRoute from './Containers/ProtectedRoute/ProtectedRoute.container';
 import Dashboard from './Containers/Dashboard/Dashboard.container';
 import Item from './Containers/Item/Item.container';
-
-import UserContext from './Contexts/UserContext';
-import { useEffect } from 'react';
-import axios from 'axios';
 import Purchase from './Containers/Purchase/Purchase.container';
 import Sale from './Containers/Sale/Sale.container';
 import User from './Containers/User/User.container';
 import Acount from './Containers/Acount/Acount.container';
+import AddItem from './Containers/Item/AddItem.container';
+
+import UserContext from './Contexts/UserContext';
 
 function App() {
   const [user, setUser] = useState({
@@ -32,7 +32,7 @@ function App() {
     const isLogin = JSON.parse(localStorage.getItem('user'))
     if (isLogin) {
       const response = await axios.get('/api/auth/me')
-      setUser({...response.data, isLoggedIn: true})
+      setUser({ ...response.data, isLoggedIn: true })
     }
   }
 
@@ -50,7 +50,10 @@ function App() {
         <Route element={<ProtectedRoute routeRoleisLoggedIn={true} />}>
           <Route path='/dashboard' element={<Root />}>
             <Route index element={<Dashboard />} />
-            <Route path='item' element={<Item />} />
+            <Route path='item'>
+              <Route index element={<Item />} />
+              <Route path='add' element={<AddItem />} />
+            </Route>
             <Route path='purchase' element={<Purchase />} />
             <Route path='sale' element={<Sale />} />
             <Route path='user' element={<User />} />
