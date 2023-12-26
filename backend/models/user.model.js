@@ -12,17 +12,21 @@ module.exports = (table) => {
             }
         },
         name: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false,
         },
         username: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false,
         },
         password: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false,
         },
         role: {
-            type: Sequelize.CHAR(1)
-        }
+            type: Sequelize.ENUM('super', 'admin', 'staff'),
+            allowNull: false,
+        },
     },{
         freezeTableName: true
     });
