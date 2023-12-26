@@ -1,6 +1,7 @@
 const { Sequelize } = require('sequelize');
 const path = require("path");
 const fs = require("fs");
+const { v4 } = require('uuid');
 
 const db = require("../models");
 
@@ -19,7 +20,7 @@ exports.create = async (req, res) => {
     const file = req.files.image;
     const fileSize = file.data.length;
     const ext = path.extname(file.name);
-    const fileName = file.md5 + ext;
+    const fileName = file.md5 + v4() + ext;
     const url = `${req.protocol}://${req.get("host")}/images/items/${fileName}`;
     const allowedType = ['.png', '.jpg', '.jpeg'];
 
@@ -30,7 +31,7 @@ exports.create = async (req, res) => {
         if (err) return res.status(500).json({ msg: err.message });
         try {
             // Save Item in the database
-            await Item.create({ name: req.body.name, unit: req.body.unit, imageUrl: url });
+            await Item.create({ name: req.body.name, imageUrl: url });
             res.status(201).json({ msg: "Item saved" });
         } catch (error) {
             res.status(500).send({
@@ -100,7 +101,7 @@ exports.update = async (req, res) => {
         const file = req.files.image;
         const fileSize = file.data.length;
         const ext = path.extname(file.name);
-        fileName = file.md5 + ext;
+        fileName = file.md5 + v4() + ext;
         const allowedType = ['.png', '.jpg', '.jpeg'];
 
         if (!allowedType.includes(ext.toLowerCase())) return res.status(422).json({ msg: "Invalid format Images" });
@@ -121,7 +122,7 @@ exports.update = async (req, res) => {
 
     try {
         // Update Item to the database
-        await Item.update({ name: req.body.name, unit: req.body.unit, imageUrl: url }, {
+        await Item.update({ name: req.body.name, imageUrl: url }, {
             where: {
                 id: req.params.id
             }
@@ -157,7 +158,7 @@ exports.delete = async (req, res) => {
         res.status(200).json({ msg: "Item Deleted Successfuly" });
     } catch (error) {
         res.status(500).send({
-            message: "Could not delete Item with id=" + req.params.id
+            message: "Could not delete Item with id = " + req.params.id + ", maybe image has deleted"
         });
     }
 };

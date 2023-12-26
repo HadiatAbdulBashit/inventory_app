@@ -14,9 +14,6 @@ module.exports = (table) => {
         name: {
             type: Sequelize.STRING
         },
-        unit: {
-            type: Sequelize.STRING
-        },
         imageUrl: {
             type: Sequelize.STRING
         },

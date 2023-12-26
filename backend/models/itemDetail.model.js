@@ -11,6 +11,9 @@ module.exports = (table) => {
                 notEmpty: true
             }
         },
+        unit: {
+            type: Sequelize.STRING
+        },
         stock: {
             type: Sequelize.INTEGER
         },
