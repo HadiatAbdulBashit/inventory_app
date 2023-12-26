@@ -1,66 +1,84 @@
 import { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import Swal from 'sweetalert2'
 
-const AddItem = () => {
-  const [items, setItems] = useState([]);
+const Item = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [item, setItem] = useState([]);
 
-  useEffect(() => {
-    getItem();
-  }, []);
-
-  const getItem = async () => {
-    const response = await axios.get("/api/item");
-    setItems(response.data);
-  };
-
-  const deleteProduct = async (itemId) => {
+  const getItemById = async () => {
     try {
-      await axios.delete(`/api/item/${itemId}`);
-      getItem();
+      const response = await axios.get(`/api/item/${id}`);
+      setItem(response.data)
     } catch (error) {
       console.log(error);
     }
+  }
+
+  useEffect(() => {
+    getItemById();
+  }, []);
+
+  const deleteItem = async (itemId) => {
+    try {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      });
+
+      if (result.isConfirmed) {
+        await toast.promise(axios.delete(`/api/item/${itemId}`), {
+          pending: 'Delete item...',
+          success: 'Item Deleted',
+          error: 'Delete item failed'
+        });
+        navigate("/dashboard/item");
+      }
+    } catch (error) {
+      console.log(error);
+
+      Swal.fire({
+        title: "Error",
+        text: "An error occurred while deleting the item.",
+        icon: "error"
+      });
+    }
   };
+
 
   return (
     <div className="container my-5">
-      <Link to="/dashboard/item/add" className="btn color-one mb-5">
-        Add New
-      </Link>
-      <table className="table table-striped align-middle">
-        <thead>
-          <tr>
-            <th scope="col">No</th>
-            <th scope="col">Name</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item, index) => (
-            <tr key={item.id}>
-              <th scope="row">{index + 1}</th>
-              <td>{item.name}</td>
-              <td>
-                <Link to={`${item.id}`} className="btn btn-info me-1">
-                  Detail
-                </Link>
-                <Link to={`${item.id}/edit`} className="btn btn-primary me-1">
-                  Edit
-                </Link>
-                <button
-                  onClick={() => deleteProduct(item.id)}
-                  className="btn btn-danger"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="row">
+        <div className="col">
+          <figure>
+            <img src={item.imageUrl} alt="Preview Image" className="img-fluid" style={{ maxWidth: '300px' }} />
+          </figure>
+        </div>
+        <div className="col">
+          <p>
+          Name: {item.name}
+          </p>
+          <Link to={`edit`} className="btn btn-primary me-1">
+            Edit
+          </Link>
+          <button
+            onClick={() => deleteItem(item.id)}
+            className="btn btn-danger"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default AddItem;
+export default Item;
