@@ -1,20 +1,29 @@
+import { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-const ItemForm = ({ onFormSubmit }) => {
+const ItemForm = ({ onFormSubmit, initialData }) => {
     const [preview, setPreview] = useState("");
 
     const {
         register,
         handleSubmit,
         formState: { errors },
+        setValue
     } = useForm()
 
     const loadImage = (e) => {
         const image = e.target.files[0];
         setPreview(URL.createObjectURL(image));
     };
-    
+
+    useEffect(() => {
+        if (initialData) {
+            setValue("name", initialData.name);
+            setPreview(initialData.imageUrl)
+        }
+    }, [initialData])
+
     return (
         <form className="col-6 g-3" onSubmit={handleSubmit(onFormSubmit)}>
             <div className="mb-3">
@@ -31,7 +40,7 @@ const ItemForm = ({ onFormSubmit }) => {
             <div className="mb-3">
                 <label className="form-label">Image</label>
                 <input
-                    {...register('image', { required: 'Image is Require' })}
+                    {...register('image')}
                     type="file"
                     className={"form-control " + (errors.image && errors.image.message ? 'is-invalid' : null)}
                     onChange={loadImage}
@@ -50,7 +59,7 @@ const ItemForm = ({ onFormSubmit }) => {
 
             </div>
             <div className="col-12">
-                <button className="btn btn-primary" type="submit">Add Item</button>
+                <button className="btn btn-primary" type="submit">Edit Item</button>
             </div>
         </form>
     )

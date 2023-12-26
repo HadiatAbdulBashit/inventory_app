@@ -14,12 +14,14 @@ import LandingPage from './Containers/LandingPage/LandingPage.container';
 import Login from './Containers/Login/Login.container';
 import ProtectedRoute from './Containers/ProtectedRoute/ProtectedRoute.container';
 import Dashboard from './Containers/Dashboard/Dashboard.container';
-import Item from './Containers/Item/Item.container';
 import Purchase from './Containers/Purchase/Purchase.container';
 import Sale from './Containers/Sale/Sale.container';
 import User from './Containers/User/User.container';
 import Acount from './Containers/Acount/Acount.container';
 import AddItem from './Containers/Item/AddItem.container';
+import EditItem from './Containers/Item/EditItem.container';
+import Items from './Containers/Item/Items.container';
+import Item from './Containers/Item/Item.container';
 
 import UserContext from './Contexts/UserContext';
 
@@ -51,8 +53,10 @@ function App() {
           <Route path='/dashboard' element={<Root />}>
             <Route index element={<Dashboard />} />
             <Route path='item'>
-              <Route index element={<Item />} />
+              <Route index element={<Items />} />
               <Route path='add' element={<AddItem />} />
+              <Route path=':id' element={<Item />} />
+              <Route path=':id/edit' element={<EditItem />} />
             </Route>
             <Route path='purchase' element={<Purchase />} />
             <Route path='sale' element={<Sale />} />
