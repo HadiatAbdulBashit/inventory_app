@@ -7,17 +7,11 @@ import ItemForm from "../../Components/ItemForm/ItemForm.component";
 
 const AddProduct = () => {
     const navigate = useNavigate();
+    const { reset } = useForm()
 
-    const {
-        reset
-    } = useForm()
-
-    const onFormSubmit = async (data) => {
-        const formData = new FormData();
-        formData.append("name", data.name);
-        formData.append("image", data.image[0]);
+    const saveData = async(data) => {
         try {
-            await axios.post("/api/item", formData, {
+            await axios.post("/api/item", data, {
                 headers: {
                     "Content-type": "multipart/form-data",
                 },
@@ -27,11 +21,25 @@ const AddProduct = () => {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const addItem = async (data) => {
+        const formData = new FormData();
+        formData.append("name", data.name);
+        formData.append("image", data.image[0]);
+        await toast.promise(
+            saveData(formData),
+            {
+                pending: 'Adding item...',
+                success: 'Item added',
+                error: 'Adding item failed'
+            }
+        )
     };
 
     return (
         <div className="container my-5 p-3">
-            <ItemForm onFormSubmit={onFormSubmit}/>
+            <ItemForm onFormSubmit={addItem}/>
         </div >
     );
 };
