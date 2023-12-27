@@ -7,7 +7,6 @@ const Sale = require("./sale.model.js")
 const SaleDetail = require("./saleDetail.model.js")
 const Item = require("./item.model.js")
 const ItemDetail = require("./itemDetail.model.js")
-const ItemPrice = require("./itemPrice.model.js")
 const ReturnItem = require("./returnItem.model")
 
 const table = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
@@ -33,7 +32,6 @@ db.purchaseDetail = PurchaseDetail(table);
 db.sale = Sale(table);
 db.saleDetail = SaleDetail(table);
 db.item = Item(table);
-db.itemPrice = ItemPrice(table);
 db.itemDetail = ItemDetail(table);
 db.returnItem = ReturnItem(table);
 
@@ -54,13 +52,6 @@ db.sale.belongsTo(db.user, {
 // Item and ItemDetail Relationship
 db.item.hasMany(db.itemDetail, { as: "itemDetail" });
 db.itemDetail.belongsTo(db.item, {
-  foreignKey: "itemId",
-  as: "item",
-});
-
-// Item and ItemPrice Relationship
-db.item.hasMany(db.itemPrice, { as: "itemPrice" });
-db.itemPrice.belongsTo(db.item, {
   foreignKey: "itemId",
   as: "item",
 });
