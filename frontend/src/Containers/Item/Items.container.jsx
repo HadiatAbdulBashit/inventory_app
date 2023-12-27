@@ -6,22 +6,24 @@ import Swal from 'sweetalert2'
 
 import Pagination from '../../Components/Pagination'
 import Search from '../../Components/Search'
+import Sort from '../../Components/Sort'
 
 const Items = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
 	const [search, setSearch] = useState("");
+	const [sort, setSort] = useState({ sort: "name", order: "asc" });
 
   useEffect(() => {
     getItem();
-  }, [page, search]);
+  }, [page, search, sort]);
 
   useEffect(() => {
     setPage(1);
   }, [search]);
 
   const getItem = async () => {
-    const response = await axios.get(`/api/item?page=${page}&name=${search}`);
+    const response = await axios.get(`/api/item?page=${page}&name=${search}&sort=${sort.sort},${sort.order}`);
     setData(response.data);
   };
 
@@ -64,6 +66,8 @@ const Items = () => {
       </Link>
       
 			<Search setSearch={(search) => setSearch(search)} />
+
+      <Sort sort={sort} setSort={(sort) => setSort(sort)} />
       </div>
       <table className="table table-striped align-middle">
         <thead>

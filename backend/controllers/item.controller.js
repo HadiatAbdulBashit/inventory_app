@@ -47,8 +47,10 @@ exports.findAll = (req, res) => {
     const name = req.query.name;
     const page = parseInt(req.query.page) - 1 || 0;
     const limit = parseInt(req.query.limit) || 3;
+    let sort = req.query.sort || "name";
     let total = null
     var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
+    req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
 
     Item.count({
         where: condition
@@ -61,10 +63,11 @@ exports.findAll = (req, res) => {
             });
         });
 
-    Item.findAll({ 
+    Item.findAll({
         where: condition,
         offset: page * limit,
-        limit: limit
+        limit: limit,
+        order: [sort]
     })
         .then(items => {
             res.send({
