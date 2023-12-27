@@ -45,11 +45,34 @@ exports.create = async (req, res) => {
 // Retrieve all Item from the database.
 exports.findAll = (req, res) => {
     const name = req.query.name;
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 3;
+    let total = null
     var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
 
-    Item.findAll({ where: condition })
-        .then(data => {
-            res.send(data);
+    Item.count({
+        where: condition
+    })
+        .then(totalData => total = totalData)
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving item."
+            });
+        });
+
+    Item.findAll({ 
+        where: condition,
+        offset: page * limit,
+        limit: limit
+    })
+        .then(items => {
+            res.send({
+                page,
+                limit,
+                items,
+                total,
+            });
         })
         .catch(err => {
             res.status(500).send({
