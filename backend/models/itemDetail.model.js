@@ -15,6 +15,10 @@ module.exports = (table) => {
             type: Sequelize.STRING
         },
         stock: {
+            type: Sequelize.INTEGER,
+            defaultValue: 0
+        },
+        price: {
             type: Sequelize.INTEGER
         },
     },{
