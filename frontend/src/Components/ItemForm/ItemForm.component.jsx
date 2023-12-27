@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-const ItemForm = ({ onFormSubmit, initialData }) => {
+const ItemForm = ({ onFormSubmit, initialData, title }) => {
     const [preview, setPreview] = useState("");
 
     const {
@@ -40,7 +40,7 @@ const ItemForm = ({ onFormSubmit, initialData }) => {
             <div className="mb-3">
                 <label className="form-label">Image</label>
                 <input
-                    {...register('image')}
+                    {...register('image', title === 'Add Item' ? { required: 'Name is Require' } : undefined)}
                     type="file"
                     className={"form-control " + (errors.image && errors.image.message ? 'is-invalid' : null)}
                     onChange={loadImage}
@@ -59,7 +59,7 @@ const ItemForm = ({ onFormSubmit, initialData }) => {
 
             </div>
             <div className="col-12">
-                <button className="btn btn-primary" type="submit">Edit Item</button>
+                <button className="btn btn-primary" type="submit">{title}</button>
             </div>
         </form>
     )
