@@ -56,7 +56,7 @@ const EditItem = () => {
 
     return (
         <div className="container my-5 p-3">
-            <ItemForm onFormSubmit={editItem} initialData={initialData}/>
+            <ItemForm onFormSubmit={editItem} initialData={initialData} title={'Edit Item'}/>
         </div >
     );
 };

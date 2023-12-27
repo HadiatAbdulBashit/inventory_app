@@ -39,7 +39,7 @@ const AddItem = () => {
 
     return (
         <div className="container my-5 p-3">
-            <ItemForm onFormSubmit={addItem}/>
+            <ItemForm onFormSubmit={addItem} title={'Add Item'}/>
         </div >
     );
 };
