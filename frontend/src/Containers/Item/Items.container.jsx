@@ -25,7 +25,7 @@ const Items = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [search]);
+  }, [search, limit, filter]);
 
   const getItem = async () => {
     const response = await axios.get(`/api/item?page=${page}&name=${search}&sort=${sort.sort},${sort.order}&category=${filter}&limit=${limit}`);
@@ -64,103 +64,101 @@ const Items = () => {
   };
 
   return (
-    <div className="container my-5">
-      <div className="container">
-        <div className="panel">
-          <div className="panel-heading">
-            <div className="d-flex justify-content-between">
-              <div className="row">
-                <div className="col-auto">
-                  <Link to="/dashboard/item/add" className="btn btn-primary">
-                    Add New
-                  </Link>
-                </div>
-                <Search setSearch={(search) => setSearch(search)} />
-              </div>
-              <Sort sort={sort} setSort={(sort) => setSort(sort)} />
-            </div>
-            <div>
-              <Filter
-                filter={filter}
-                listFilter={data.category ? data.category : []}
-                setFilter={(filtered) => setFilter(filtered)}
-                title={'Category'}
-              />
-            </div>
-          </div>
-          <div className="panel-body table-responsive">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Action</th>
-                  <th>Name</th>
-                  <th>Category</th>
-                  <th>Merk</th>
-                  <th>View</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.items?.map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      <ul className="action-list">
-                        <li>
-                          <Link to={`${item.id}/edit`} className="btn btn-primary">
-                            <RiPencilLine />
-                          </Link>
-                        </li>
-                        <li>
-                          <button
-                            onClick={() => deleteItem(item.id)}
-                            className="btn btn-danger"
-                          >
-                            <RiDeleteBin2Line />
-                          </button>
-                        </li>
-                      </ul>
-                    </td>
-                    <td>{item.name}</td>
-                    <td>{item.category}</td>
-                    <td>{item.merk}</td>
-                    <td>
-                      <Link to={`${item.id}`} className="btn btn-success">
-                        <RiEyeLine />
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              <tbody>
-
-              </tbody>
-            </table>
-          </div>
-          <div className="panel-footer">
+    <div className="container my-3">
+      <div className="panel">
+        <div className="panel-heading">
+          <div className="d-flex justify-content-between">
             <div className="row">
-              <div className="col-6">
-                <div className="row total-show">
-                  <label htmlFor="total-show" className="col-auto align-self-center">Show :</label>
-                  <div className="col-auto">
-                    <select className="form-select" id="total-show" value={limit} onChange={(e) => setLimit(e.target.value)}>
-                      <option>5</option>
-                      <option>10</option>
-                      <option>15</option>
-                      <option>20</option>
-                    </select>
-                  </div>
-                  <div className="col-auto align-self-center">
-                    out of <b>{data.total}</b> entries
-                  </div>
+              <div className="col-auto">
+                <Link to="/dashboard/item/add" className="btn btn-primary">
+                  Add New
+                </Link>
+              </div>
+              <Search setSearch={(search) => setSearch(search)} />
+            </div>
+            <Sort sort={sort} setSort={(sort) => setSort(sort)} />
+          </div>
+          <div>
+            <Filter
+              filter={filter}
+              listFilter={data.category ? data.category : []}
+              setFilter={(filtered) => setFilter(filtered)}
+              title={'Category'}
+            />
+          </div>
+        </div>
+        <div className="panel-body table-responsive">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Merk</th>
+                <th>View</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.items?.map((item) => (
+                <tr key={item.id}>
+                  <td>
+                    <ul className="action-list">
+                      <li>
+                        <Link to={`${item.id}/edit`} className="btn btn-primary">
+                          <RiPencilLine />
+                        </Link>
+                      </li>
+                      <li>
+                        <button
+                          onClick={() => deleteItem(item.id)}
+                          className="btn btn-danger"
+                        >
+                          <RiDeleteBin2Line />
+                        </button>
+                      </li>
+                    </ul>
+                  </td>
+                  <td>{item.name}</td>
+                  <td>{item.category}</td>
+                  <td>{item.merk}</td>
+                  <td>
+                    <Link to={`${item.id}`} className="btn btn-success">
+                      <RiEyeLine />
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+        <div className="panel-footer">
+          <div className="row">
+            <div className="col-6">
+              <div className="row total-show">
+                <label htmlFor="total-show" className="col-auto align-self-center">Show :</label>
+                <div className="col-auto">
+                  <select className="form-select" id="total-show" value={limit} onChange={(e) => setLimit(e.target.value)}>
+                    <option>5</option>
+                    <option>10</option>
+                    <option>15</option>
+                    <option>20</option>
+                  </select>
+                </div>
+                <div className="col-auto align-self-center">
+                  out of <b>{data.total}</b> entries
                 </div>
               </div>
-              <div className="col-6 align-self-center">
-                <Pagination
-                  page={page}
-                  limit={data.limit ? data.limit : 0}
-                  total={data.total ? data.total : 0}
-                  setPage={(page) => setPage(page)}
-                />
-              </div>
+            </div>
+            <div className="col-6 align-self-center">
+              <Pagination
+                page={page}
+                limit={data.limit ? data.limit : 0}
+                total={data.total ? data.total : 0}
+                setPage={(page) => setPage(page)}
+              />
             </div>
           </div>
         </div>
