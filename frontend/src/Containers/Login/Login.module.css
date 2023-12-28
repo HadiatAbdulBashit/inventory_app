@@ -2,7 +2,9 @@
     position: absolute;
     top: 5px;
     left: 5px;
-    background-color: var(--color-three);
+    background-color: var(--color-two);
     padding: 5px 10px;
     border-radius: 5px;
+    color: #fff;
+    text-decoration: none;
 }
