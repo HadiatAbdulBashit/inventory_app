@@ -16,10 +16,12 @@ const Items = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState({ sort: "name", order: "asc" });
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(5);
   const [filter, setFilter] = useState([]);
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    setIsLoading(true)
     getItem();
   }, [page, search, sort, filter, limit]);
 
@@ -30,6 +32,7 @@ const Items = () => {
   const getItem = async () => {
     const response = await axios.get(`/api/item?page=${page}&name=${search}&sort=${sort.sort},${sort.order}&category=${filter}&limit=${limit}`);
     setData(response.data);
+    setIsLoading(false)
   };
 
   const deleteItem = async (itemId) => {
@@ -78,66 +81,61 @@ const Items = () => {
             </div>
             <Sort sort={sort} setSort={(sort) => setSort(sort)} />
           </div>
-          <div>
-            <Filter
-              filter={filter}
-              listFilter={data.category ? data.category : []}
-              setFilter={(filtered) => setFilter(filtered)}
-              title={'Category'}
-            />
-          </div>
         </div>
-        <div className="panel-body table-responsive">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Action</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Merk</th>
-                <th>View</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.items?.map((item) => (
-                <tr key={item.id}>
-                  <td>
-                    <ul className="action-list">
-                      <li>
-                        <Link to={`${item.id}/edit`} className="btn btn-primary">
-                          <RiPencilLine />
+        {
+          isLoading ? (
+            <h1 style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading....</h1>
+          ) : (
+            <div className="panel-body table-responsive">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Action</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Merk</th>
+                    <th>View</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.items?.map((item) => (
+                    <tr key={item.id}>
+                      <td>
+                        <ul className="action-list">
+                          <li>
+                            <Link to={`${item.id}/edit`} className="btn btn-primary">
+                              <RiPencilLine />
+                            </Link>
+                          </li>
+                          <li>
+                            <button
+                              onClick={() => deleteItem(item.id)}
+                              className="btn btn-danger"
+                            >
+                              <RiDeleteBin2Line />
+                            </button>
+                          </li>
+                        </ul>
+                      </td>
+                      <td>{item.name}</td>
+                      <td>{item.category}</td>
+                      <td>{item.merk}</td>
+                      <td>
+                        <Link to={`${item.id}`} className="btn btn-success">
+                          <RiEyeLine />
                         </Link>
-                      </li>
-                      <li>
-                        <button
-                          onClick={() => deleteItem(item.id)}
-                          className="btn btn-danger"
-                        >
-                          <RiDeleteBin2Line />
-                        </button>
-                      </li>
-                    </ul>
-                  </td>
-                  <td>{item.name}</td>
-                  <td>{item.category}</td>
-                  <td>{item.merk}</td>
-                  <td>
-                    <Link to={`${item.id}`} className="btn btn-success">
-                      <RiEyeLine />
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            <tbody>
-
-            </tbody>
-          </table>
-        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
+        }
         <div className="panel-footer">
-          <div className="row">
-            <div className="col-6">
-              <div className="row total-show">
+          <div className="row row-cols-2 align-items-center justify-content-between">
+            <div className="col">
+              <div className="row total-show text-white">
                 <label htmlFor="total-show" className="col-auto align-self-center">Show :</label>
                 <div className="col-auto">
                   <select className="form-select" id="total-show" value={limit} onChange={(e) => setLimit(e.target.value)}>
@@ -152,13 +150,24 @@ const Items = () => {
                 </div>
               </div>
             </div>
-            <div className="col-6 align-self-center">
-              <Pagination
-                page={page}
-                limit={data.limit ? data.limit : 0}
-                total={data.total ? data.total : 0}
-                setPage={(page) => setPage(page)}
-              />
+            <div className="col">
+              <div className="row justify-content-right">
+                <div className="col align-self-center">
+                  <Filter
+                    listFilter={data.category ? data.category : []}
+                    setFilter={(filtered) => setFilter(filtered)}
+                    title='Category'
+                  />
+                </div>
+                <div className="col-auto align-self-center">
+                  <Pagination
+                    page={page}
+                    limit={data.limit ? data.limit : 0}
+                    total={data.total ? data.total : 0}
+                    setPage={(page) => setPage(page)}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
