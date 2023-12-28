@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 
-import ItemDetailForm from "../../Components/ItemDetailForm/ItemDetailForm.component";
+import ItemDetailForm from "../../../Components/ItemDetailForm/ItemDetailForm.component";
 
 const AddItem = () => {
     const { id } = useParams();

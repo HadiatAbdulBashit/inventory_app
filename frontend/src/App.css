@@ -72,7 +72,6 @@
 }
 .panel .panel-body .table tbody .action-list li a:hover{ box-shadow: 0 0 5px #ddd; }
 .panel .panel-footer{
-  color: #fff;
   background: #535353;
   font-size: 16px;
   line-height: 33px;

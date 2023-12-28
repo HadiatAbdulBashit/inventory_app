@@ -27,8 +27,8 @@ import Items from './Containers/Item/Items.container';
 import Item from './Containers/Item/Item.container';
 
 // Item Detail page
-import AddItemDetail from './Containers/Item/AddItemDetail.container';
-import EditItemDetail from './Containers/Item/EditItemDetail.container';
+import AddItemDetail from './Containers/Item/Detail/AddItemDetail.container';
+import EditItemDetail from './Containers/Item/Detail/EditItemDetail.container';
 
 import UserContext from './Contexts/UserContext';
 
