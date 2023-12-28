@@ -64,7 +64,7 @@ exports.findAll = (req, res) => {
 
     var condition = req.query.name ? { name: { [Op.iLike]: `%${req.query.name}%` } } : null;
 
-    condition = req.query.category ? { ...condition, category: { [Op.or]: filterCategory } } : null;
+    condition = req.query.category && condition ? { ...condition, category: { [Op.or]: filterCategory } } : condition ? condition : req.query.category ? { category: { [Op.or]: filterCategory } } : null;
 
     Item.count({
         where: condition
