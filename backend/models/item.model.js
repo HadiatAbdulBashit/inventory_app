@@ -17,6 +17,15 @@ module.exports = (table) => {
         imageUrl: {
             type: Sequelize.STRING
         },
+        category: {
+            type: Sequelize.STRING
+        },
+        merk: {
+            type: Sequelize.STRING
+        },
+        description: {
+            type: Sequelize.TEXT
+        },
     },{
         freezeTableName: true
     });

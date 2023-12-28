@@ -27,6 +27,9 @@ const AddItem = () => {
         const formData = new FormData();
         formData.append("name", data.name);
         formData.append("image", data.image[0]);
+        formData.append("category", data.category);
+        formData.append("merk", data.merk);
+        formData.append("description", data.description);
         await toast.promise(
             saveData(formData),
             {

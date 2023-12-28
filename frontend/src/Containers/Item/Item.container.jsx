@@ -104,6 +104,15 @@ const Item = () => {
           <p>
             Name: {item.name}
           </p>
+          <p>
+            Category: {item.category}
+          </p>
+          <p>
+            Merk: {item.merk}
+          </p>
+          <p>
+            Description: {item.description}
+          </p>
           <Link to={`edit`} className="btn btn-primary me-1">
             Edit
           </Link>

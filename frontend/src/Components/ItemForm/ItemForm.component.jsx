@@ -58,6 +58,41 @@ const ItemForm = ({ onFormSubmit, initialData, title }) => {
                 )}
 
             </div>
+            <div className="mb-3">
+                <label className="form-label">Category</label>
+                <input
+                    {...register('category', { required: 'Category is Require' })}
+                    type="text"
+                    className={"form-control " + (errors.category && errors.category.message ? 'is-invalid' : null)}
+                />
+                <div className="invalid-feedback">
+                    {errors.category && errors.category.message}
+                </div>
+            </div>
+            <div className="mb-3">
+                <label className="form-label">Merk</label>
+                <input
+                    {...register('merk', { required: 'Merk is Require' })}
+                    type="text"
+                    className={"form-control " + (errors.merk && errors.merk.message ? 'is-invalid' : null)}
+                />
+                <div className="invalid-feedback">
+                    {errors.merk && errors.merk.message}
+                </div>
+            </div>
+            <div className="mb-3">
+                <label className="form-label">Description</label>
+                <textarea 
+                id="description"
+                cols="30" 
+                rows="10"
+                {...register('description', { required: 'Description is Require' })}
+                className={"form-control " + (errors.description && errors.description.message ? 'is-invalid' : null)}
+                />
+                <div className="invalid-feedback">
+                    {errors.description && errors.description.message}
+                </div>
+            </div>
             <div className="col-12">
                 <button className="btn btn-primary" type="submit">{title}</button>
             </div>

@@ -74,6 +74,8 @@ const Items = () => {
           <tr>
             <th scope="col">No</th>
             <th scope="col">Name</th>
+            <th scope="col">Category</th>
+            <th scope="col">Merk</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -82,6 +84,8 @@ const Items = () => {
             <tr key={item.id}>
               <th scope="row">{index + 1}</th>
               <td>{item.name}</td>
+              <td>{item.category}</td>
+              <td>{item.merk}</td>
               <td>
                 <Link to={`${item.id}`} className="btn btn-info me-1">
                   Detail

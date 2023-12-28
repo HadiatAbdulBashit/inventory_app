@@ -31,11 +31,11 @@ exports.create = async (req, res) => {
         if (err) return res.status(500).json({ msg: err.message });
         try {
             // Save Item in the database
-            await Item.create({ name: req.body.name, imageUrl: url });
+            await Item.create({ ...req.body , imageUrl: url });
             res.status(201).json({ msg: "Item saved" });
         } catch (error) {
             res.status(500).send({
-                message:
+                msg:
                     err.message || "Some error occurred while creating the Item."
             });
         }
