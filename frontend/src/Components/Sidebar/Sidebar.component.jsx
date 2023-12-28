@@ -3,26 +3,52 @@ import {
     Menu,
     MenuItem,
 } from 'react-pro-sidebar';
-import { RiDashboardLine, RiInboxUnarchiveLine, RiInboxArchiveLine, RiArchive2Line, RiGroupLine, RiBox1Line, RiBox3Line } from "react-icons/ri";
+import { GoHomeFill } from "react-icons/go";
+import { BiSolidPurchaseTag } from "react-icons/bi";
+import { FaMoneyCheck, FaBox, FaUserGroup, FaUser } from "react-icons/fa6";
+import { IoLogOut } from "react-icons/io5";
+import { FcElectricalSensor } from "react-icons/fc";
 import { Link } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+
 import style from './Sidebar.module.css'
 
-const SidebarMenu = ({ collapsed }) => {
+import UserContext from '../../Contexts/UserContext';
+
+const SidebarMenu = () => {
+    const [collapsed, setCollapsed] = useState(false);
+    const { user, setUser } = useContext(UserContext)
+    console.log(user);
+
+    const handleLogout = async () => {
+        try {
+            const response = await axios.post('/api/auth/logout');
+            toast.success(response.data.message)
+            setUser({ isLoggedIn: false })
+            localStorage.clear('user')
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+    }
 
     return (
-        <Sidebar collapsed={collapsed} width="210px">
+        <Sidebar collapsed={collapsed} width="230px" style={{ fontWeight: '500' }}>
             <Menu>
                 <hr />
-                <MenuItem className={style.appName} icon={<RiArchive2Line />}> Inventory App </MenuItem>
+                <MenuItem className={style.appName} icon={<FcElectricalSensor />} onClick={() => setCollapsed(!collapsed)}>Mega Electronic</MenuItem>
                 <hr />
-                <MenuItem component={<Link to="/dashboard" />} icon={<RiDashboardLine />}>Dashboard</MenuItem>
-                <MenuItem component={<Link to="/dashboard/purchase" />} icon={<RiInboxArchiveLine />}>Purchases</MenuItem>
-                <MenuItem component={<Link to="/dashboard/sale" />} icon={<RiInboxUnarchiveLine />}>Sales</MenuItem>
+                <MenuItem component={<Link to="/dashboard" />} icon={<GoHomeFill />}>Dashboard</MenuItem>
+                <MenuItem component={<Link to="/dashboard/purchase" />} icon={<BiSolidPurchaseTag />}>Purchases</MenuItem>
+                <MenuItem component={<Link to="/dashboard/sale" />} icon={<FaMoneyCheck />}>Sales</MenuItem>
                 <hr />
-                <MenuItem component={<Link to="/dashboard/item" />} icon={<RiBox3Line />}>Items</MenuItem>
-                <MenuItem component={<Link to="/dashboard/item-detail" />} icon={<RiBox1Line />}>Item Detail</MenuItem>
+                <MenuItem component={<Link to="/dashboard/item" />} icon={<FaBox />}>Items</MenuItem>
                 <hr />
-                <MenuItem component={<Link to="/dashboard/user" />} icon={<RiGroupLine />}>Users</MenuItem>
+                <MenuItem component={<Link to="/dashboard/user" />} icon={<FaUserGroup />}>Users</MenuItem>
+                <hr />
+                <MenuItem component={<Link to="/dashboard/acount" />} icon={<FaUser />}>{user.name}</MenuItem>
+                <MenuItem onClick={handleLogout} icon={<IoLogOut />}>Logout</MenuItem>
             </Menu>
         </Sidebar>
     )
