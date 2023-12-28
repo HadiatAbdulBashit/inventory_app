@@ -63,11 +63,19 @@ const ItemForm = ({ onFormSubmit, initialData, title }) => {
             </div>
             <div className="mb-3">
                 <label className="form-label">Category</label>
-                <input
+                <select
                     {...register('category', { required: 'Category is Require' })}
-                    type="text"
                     className={"form-control " + (errors.category && errors.category.message ? 'is-invalid' : null)}
-                />
+                    defaultValue={''}
+                >
+                    <option disabled value={''}>-- Category --</option>
+                    <option>Laptop</option>
+                    <option>HP</option>
+                    <option>Monitor</option>
+                    <option>TV</option>
+                    <option>AC</option>
+                    <option>Projector</option>
+                </select>
                 <div className="invalid-feedback">
                     {errors.category && errors.category.message}
                 </div>
@@ -85,12 +93,12 @@ const ItemForm = ({ onFormSubmit, initialData, title }) => {
             </div>
             <div className="mb-3">
                 <label className="form-label">Description</label>
-                <textarea 
-                id="description"
-                cols="30" 
-                rows="10"
-                {...register('description', { required: 'Description is Require' })}
-                className={"form-control " + (errors.description && errors.description.message ? 'is-invalid' : null)}
+                <textarea
+                    id="description"
+                    cols="30"
+                    rows="10"
+                    {...register('description', { required: 'Description is Require' })}
+                    className={"form-control " + (errors.description && errors.description.message ? 'is-invalid' : null)}
                 />
                 <div className="invalid-feedback">
                     {errors.description && errors.description.message}
