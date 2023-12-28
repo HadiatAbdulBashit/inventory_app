@@ -36,10 +36,10 @@ const Login = () => {
 
   return (
     <section className="text-center d-flex align-items-center flex-column">
-      <Link to={'/'} className={style.linkBack}>Back to Home</Link>
+      <Link to={'/'} className={style.linkBack}>Back</Link>
 
       <div className="p-5 bg-image" style={{
-        background: 'linear-gradient(130deg, var(--color-one) 0%, var(--color-four) 100%)',
+        background: 'linear-gradient(130deg, var(--color-one) 0%, var(--color-two) 100%)',
         height: '100vh',
         width: '100%'
       }}></div>
@@ -78,7 +78,7 @@ const Login = () => {
                   </div>
                 )}
                 <div className="d-grid">
-                  <button type="submit" className="btn color-one color-one-hover btn-block mb-4 py-3" disabled={loading}>
+                  <button type="submit" className="btn btn-primary btn-block mb-4 py-3" disabled={loading}>
                     {
                       loading ? (
                         <>
@@ -86,7 +86,9 @@ const Login = () => {
                           <span className="visually-hidden" role="status">Loading...</span>
                         </>
                       ) : (
-                        'Login'
+                        <strong>
+                          Login
+                        </strong>
                       )
                     }
                   </button>
