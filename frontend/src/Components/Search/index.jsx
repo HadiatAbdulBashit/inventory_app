@@ -1,7 +1,6 @@
 const Search = ({ setSearch }) => {
 	return (
-		<div className="input-group col">
-			<span className="input-group-text">Search</span>
+		<div className="col">
 			<input
 				type="text"
 				className="form-control"
