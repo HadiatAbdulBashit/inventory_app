@@ -16,19 +16,19 @@ const Items = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState({ sort: "name", order: "asc" });
+  const [limit, setLimit] = useState(10);
   const [filter, setFilter] = useState([]);
 
   useEffect(() => {
     getItem();
-  }, [page, search, sort, filter]);
+  }, [page, search, sort, filter, limit]);
 
   useEffect(() => {
     setPage(1);
   }, [search]);
 
-
   const getItem = async () => {
-    const response = await axios.get(`/api/item?page=${page}&name=${search}&sort=${sort.sort},${sort.order}&category=${filter}`);
+    const response = await axios.get(`/api/item?page=${page}&name=${search}&sort=${sort.sort},${sort.order}&category=${filter}&limit=${limit}`);
     setData(response.data);
   };
 
@@ -141,7 +141,7 @@ const Items = () => {
                 <div className="row total-show">
                   <label htmlFor="total-show" className="col-auto align-self-center">Show :</label>
                   <div className="col-auto">
-                    <select className="form-select" id="total-show">
+                    <select className="form-select" id="total-show" value={limit} onChange={(e) => setLimit(e.target.value)}>
                       <option>5</option>
                       <option>10</option>
                       <option>15</option>
@@ -149,7 +149,7 @@ const Items = () => {
                     </select>
                   </div>
                   <div className="col-auto align-self-center">
-                    out of <b>25</b> entries
+                    out of <b>{data.total}</b> entries
                   </div>
                 </div>
               </div>
