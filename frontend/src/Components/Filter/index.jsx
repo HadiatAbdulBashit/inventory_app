@@ -1,33 +1,29 @@
-import styles from "./styles.module.css";
+import Select from 'react-select'
 
-const Filter = ({ listFilter, filter, setFilter, title }) => {
-	const onChange = ({ currentTarget: input }) => {
-		if (input.checked) {
-			const state = [...filter, input.value];
-			setFilter(state);
-		} else {
-			const state = filter.filter((val) => val !== input.value);
-			setFilter(state);
-		}
+
+
+const Filter = ({ listFilter, setFilter, title }) => {
+	const onChange = (e) => {
+		const state = [];
+		e.map((filter) => {
+			state.push(filter.value)
+		})
+		setFilter(state);
 	};
 
+	let options = []
+
+	listFilter.map((filter) => {
+		options.push({ value: filter, label: filter })
+	})
+
 	return (
-		<div className={styles.container}>
-			<h1 className={styles.heading}>Filter By {title}</h1>
-			<div className={styles.genre_container}>
-				{listFilter.map((genre) => (
-					<div className={styles.genre} key={genre}>
-						<input
-							className='form-check-input'
-							type="checkbox"
-							value={genre}
-							onChange={onChange}
-						/>
-						<p className={styles.genre_label}>{genre}</p>
-					</div>
-				))}
-			</div>
-		</div>
+		<Select
+			options={options}
+			isMulti
+			onChange={onChange}
+			placeholder={`Filter by ${title}...`}
+		/>
 	);
 };
 
