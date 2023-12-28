@@ -31,7 +31,7 @@ exports.create = async (req, res) => {
         if (err) return res.status(500).json({ msg: err.message });
         try {
             // Save Item in the database
-            await Item.create({ ...req.body , imageUrl: url });
+            await Item.create({ ...req.body, imageUrl: url });
             res.status(201).json({ msg: "Item saved" });
         } catch (error) {
             res.status(500).send({
@@ -44,13 +44,27 @@ exports.create = async (req, res) => {
 
 // Retrieve all Item from the database.
 exports.findAll = (req, res) => {
-    const name = req.query.name;
     const page = parseInt(req.query.page) - 1 || 0;
     const limit = parseInt(req.query.limit) || 3;
     let sort = req.query.sort || "name";
     let total = null
-    var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
+    let filterCategory = req.query.category || "All";
     req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
+    
+    const categoryOption = [
+        "Laptop",
+        "HP",
+        "Monitor",
+        "TV",
+        "AC",
+        "Projektor",
+    ];
+
+    filterCategory === "All" ? filterCategory = [...categoryOption] : filterCategory = req.query.category.split(",");
+
+    var condition = req.query.name ? { name: { [Op.iLike]: `%${req.query.name}%` } } : null;
+
+    condition = req.query.category ? { ...condition, category: { [Op.or]: filterCategory } } : null;
 
     Item.count({
         where: condition
@@ -75,6 +89,7 @@ exports.findAll = (req, res) => {
                 limit,
                 items,
                 total,
+                category: categoryOption
             });
         })
         .catch(err => {

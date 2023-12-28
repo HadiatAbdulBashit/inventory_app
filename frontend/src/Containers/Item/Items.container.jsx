@@ -7,23 +7,26 @@ import Swal from 'sweetalert2'
 import Pagination from '../../Components/Pagination'
 import Search from '../../Components/Search'
 import Sort from '../../Components/Sort'
+import Filter from "../../Components/Filter";
 
 const Items = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
-	const [search, setSearch] = useState("");
-	const [sort, setSort] = useState({ sort: "name", order: "asc" });
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState({ sort: "name", order: "asc" });
+	const [filter, setFilter] = useState([]);
+  console.log(filter);
 
   useEffect(() => {
     getItem();
-  }, [page, search, sort]);
+  }, [page, search, sort, filter]);
 
   useEffect(() => {
     setPage(1);
   }, [search]);
 
   const getItem = async () => {
-    const response = await axios.get(`/api/item?page=${page}&name=${search}&sort=${sort.sort},${sort.order}`);
+    const response = await axios.get(`/api/item?page=${page}&name=${search}&sort=${sort.sort},${sort.order}&category=${filter}`);
     setData(response.data);
   };
 
@@ -61,13 +64,20 @@ const Items = () => {
   return (
     <div className="container my-5">
       <div className="mb-5">
-      <Link to="/dashboard/item/add" className="btn color-one">
-        Add New
-      </Link>
-      
-			<Search setSearch={(search) => setSearch(search)} />
+        <Link to="/dashboard/item/add" className="btn color-one">
+          Add New
+        </Link>
 
-      <Sort sort={sort} setSort={(sort) => setSort(sort)} />
+        <Search setSearch={(search) => setSearch(search)} />
+
+        <Sort sort={sort} setSort={(sort) => setSort(sort)} />
+
+        <Filter
+          filter={filter}
+          listFilter={data.category ? data.category : []}
+          setFilter={(filtered) => setFilter(filtered)}
+          title={'Category'}
+        />
       </div>
       <table className="table table-striped align-middle">
         <thead>
