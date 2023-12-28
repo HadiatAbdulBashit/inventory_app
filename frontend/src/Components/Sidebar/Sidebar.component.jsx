@@ -34,7 +34,7 @@ const SidebarMenu = () => {
     }
 
     return (
-        <Sidebar collapsed={collapsed} width="230px" style={{ fontWeight: '500' }}>
+        <Sidebar collapsed={collapsed} width="230px" className={style.container}>
             <Menu>
                 <hr />
                 <MenuItem className={style.appName} icon={<FcElectricalSensor />} onClick={() => setCollapsed(!collapsed)}>Mega Electronic</MenuItem>

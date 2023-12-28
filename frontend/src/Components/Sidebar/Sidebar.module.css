@@ -1,3 +1,12 @@
+aside.container {
+    box-shadow: var(--box-shadow);
+    border: 0;
+}
+
+.container>div {
+    background-color: #fff;
+}
+
 .appName>a {
     font-size: large;
     font-weight: bold;
