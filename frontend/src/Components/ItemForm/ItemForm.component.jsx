@@ -20,6 +20,9 @@ const ItemForm = ({ onFormSubmit, initialData, title }) => {
     useEffect(() => {
         if (initialData) {
             setValue("name", initialData.name);
+            setValue("category", initialData.category);
+            setValue("merk", initialData.merk);
+            setValue("description", initialData.description);
             setPreview(initialData.imageUrl)
         }
     }, [initialData])
