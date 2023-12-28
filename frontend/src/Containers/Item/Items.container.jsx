@@ -67,7 +67,8 @@ const Items = () => {
   };
 
   return (
-    <div className="container my-3">
+    <div className="container p-4">
+      <h1>List Item</h1>
       <div className="panel">
         <div className="panel-heading">
           <div className="d-flex justify-content-between">
@@ -103,7 +104,7 @@ const Items = () => {
                       <td>
                         <ul className="action-list">
                           <li>
-                            <Link to={`${item.id}/edit`} className="btn btn-primary">
+                            <Link to={`${item.id}/edit`} className="btn btn-primary me-2">
                               <RiPencilLine />
                             </Link>
                           </li>
@@ -135,7 +136,7 @@ const Items = () => {
         <div className="panel-footer">
           <div className="row row-cols-2 align-items-center justify-content-between">
             <div className="col">
-              <div className="row total-show text-white">
+              <div className="row total-show">
                 <label htmlFor="total-show" className="col-auto align-self-center">Show :</label>
                 <div className="col-auto">
                   <select className="form-select" id="total-show" value={limit} onChange={(e) => setLimit(e.target.value)}>

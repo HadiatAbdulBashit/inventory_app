@@ -15,7 +15,7 @@ const Sort = ({ sort, setSort }) => {
 
 	return (
 		<div className='row me-1'>
-			<div className="col-auto text-white align-self-center">
+			<div className="col-auto align-self-center">
 				Sort By :
 			</div>
 			<select

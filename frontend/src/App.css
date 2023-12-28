@@ -1,9 +1,9 @@
 :root {
-  --color-one: #D0A2F7;
-  --color-two: #DCBFFF;
-  --color-three: #E5D4FF;
-  --color-four: #F1EAFF;
-  --color-five: rgb(249, 249, 249, 0.7);
+  --color-one: #B2EBF2;
+  --color-two: #3F51B5;
+  --color-three: #4DD0E1;
+  --color-danger: #ac1818;
+  --box-shadow: 0 0 10px rgba(0,0,0,0.08);
 }
 
 .color-one {
@@ -21,33 +21,25 @@
 /* -------- Table ------------- */
 
 .panel{
-  padding: 0;
-  border: none;
-  box-shadow: 0 0 10px rgba(0,0,0,0.08);
-}
-.panel .panel-heading{
-  background: #535353;
-  padding: 15px;
-}
-.panel .panel-heading .total-show{ 
-  flex-wrap: nowrap;
-}
-.panel .panel-heading label{
-  color: #fff;
-  margin-right: 10px;
+  box-shadow: var(--box-shadow);
+  border-radius: 10px;
 }
 
-.panel .panel-body{
-  padding: 0;
-  border-radius: 0;
+/* -------- Heading ----------- */
+.panel .panel-heading{
+  padding: 15px;
+  border-radius: 10px 10px 0 0;
 }
+
+/* -------- Body ----------- */
+
 .panel .panel-body .table thead tr th{
-  color: #fff;
-  background: #8D8D8D;
+  background: var(--color-);
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
   font-size: 17px;
   font-weight: 700;
   padding: 12px;
-  border-bottom: none;
 }
 .panel .panel-body .table thead tr th:nth-of-type(1){ width: 120px; }
 .panel .panel-body .table thead tr th:nth-of-type(2){ width: 30%; }
@@ -71,14 +63,40 @@
   font-size: 13px;
 }
 .panel .panel-body .table tbody .action-list li a:hover{ box-shadow: 0 0 5px #ddd; }
+
+/* ------- Footer ------------ */
+
 .panel .panel-footer{
-  background: #535353;
   font-size: 16px;
   line-height: 33px;
-  padding: 25px 15px;
-  border-radius: 0;
+  padding: 5px 15px 15px 15px;
+  border-radius: 0 0 10px 10px;
 }
 
-svg {
-  font-size: 30px;
+aside svg {
+  font-size: 20px;
+}
+
+.btn-primary {
+  background-color: transparent;
+  border-color: var(--color-two);
+  color: var(--color-two);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-two);
+  border-color: var(--color-two);
+  color: #fff;
+}
+
+.btn-danger {
+  background-color: transparent;
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.btn-success {
+  background-color: transparent;
+  border-color: var(--color-two);
+  color: var(--color-two);
 }
