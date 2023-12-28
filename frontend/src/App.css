@@ -78,3 +78,7 @@
   padding: 25px 15px;
   border-radius: 0;
 }
+
+svg {
+  font-size: 30px;
+}
