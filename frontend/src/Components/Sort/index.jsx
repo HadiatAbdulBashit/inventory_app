@@ -14,18 +14,20 @@ const Sort = ({ sort, setSort }) => {
 	};
 
 	return (
-		<div className={styles.container}>
-			<p className={styles.sort_by}>Sort By :</p>
+		<div className='row me-1'>
+			<div className="col-auto text-white align-self-center">
+				Sort By :
+			</div>
 			<select
 				onChange={onSelectChange}
-				className={styles.select}
+				className='form-select col'
 				defaultValue={sort.sort}
 			>
 				<option value="name">Name</option>
 				<option value="category">Category</option>
 				<option value="merk">Merk</option>
 			</select>
-			<button className={styles.arrow_btn} onClick={onArrowChange}>
+			<button className={styles.arrow_btn + ' col'} onClick={onArrowChange}>
 				<p className={styles.up_arrow}>&uarr;</p>
 				<p className={styles.down_arrow}>&darr;</p>
 			</button>

@@ -18,7 +18,7 @@ const Filter = ({ listFilter, filter, setFilter, title }) => {
 				{listFilter.map((genre) => (
 					<div className={styles.genre} key={genre}>
 						<input
-							className={styles.genre_input}
+							className='form-check-input'
 							type="checkbox"
 							value={genre}
 							onChange={onChange}

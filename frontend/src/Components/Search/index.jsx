@@ -1,13 +1,14 @@
-import styles from "./styles.module.css";
-
 const Search = ({ setSearch }) => {
 	return (
-		<input
-			type="text"
-			className={styles.search}
-			placeholder="Search"
-			onChange={({ currentTarget: input }) => setSearch(input.value)}
-		/>
+		<div className="input-group col">
+			<span className="input-group-text">Search</span>
+			<input
+				type="text"
+				className="form-control"
+				placeholder="Search"
+				onChange={({ currentTarget: input }) => setSearch(input.value)}
+			/>
+		</div>
 	);
 };
 

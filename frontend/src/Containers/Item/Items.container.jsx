@@ -9,13 +9,14 @@ import Search from '../../Components/Search'
 import Sort from '../../Components/Sort'
 import Filter from "../../Components/Filter";
 
+import { RiEyeLine, RiPencilLine, RiDeleteBin2Line } from "react-icons/ri";
+
 const Items = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState({ sort: "name", order: "asc" });
-	const [filter, setFilter] = useState([]);
-  console.log(filter);
+  const [filter, setFilter] = useState([]);
 
   useEffect(() => {
     getItem();
@@ -24,6 +25,7 @@ const Items = () => {
   useEffect(() => {
     setPage(1);
   }, [search]);
+
 
   const getItem = async () => {
     const response = await axios.get(`/api/item?page=${page}&name=${search}&sort=${sort.sort},${sort.order}&category=${filter}`);
@@ -63,63 +65,106 @@ const Items = () => {
 
   return (
     <div className="container my-5">
-      <div className="mb-5">
-        <Link to="/dashboard/item/add" className="btn color-one">
-          Add New
-        </Link>
+      <div className="container">
+        <div className="panel">
+          <div className="panel-heading">
+            <div className="d-flex justify-content-between">
+              <div className="row">
+                <div className="col-auto">
+                  <Link to="/dashboard/item/add" className="btn btn-primary">
+                    Add New
+                  </Link>
+                </div>
+                <Search setSearch={(search) => setSearch(search)} />
+              </div>
+              <Sort sort={sort} setSort={(sort) => setSort(sort)} />
+            </div>
+            <div>
+              <Filter
+                filter={filter}
+                listFilter={data.category ? data.category : []}
+                setFilter={(filtered) => setFilter(filtered)}
+                title={'Category'}
+              />
+            </div>
+          </div>
+          <div className="panel-body table-responsive">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Action</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Merk</th>
+                  <th>View</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.items?.map((item) => (
+                  <tr key={item.id}>
+                    <td>
+                      <ul className="action-list">
+                        <li>
+                          <Link to={`${item.id}/edit`} className="btn btn-primary">
+                            <RiPencilLine />
+                          </Link>
+                        </li>
+                        <li>
+                          <button
+                            onClick={() => deleteItem(item.id)}
+                            className="btn btn-danger"
+                          >
+                            <RiDeleteBin2Line />
+                          </button>
+                        </li>
+                      </ul>
+                    </td>
+                    <td>{item.name}</td>
+                    <td>{item.category}</td>
+                    <td>{item.merk}</td>
+                    <td>
+                      <Link to={`${item.id}`} className="btn btn-success">
+                        <RiEyeLine />
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tbody>
 
-        <Search setSearch={(search) => setSearch(search)} />
-
-        <Sort sort={sort} setSort={(sort) => setSort(sort)} />
-
-        <Filter
-          filter={filter}
-          listFilter={data.category ? data.category : []}
-          setFilter={(filtered) => setFilter(filtered)}
-          title={'Category'}
-        />
+              </tbody>
+            </table>
+          </div>
+          <div className="panel-footer">
+            <div className="row">
+              <div className="col-6">
+                <div className="row total-show">
+                  <label htmlFor="total-show" className="col-auto align-self-center">Show :</label>
+                  <div className="col-auto">
+                    <select className="form-select" id="total-show">
+                      <option>5</option>
+                      <option>10</option>
+                      <option>15</option>
+                      <option>20</option>
+                    </select>
+                  </div>
+                  <div className="col-auto align-self-center">
+                    out of <b>25</b> entries
+                  </div>
+                </div>
+              </div>
+              <div className="col-6 align-self-center">
+                <Pagination
+                  page={page}
+                  limit={data.limit ? data.limit : 0}
+                  total={data.total ? data.total : 0}
+                  setPage={(page) => setPage(page)}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <table className="table table-striped align-middle">
-        <thead>
-          <tr>
-            <th scope="col">No</th>
-            <th scope="col">Name</th>
-            <th scope="col">Category</th>
-            <th scope="col">Merk</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.items?.map((item, index) => (
-            <tr key={item.id}>
-              <th scope="row">{index + 1}</th>
-              <td>{item.name}</td>
-              <td>{item.category}</td>
-              <td>{item.merk}</td>
-              <td>
-                <Link to={`${item.id}`} className="btn btn-info me-1">
-                  Detail
-                </Link>
-                <Link to={`${item.id}/edit`} className="btn btn-primary me-1">
-                  Edit
-                </Link>
-                <button
-                  onClick={() => deleteItem(item.id)}
-                  className="btn btn-danger"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <Pagination
-        page={page}
-        limit={data.limit ? data.limit : 0}
-        total={data.total ? data.total : 0}
-        setPage={(page) => setPage(page)}
-      />
     </div>
   );
 };
