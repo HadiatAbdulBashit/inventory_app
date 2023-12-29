@@ -23,6 +23,7 @@ const Sort = ({ sort, setSort }) => {
 				className='form-select col'
 				defaultValue={sort.sort}
 			>
+				<option value="createdAt">Date</option>
 				<option value="name">Name</option>
 				<option value="category">Category</option>
 				<option value="merk">Merk</option>

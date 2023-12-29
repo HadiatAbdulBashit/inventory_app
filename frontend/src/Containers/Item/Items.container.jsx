@@ -15,7 +15,7 @@ const Items = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState({ sort: "name", order: "asc" });
+  const [sort, setSort] = useState({ sort: "createdAt", order: "asc" });
   const [limit, setLimit] = useState(5);
   const [filter, setFilter] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
@@ -85,7 +85,11 @@ const Items = () => {
         </div>
         {
           isLoading ? (
-            <h1 style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading....</h1>
+            <div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div className="spinner-border" style={{ width: '3rem', height: '3rem' }} role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
           ) : (
             <div className="panel-body table-responsive">
               <table className="table">
