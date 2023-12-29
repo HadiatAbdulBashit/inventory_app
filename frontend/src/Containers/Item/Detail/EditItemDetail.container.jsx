@@ -17,7 +17,6 @@ const EditItem = () => {
         try {
             await axios.put(`/api/item-detail/${id}`, data);
             reset();
-            navigate(`/dashboard/item/${initialData.itemId}`);
         } catch (error) {
             console.log(error);
         }
@@ -45,11 +44,13 @@ const EditItem = () => {
                 error: 'Editing item failed'
             }
         )
+        navigate(-1);
     };
 
     return (
-        <div className="container my-5 p-3">
-            <ItemDetailForm onFormSubmit={editItem} initialData={initialData} title={'Edit Item'}/>
+        <div className="container p-4" style={{ maxWidth: '700px', margin: 'auto' }}>
+            <h1 className='mb-4'>Edit Unit</h1>
+            <ItemDetailForm onFormSubmit={editItem} initialData={initialData} title={'Edit Item'} />
         </div >
     );
 };
