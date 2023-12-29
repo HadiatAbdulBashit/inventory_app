@@ -18,8 +18,8 @@ const ItemForm = ({ onFormSubmit, initialData, title }) => {
     }, [initialData])
 
     return (
-        <form className="col-6 g-3" onSubmit={handleSubmit(onFormSubmit)}>
-            <div className="mb-3">
+        <form className="row g-3 shadow p-4 rounded-3" onSubmit={handleSubmit(onFormSubmit)}>
+            <div className="mb-3 col-6">
                 <label className="form-label">Unit</label>
                 <input
                     {...register('unit', { required: 'Unit is Require' })}
@@ -30,11 +30,11 @@ const ItemForm = ({ onFormSubmit, initialData, title }) => {
                     {errors.unit && errors.unit.message}
                 </div>
             </div>
-            <div className="mb-3">
+            <div className="mb-3 col-6">
                 <label className="form-label">Price</label>
                 <input
                     {...register('price', { required: 'Price is Require' })}
-                    type="text"
+                    type={'number'}
                     className={"form-control " + (errors.price && errors.price.message ? 'is-invalid' : null)}
                 />
                 <div className="invalid-feedback">
