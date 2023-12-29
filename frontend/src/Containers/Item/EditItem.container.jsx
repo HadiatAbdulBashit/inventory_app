@@ -21,7 +21,7 @@ const EditItem = () => {
                 },
             });
             reset();
-            navigate("/dashboard/item");
+            navigate(`/dashboard/item/${id}`);
         } catch (error) {
             console.log(error);
         }
@@ -43,6 +43,9 @@ const EditItem = () => {
     const editItem = async (data) => {
         const formData = new FormData();
         formData.append("name", data.name);
+        formData.append("category", data.category);
+        formData.append("merk", data.merk);
+        formData.append("description", data.description);
         formData.append("image", data.image[0]);
         await toast.promise(
             editData(formData),

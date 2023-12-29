@@ -163,7 +163,7 @@ exports.update = async (req, res) => {
 
     try {
         // Update Item to the database
-        await Item.update({ name: req.body.name, imageUrl: url }, {
+        await Item.update({ ...req.body, imageUrl: url }, {
             where: {
                 id: req.params.id
             }
