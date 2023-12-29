@@ -36,7 +36,7 @@ const Login = () => {
 
   return (
     <section className="text-center d-flex align-items-center flex-column">
-      <Link to={'/'} className={style.linkBack}>Back</Link>
+      <Link to={'/'} className={style.linkBack + ' btn btn-primary'}>Back to Lading Page</Link>
 
       <div className="p-5 bg-image" style={{
         background: 'linear-gradient(130deg, var(--color-one) 0%, var(--color-two) 100%)',
