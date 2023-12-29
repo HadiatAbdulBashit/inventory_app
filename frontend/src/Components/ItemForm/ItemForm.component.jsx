@@ -28,8 +28,8 @@ const ItemForm = ({ onFormSubmit, initialData, title }) => {
     }, [initialData])
 
     return (
-        <form className="col-6 g-3" onSubmit={handleSubmit(onFormSubmit)}>
-            <div className="mb-3">
+        <form className="row g-3 shadow p-4 rounded-3" onSubmit={handleSubmit(onFormSubmit)}>
+            <div className="mb-3 col-6">
                 <label className="form-label">Name</label>
                 <input
                     {...register('name', { required: 'Name is Require' })}
@@ -40,28 +40,7 @@ const ItemForm = ({ onFormSubmit, initialData, title }) => {
                     {errors.name && errors.name.message}
                 </div>
             </div>
-            <div className="mb-3">
-                <label className="form-label">Image</label>
-                <input
-                    {...register('image', title === 'Add Item' ? { required: 'Name is Require' } : undefined)}
-                    type="file"
-                    className={"form-control " + (errors.image && errors.image.message ? 'is-invalid' : null)}
-                    onChange={loadImage}
-                />
-                <div className="invalid-feedback">
-                    {errors.image && errors.image.message}
-                </div>
-
-                {preview ? (
-                    <figure className="pt-5">
-                        <img src={preview} alt="Preview Image" className="img-fluid" style={{ maxWidth: '300px' }} />
-                    </figure>
-                ) : (
-                    null
-                )}
-
-            </div>
-            <div className="mb-3">
+            <div className="mb-3 col-6">
                 <label className="form-label">Category</label>
                 <select
                     {...register('category', { required: 'Category is Require' })}
@@ -80,7 +59,7 @@ const ItemForm = ({ onFormSubmit, initialData, title }) => {
                     {errors.category && errors.category.message}
                 </div>
             </div>
-            <div className="mb-3">
+            <div className="mb-3 col-6">
                 <label className="form-label">Merk</label>
                 <input
                     {...register('merk', { required: 'Merk is Require' })}
@@ -91,7 +70,19 @@ const ItemForm = ({ onFormSubmit, initialData, title }) => {
                     {errors.merk && errors.merk.message}
                 </div>
             </div>
-            <div className="mb-3">
+            <div className="mb-3 col-6">
+                <label className="form-label">Image</label>
+                <input
+                    {...register('image', title === 'Add Item' ? { required: 'Name is Require' } : undefined)}
+                    type="file"
+                    className={"form-control " + (errors.image && errors.image.message ? 'is-invalid' : null)}
+                    onChange={loadImage}
+                />
+                <div className="invalid-feedback">
+                    {errors.image && errors.image.message}
+                </div>
+            </div>
+            <div className="mb-3 col-6">
                 <label className="form-label">Description</label>
                 <textarea
                     id="description"
@@ -103,6 +94,15 @@ const ItemForm = ({ onFormSubmit, initialData, title }) => {
                 <div className="invalid-feedback">
                     {errors.description && errors.description.message}
                 </div>
+            </div>
+            <div className="mb-3 col-6">
+                {preview ? (
+                    <figure className="pt-5">
+                        <img src={preview} alt="Preview Image" className="img-fluid" style={{ maxWidth: '300px' }} />
+                    </figure>
+                ) : (
+                    null
+                )}
             </div>
             <div className="col-12">
                 <button className="btn btn-primary" type="submit">{title}</button>

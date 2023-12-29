@@ -35,8 +35,8 @@
 
 .panel .panel-body .table thead tr th{
   background: var(--color-);
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #999;
   font-size: 17px;
   font-weight: 700;
   padding: 12px;
@@ -99,4 +99,8 @@ aside svg {
   background-color: transparent;
   border-color: var(--color-two);
   color: var(--color-two);
+}
+
+.shadow {
+  box-shadow: var(--box-shadow)!important;
 }
