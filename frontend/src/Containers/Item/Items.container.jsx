@@ -91,50 +91,56 @@ const Items = () => {
               </div>
             </div>
           ) : (
-            <div className="panel-body table-responsive">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Action</th>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Merk</th>
-                    <th>View</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.items?.map((item) => (
-                    <tr key={item.id}>
-                      <td>
-                        <ul className="action-list">
-                          <li>
-                            <Link to={`${item.id}/edit`} className="btn btn-primary me-2">
-                              <RiPencilLine />
-                            </Link>
-                          </li>
-                          <li>
-                            <button
-                              onClick={() => deleteItem(item.id)}
-                              className="btn btn-danger"
-                            >
-                              <RiDeleteBin2Line />
-                            </button>
-                          </li>
-                        </ul>
-                      </td>
-                      <td>{item.name}</td>
-                      <td>{item.category}</td>
-                      <td>{item.merk}</td>
-                      <td>
-                        <Link to={`${item.id}`} className="btn btn-success">
-                          <RiEyeLine />
-                        </Link>
-                      </td>
+            data.length === 0 ? (
+              <div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <h1>No Item</h1>
+              </div>
+            ) : (
+              <div className="panel-body table-responsive">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Action</th>
+                      <th>Name</th>
+                      <th>Category</th>
+                      <th>Merk</th>
+                      <th>View</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {data.items?.map((item) => (
+                      <tr key={item.id}>
+                        <td>
+                          <ul className="action-list">
+                            <li>
+                              <Link to={`${item.id}/edit`} className="btn btn-primary me-2">
+                                <RiPencilLine />
+                              </Link>
+                            </li>
+                            <li>
+                              <button
+                                onClick={() => deleteItem(item.id)}
+                                className="btn btn-danger"
+                              >
+                                <RiDeleteBin2Line />
+                              </button>
+                            </li>
+                          </ul>
+                        </td>
+                        <td>{item.name}</td>
+                        <td>{item.category}</td>
+                        <td>{item.merk}</td>
+                        <td>
+                          <Link to={`${item.id}`} className="btn btn-success">
+                            <RiEyeLine />
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )
           )
         }
         <div className="panel-footer">
