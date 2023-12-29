@@ -41,7 +41,8 @@ const AddItem = () => {
     };
 
     return (
-        <div className="container my-5 p-3">
+        <div className="container p-4" style={{ maxWidth: '700px', margin: 'auto' }}>
+            <h1 className='mb-4'>Add Item</h1>
             <ItemForm onFormSubmit={addItem} title={'Add Item'}/>
         </div >
     );
