@@ -10,11 +10,13 @@ const Item = () => {
   const navigate = useNavigate();
   const [item, setItem] = useState([]);
   const [itemDetails, setItemDetails] = useState([]);
+  const [isLoading, setIsLoading] = useState(true)
 
   const getItemById = async () => {
     try {
       const response = await axios.get(`/api/item/${id}`);
       setItem(response.data)
+      setIsLoading(false)
     } catch (error) {
       console.log(error);
     }
@@ -23,9 +25,11 @@ const Item = () => {
   const getItemDetail = async () => {
     const response = await axios.get(`/api/item-detail?itemId=${id}`);
     setItemDetails(response.data);
+    setIsLoading(false)
   };
 
   useEffect(() => {
+    setIsLoading(true)
     getItemById();
     getItemDetail();
   }, []);
@@ -95,80 +99,89 @@ const Item = () => {
 
   return (
     <div className="container my-5">
-      <div className="row shadow p-4">
-        <div className="col-6">
-          <figure>
-            <img src={item.imageUrl} alt="Preview Image" className="img-fluid p-3"
-            />
-          </figure>
-        </div>
-        <div className="col-6">
-          <h2>
-            {item.merk} {item.name}
-          </h2>
-          <p>
-            {item.description}
-          </p>
-          <p>
-            Category: {item.category}
-          </p>
-          <Link to={`edit`} className="btn btn-primary me-1">
-            Edit
-          </Link>
-          <button
-            onClick={() => deleteItem(item.id)}
-            className="btn btn-danger me-1"
-          >
-            Delete
-          </button>
-          <Link to={`/dashboard/item-detail/add/${item.id}`} className="btn btn-primary">
-            Add New Unit
-          </Link>
-          <div className="panel-body table-responsive shadow mt-4 rounded-4">
-            <table className="table table-striped align-middle">
-              <thead>
-                <tr>
-                  <th scope="col">Unit</th>
-                  <th scope="col">Stock</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  itemDetails.length === 0 ? (
-                    <tr>
-                      <td colSpan="5" align="center" height='200px'>
-                        <h1>
-                          No Data
-                        </h1>
-                      </td>
-                    </tr>
-                  ) : (
-                    itemDetails.map((item) => (
-                      <tr key={item.id}>
-                        <td>{item.unit}</td>
-                        <td>{item.stock}</td>
-                        <td>{formatRupiah(item.price)}</td>
-                        <td>
-                          <Link to={`/dashboard/item-detail/${item.id}/edit`} className="btn btn-primary me-1">
-                            Edit
-                          </Link>
-                          <button
-                            onClick={() => deleteItemDetail(item.id)}
-                            className="btn btn-danger"
-                          >
-                            Delete
-                          </button>
-                        </td>
+      <div className="row shadow p-4 mx-3 rounded-3">
+        {
+          isLoading ? (
+            <div style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div className="spinner-border" style={{ width: '3rem', height: '3rem' }} role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="col-6">
+                <img src={item.imageUrl} alt="Preview Image" className="img-fluid p-3" />
+              </div>
+              <div className="col-6">
+                <h2>
+                  {item.merk} {item.name}
+                </h2>
+                <p>
+                  {item.description}
+                </p>
+                <p>
+                  Category: {item.category}
+                </p>
+                <Link to={`edit`} className="btn btn-primary me-1">
+                  Edit
+                </Link>
+                <button
+                  onClick={() => deleteItem(item.id)}
+                  className="btn btn-danger me-1"
+                >
+                  Delete
+                </button>
+                <Link to={`/dashboard/item-detail/add/${item.id}`} className="btn btn-primary">
+                  Add New Unit
+                </Link>
+                <div className="panel-body table-responsive shadow mt-4 rounded-4">
+                  <table className="table table-striped align-middle">
+                    <thead>
+                      <tr>
+                        <th scope="col">Unit</th>
+                        <th scope="col">Stock</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Action</th>
                       </tr>
-                    ))
-                  )
-                }
-              </tbody>
-            </table>
-          </div>
-        </div>
+                    </thead>
+                    <tbody>
+                      {
+                        itemDetails.length === 0 ? (
+                          <tr>
+                            <td colSpan="5" align="center" height='200px'>
+                              <h1>
+                                No Data
+                              </h1>
+                            </td>
+                          </tr>
+                        ) : (
+                          itemDetails.map((item) => (
+                            <tr key={item.id}>
+                              <td>{item.unit}</td>
+                              <td>{item.stock}</td>
+                              <td>{formatRupiah(item.price)}</td>
+                              <td>
+                                <Link to={`/dashboard/item-detail/${item.id}/edit`} className="btn btn-primary me-1">
+                                  Edit
+                                </Link>
+                                <button
+                                  onClick={() => deleteItemDetail(item.id)}
+                                  className="btn btn-danger"
+                                >
+                                  Delete
+                                </button>
+                              </td>
+                            </tr>
+                          ))
+                        )
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
+          )
+        }
       </div>
     </div>
   );
