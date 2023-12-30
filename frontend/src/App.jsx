@@ -18,7 +18,10 @@ import Dashboard from './Containers/Dashboard/Dashboard.container';
 
 import Purchase from './Containers/Purchase/Purchase.container';
 import Sale from './Containers/Sale/Sale.container';
-import User from './Containers/User/User.container';
+
+// User Page
+import User from './Containers/User/Users.container';
+import AddUser from './Containers/User/AddUser.container';
 
 // Item page
 import AddItem from './Containers/Item/AddItem.container';
@@ -69,9 +72,12 @@ function App() {
               <Route path='add/:id' element={<AddItemDetail />} />
               <Route path=':id/edit' element={<EditItemDetail />} />
             </Route>
+            <Route path='user'>
+              <Route index element={<User />} />
+              <Route path='add' element={<AddUser />} />
+            </Route>
             <Route path='purchase' element={<Purchase />} />
             <Route path='sale' element={<Sale />} />
-            <Route path='user' element={<User />} />
             <Route path='acount' element={<Acount />} />
           </Route>
         </Route>
