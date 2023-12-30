@@ -45,20 +45,20 @@ exports.findAll = (req, res) => {
     const limit = parseInt(req.query.limit) || 3;
     let sort = req.query.sort || "name";
     let total = null
-    let filterCategory = req.query.category || "All";
+    let filterRole = req.query.role || "All";
     req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
     
-    const categoryOption = [
+    const roleOption = [
         "super",
         "admin",
         "staff",
     ];
 
-    filterCategory === "All" ? filterCategory = [...categoryOption] : filterCategory = req.query.category.split(",");
+    filterRole === "All" ? filterRole = [...roleOption] : filterRole = req.query.role.split(",");
 
-    var condition = req.query.title ? { title: { [Op.iLike]: `%${req.query.title}%` } } : null;
+    var condition = req.query.search ? { name: { [Op.iLike]: `%${req.query.search}%` } } : null;
 
-    condition = req.query.category && condition ? { ...condition, category: { [Op.or]: filterCategory } } : condition ? condition : req.query.category ? { category: { [Op.or]: filterCategory } } : null;
+    condition = req.query.role && condition ? { ...condition, role: { [Op.or]: filterRole } } : condition ? condition : req.query.role ? { role: { [Op.or]: filterRole } } : null;
 
     User.count({
         where: condition
@@ -83,7 +83,7 @@ exports.findAll = (req, res) => {
                 limit,
                 user,
                 total,
-                category: categoryOption
+                role: roleOption
             });
         })
         .catch(err => {

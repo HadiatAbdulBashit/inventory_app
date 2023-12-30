@@ -30,7 +30,7 @@ const Users = () => {
   }, [search, limit, filter]);
 
   const getUser = async () => {
-    const response = await axios.get(`/api/users?page=${page}&name=${search}&sort=${sort.sort},${sort.order}&category=${filter}&limit=${limit}`);
+    const response = await axios.get(`/api/users?page=${page}&search=${search}&sort=${sort.sort},${sort.order}&role=${filter}&limit=${limit}`);
     setData(response.data);
     setIsLoading(false)
   };
@@ -66,6 +66,8 @@ const Users = () => {
     }
   };
 
+  const sortBy = ['Name', 'Username', 'Role'];
+
   return (
     <div className="container p-4">
       <h1>List User</h1>
@@ -80,7 +82,7 @@ const Users = () => {
               </div>
               <Search setSearch={(search) => setSearch(search)} />
             </div>
-            <Sort sort={sort} setSort={(sort) => setSort(sort)} />
+            <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy}/>
           </div>
         </div>
         {
@@ -159,7 +161,7 @@ const Users = () => {
               <div className="row justify-content-right">
                 <div className="col align-self-center">
                   <Filter
-                    listFilter={data.category ? data.category : []}
+                    listFilter={data.role ? data.role : []}
                     setFilter={(filtered) => setFilter(filtered)}
                     title='Category'
                   />

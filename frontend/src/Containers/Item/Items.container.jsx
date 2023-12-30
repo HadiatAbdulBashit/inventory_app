@@ -65,6 +65,8 @@ const Items = () => {
       });
     }
   };
+  
+  const sortBy = ['Name', 'Category', 'Merk'];
 
   return (
     <div className="container p-4">
@@ -80,7 +82,7 @@ const Items = () => {
               </div>
               <Search setSearch={(search) => setSearch(search)} />
             </div>
-            <Sort sort={sort} setSort={(sort) => setSort(sort)} />
+            <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
           </div>
         </div>
         {

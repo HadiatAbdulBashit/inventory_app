@@ -1,6 +1,6 @@
 import styles from "./styles.module.css";
 
-const Sort = ({ sort, setSort }) => {
+const Sort = ({ sort, setSort, listSort }) => {
 	const onSelectChange = ({ currentTarget: input }) => {
 		setSort({ sort: input.value, order: sort.order });
 	};
@@ -24,9 +24,11 @@ const Sort = ({ sort, setSort }) => {
 				defaultValue={sort.sort}
 			>
 				<option value="createdAt">Date</option>
-				<option value="name">Name</option>
-				<option value="category">Category</option>
-				<option value="merk">Merk</option>
+				{
+					listSort.map((sortBy, index) => (
+						<option value={sortBy.toLowerCase()} key={index}>{sortBy}</option>
+					))
+				}
 			</select>
 			<button className={styles.arrow_btn + ' col'} onClick={onArrowChange}>
 				<p className={styles.up_arrow}>&uarr;</p>
