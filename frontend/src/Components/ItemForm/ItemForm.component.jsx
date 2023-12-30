@@ -77,6 +77,7 @@ const ItemForm = ({ onFormSubmit, initialData, title }) => {
                     type="file"
                     className={"form-control " + (errors.image && errors.image.message ? 'is-invalid' : null)}
                     onChange={loadImage}
+                    accept={'image/png, image/jpeg'}
                 />
                 <div className="invalid-feedback">
                     {errors.image && errors.image.message}
