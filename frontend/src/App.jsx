@@ -22,6 +22,7 @@ import Sale from './Containers/Sale/Sale.container';
 // User Page
 import User from './Containers/User/Users.container';
 import AddUser from './Containers/User/AddUser.container';
+import EditUser from './Containers/User/editUser.container';
 
 // Item page
 import AddItem from './Containers/Item/AddItem.container';
@@ -75,6 +76,7 @@ function App() {
             <Route path='user'>
               <Route index element={<User />} />
               <Route path='add' element={<AddUser />} />
+              <Route path=':id/edit' element={<EditUser />} />
             </Route>
             <Route path='purchase' element={<Purchase />} />
             <Route path='sale' element={<Sale />} />
