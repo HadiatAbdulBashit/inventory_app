@@ -112,7 +112,7 @@ const Items = () => {
                   <tbody>
                     {data.items?.map((item) => (
                       <tr key={item.id}>
-                        <td>
+                        <td width={'120px'}>
                           <ul className="action-list">
                             <li>
                               <Link to={`${item.id}/edit`} className="btn btn-primary me-2">
@@ -129,7 +129,7 @@ const Items = () => {
                             </li>
                           </ul>
                         </td>
-                        <td>{item.name}</td>
+                        <td width={'40%'}>{item.name}</td>
                         <td>{item.category}</td>
                         <td>{item.merk}</td>
                         <td>
