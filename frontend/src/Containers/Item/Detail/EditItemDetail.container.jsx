@@ -1,11 +1,10 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from 'react-toastify';
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 
 import ItemDetailForm from "../../../Components/ItemDetailForm/ItemDetailForm.component";
-import { useState } from "react";
 
 const EditItem = () => {
     const { id } = useParams();
@@ -18,7 +17,8 @@ const EditItem = () => {
             await axios.put(`/api/item-detail/${id}`, data);
             reset();
         } catch (error) {
-            console.log(error);
+            toast.error(error.response.data.msg)
+            throw new Error(error);
         }
     }
 
@@ -27,7 +27,8 @@ const EditItem = () => {
             const response = await axios.get(`/api/item-detail/${id}`);
             setInitialData(response.data)
         } catch (error) {
-            console.log(error);
+            toast.error(error.response.data.msg)
+            throw new Error(error);
         }
     }
 
