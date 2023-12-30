@@ -15,7 +15,8 @@ const AddUser = () => {
             reset();
             navigate(`/dashboard/user`);
         } catch (error) {
-            console.log(error);
+            toast.error(error.response.data.msg)
+            throw new Error(error);
         }
     }
 
