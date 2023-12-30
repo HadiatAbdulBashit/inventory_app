@@ -19,7 +19,8 @@ const AddItem = () => {
             reset();
             navigate("/dashboard/item");
         } catch (error) {
-            console.log(error);
+            toast.error(error.response.data.msg)
+            throw new Error(error);
         }
     }
 

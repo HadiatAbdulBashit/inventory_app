@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
     // Validate request
     if (!req.body.name) {
         return res.status(400).send({
-            message: "Name can not be empty!"
+            msg: "Name can not be empty!"
         });
     }
     if (req.files === null) return res.status(400).json({ msg: "No File Uploaded" });
@@ -36,7 +36,7 @@ exports.create = async (req, res) => {
         } catch (error) {
             res.status(500).send({
                 msg:
-                    err.message || "Some error occurred while creating the Item."
+                    error.message || "Some error occurred while creating the Item."
             });
         }
     })
@@ -50,7 +50,7 @@ exports.findAll = (req, res) => {
     let total = null
     let filterCategory = req.query.category || "All";
     req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
-    
+
     const categoryOption = [
         "Laptop",
         "HP",
@@ -72,7 +72,7 @@ exports.findAll = (req, res) => {
         .then(totalData => total = totalData)
         .catch(err => {
             res.status(500).send({
-                message:
+                msg:
                     err.message || "Some error occurred while retrieving item."
             });
         });
@@ -94,7 +94,7 @@ exports.findAll = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message:
+                msg:
                     err.message || "Some error occurred while retrieving users."
             });
         });
@@ -114,13 +114,13 @@ exports.findOne = (req, res) => {
                 res.send(data);
             } else {
                 res.status(404).send({
-                    message: `Cannot find Item with id=${id}.`
+                    msg: `Cannot find Item with id=${id}.`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving Item with id=" + id
+                msg: "Error retrieving Item with id=" + id
             });
         });
 };
@@ -171,7 +171,7 @@ exports.update = async (req, res) => {
         res.status(201).json({ msg: "Item Updated" });
     } catch (error) {
         res.status(500).send({
-            message:
+            msg:
                 err.message || "Some error occurred while creating the Item."
         });
     }
@@ -199,7 +199,7 @@ exports.delete = async (req, res) => {
         res.status(200).json({ msg: "Item Deleted Successfuly" });
     } catch (error) {
         res.status(500).send({
-            message: "Could not delete Item with id = " + req.params.id + ", maybe image has deleted"
+            msg: "Could not delete Item with id = " + req.params.id + ", maybe image has deleted"
         });
     }
 };

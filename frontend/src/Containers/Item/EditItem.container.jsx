@@ -23,7 +23,8 @@ const EditItem = () => {
             reset();
             navigate(`/dashboard/item/${id}`);
         } catch (error) {
-            console.log(error);
+            toast.error(error.response.data.msg)
+            throw new Error(error);
         }
     }
 
@@ -32,7 +33,8 @@ const EditItem = () => {
             const response = await axios.get(`/api/item/${id}`);
             setInitialData(response.data)
         } catch (error) {
-            console.log(error);
+            toast.error(error.response.data.msg)
+            throw new Error(error);
         }
     }
 
