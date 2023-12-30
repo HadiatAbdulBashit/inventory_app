@@ -43,13 +43,13 @@ exports.onlyAdmin = asyncHandler(async (req, res, next) => {
       const decoded = jwt.verify(token, dotenv.JWT_SECRET || 'ljk&*(GHT^E^%@');
 
       req.user = await User.findOne({
-        attributes: ['uuid', 'name', 'username', 'role'],
+        attributes: ['id', 'name', 'username', 'role'],
         where: {
-          uuid: decoded.userId
+          id: decoded.userId
         }
       });
 
-      if (req.user.role !== 'a') {
+      if (req.user.role !== 'super') {
         res.status(403)
         throw new Error('Forbiden Access');
       }
