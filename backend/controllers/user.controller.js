@@ -41,12 +41,50 @@ exports.create = async(req, res) => {
 
 // Retrieve all User from the database.
 exports.findAll = (req, res) => {
-    const title = req.query.title;
-    var condition = title ? { title: { [Op.iLike]: `%${title}%` } } : null;
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 3;
+    let sort = req.query.sort || "name";
+    let total = null
+    let filterCategory = req.query.category || "All";
+    req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
+    
+    const categoryOption = [
+        "super",
+        "admin",
+        "staff",
+    ];
 
-    User.findAll({ where: condition })
-        .then(data => {
-            res.send(data);
+    filterCategory === "All" ? filterCategory = [...categoryOption] : filterCategory = req.query.category.split(",");
+
+    var condition = req.query.title ? { title: { [Op.iLike]: `%${req.query.title}%` } } : null;
+
+    condition = req.query.category && condition ? { ...condition, category: { [Op.or]: filterCategory } } : condition ? condition : req.query.category ? { category: { [Op.or]: filterCategory } } : null;
+
+    User.count({
+        where: condition
+    })
+        .then(totalData => total = totalData)
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving user."
+            });
+        });
+
+    User.findAll({ 
+        where: condition,
+        offset: page * limit,
+        limit: limit,
+        order: [sort]
+    })
+        .then(user => {
+            res.send({
+                page,
+                limit,
+                user,
+                total,
+                category: categoryOption
+            });
         })
         .catch(err => {
             res.status(500).send({
