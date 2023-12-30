@@ -9,7 +9,7 @@ import Search from '../../Components/Search'
 import Sort from '../../Components/Sort'
 import Filter from "../../Components/Filter";
 
-import { RiPencilLine, RiDeleteBin2Line } from "react-icons/ri";
+import { RiPencilLine, RiDeleteBin2Line, RiKeyLine } from "react-icons/ri";
 
 const Users = () => {
   const [data, setData] = useState([]);
@@ -35,7 +35,7 @@ const Users = () => {
     setIsLoading(false)
   };
 
-  const deleteItem = async (itemId) => {
+  const deleteItem = async (userId) => {
     try {
       const result = await Swal.fire({
         title: "Are you sure?",
@@ -48,7 +48,7 @@ const Users = () => {
       });
 
       if (result.isConfirmed) {
-        await toast.promise(axios.delete(`/api/user/${itemId}`), {
+        await toast.promise(axios.delete(`/api/users/${userId}`), {
           pending: 'Delete user...',
           success: 'User Deleted',
           error: 'Delete user failed'
@@ -56,8 +56,60 @@ const Users = () => {
         getUser();
       }
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        title: "Error",
+        text: "An error occurred while deleting the user.",
+        icon: "error"
+      });
+    }
+  };
 
+  
+  const resetPassword = async (user) => {
+    let randomString = (Math.random() + 1).toString(36).substring(2);
+
+    try {
+      const result = await Swal.fire({
+        title: `Do you want to reset password ${user.name}?`,
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, reset it!"
+      });
+
+      if (result.isConfirmed) {
+        try {
+          await axios.put(`/api/users/${user.id}/reset?password=${randomString}`)
+          await Swal.fire({
+            title: "Reset Password Success",
+            html: `
+              <p>The password is <span style="font-weight: bold;">${randomString}</span></p>
+            `,
+            icon: "info",
+            confirmButtonText: 'Copy Password'
+          });
+          if (result.isConfirmed) {
+            const tempInput = document.createElement('input');
+            document.body.appendChild(tempInput);
+            tempInput.value = randomString;
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+      
+            await Swal.fire({
+              title: 'Copied!',
+              text: 'The password has been copied to the clipboard.',
+              icon: 'success'
+            });
+          }
+        } catch (error) {
+          toast.error(error.response.data.msg)
+          throw new Error(error);
+        }
+      }
+    } catch (error) {
       Swal.fire({
         title: "Error",
         text: "An error occurred while deleting the user.",
@@ -111,7 +163,7 @@ const Users = () => {
                   <tbody>
                     {data.user?.map((user) => (
                       <tr key={user.id}>
-                        <td>
+                        <td style={{ width: '170px' }}>
                           <ul className="action-list">
                             <li>
                               <Link to={`${user.id}/edit`} className="btn btn-primary me-2">
@@ -121,9 +173,17 @@ const Users = () => {
                             <li>
                               <button
                                 onClick={() => deleteItem(user.id)}
-                                className="btn btn-danger"
+                                className="btn btn-danger me-2"
                               >
                                 <RiDeleteBin2Line />
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                onClick={() => resetPassword(user)}
+                                className="btn btn-success"
+                              >
+                                <RiKeyLine />
                               </button>
                             </li>
                           </ul>

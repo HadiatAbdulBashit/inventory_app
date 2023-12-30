@@ -144,6 +144,33 @@ exports.update = (req, res) => {
         });
 };
 
+// Reset Password by the id in the request
+exports.resetPassword = async(req, res) => {
+    const id = req.params.id;
+    
+    const hashPassword = await argon2.hash(req.query.password);
+
+    User.update({password: hashPassword}, {
+        where: { id: id }
+    })
+        .then(num => {
+            if (num == 1) {
+                res.send({
+                    message: "Password was update successfully."
+                });
+            } else {
+                res.send({
+                    message: `Cannot update Password to user with id = ${id}. Maybe Password was not found or request is empty!`
+                });
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error updating password in user with id = " + id
+            });
+        });
+};
+
 // Delete a User with the specified id in the request
 exports.delete = (req, res) => {
     const id = req.params.id;
