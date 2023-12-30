@@ -13,6 +13,7 @@ const UserForm = ({ onFormSubmit, initialData, title }) => {
         if (initialData) {
             setValue("name", initialData.name);
             setValue("username", initialData.username);
+            setValue("role", initialData.role);
         }
     }, [initialData])
 
@@ -57,17 +58,21 @@ const UserForm = ({ onFormSubmit, initialData, title }) => {
                     {errors.role && errors.role.message}
                 </div>
             </div>
-            <div className="mb-3 col-6">
-                <label className="form-label">Password</label>
-                <input
-                    {...register('password', { required: 'Password is Require' })}
-                    type={'password'}
-                    className={"form-control " + (errors.password && errors.password.message ? 'is-invalid' : null)}
-                />
-                <div className="invalid-feedback">
-                    {errors.password && errors.password.message}
-                </div>
-            </div>
+            {
+                initialData ? null : (
+                    <div className="mb-3 col-6">
+                        <label className="form-label">Password</label>
+                        <input
+                            {...register('password', { required: 'Password is Require' })}
+                            type={'password'}
+                            className={"form-control " + (errors.password && errors.password.message ? 'is-invalid' : null)}
+                        />
+                        <div className="invalid-feedback">
+                            {errors.password && errors.password.message}
+                        </div>
+                    </div>
+                )
+            }
             <div className="col-12">
                 <button className="btn btn-primary" type="submit">{title}</button>
             </div>
