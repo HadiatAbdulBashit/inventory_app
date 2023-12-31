@@ -63,7 +63,14 @@ exports.findAll = (req, res) => {
         where: condition,
         offset: page * limit,
         limit: limit,
-        order: [sort]
+        order: [sort],
+        include: [
+            {
+                model: User,
+                attributes: ['name'],
+                as: 'userOffice',
+            },
+        ]
     })
         .then(transactions => {
             res.send({
