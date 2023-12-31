@@ -35,7 +35,7 @@ const Users = () => {
     setIsLoading(false)
   };
 
-  const deleteItem = async (userId) => {
+  const deleteUser = async (userId) => {
     try {
       const result = await Swal.fire({
         title: "Are you sure?",
@@ -172,7 +172,7 @@ const Users = () => {
                             </li>
                             <li>
                               <button
-                                onClick={() => deleteItem(user.id)}
+                                onClick={() => deleteUser(user.id)}
                                 className="btn btn-danger me-2"
                               >
                                 <RiDeleteBin2Line />

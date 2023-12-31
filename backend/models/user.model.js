@@ -24,7 +24,7 @@ module.exports = (table) => {
             allowNull: false,
         },
         role: {
-            type: Sequelize.ENUM('super', 'admin', 'staff'),
+            type: Sequelize.ENUM('Super Admin', 'Admin', 'Office', 'Warehouse'),
             allowNull: false,
         },
     },{
