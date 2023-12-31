@@ -16,6 +16,7 @@ import { toast } from 'react-toastify';
 import style from './Sidebar.module.css'
 
 import UserContext from '../../Contexts/UserContext';
+import Swal from 'sweetalert2';
 
 const SidebarMenu = () => {
     const [collapsed, setCollapsed] = useState(false);
@@ -24,14 +25,33 @@ const SidebarMenu = () => {
 
     const handleLogout = async () => {
         try {
-            const response = await axios.post('/api/auth/logout');
-            toast.success(response.data.message)
-            setUser({ isLoggedIn: false })
-            localStorage.clear('user')
+            const result = await Swal.fire({
+                title: "Do you want to log out?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes!"
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const response = await axios.post('/api/auth/logout');
+                    toast.success(response.data.message)
+                    setUser({ isLoggedIn: false })
+                    localStorage.clear('user')
+                } catch (error) {
+                    toast.error(error.response.data.message);
+                }
+            }
         } catch (error) {
-            toast.error(error.response.data.message);
+            Swal.fire({
+                title: "Error",
+                text: "An error occurred while loging out.",
+                icon: "error"
+            });
         }
-    }
+    };
 
     return (
         <Sidebar collapsed={collapsed} width="230px" className={style.container}>
