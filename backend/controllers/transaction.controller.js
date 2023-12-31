@@ -11,7 +11,7 @@ exports.create = async (req, res) => {
     // Validate request
     if (!req.body.secondParty) {
         res.status(400).send({
-            message: (req.body.type === 'In' ? 'Suplyer' : 'Customer') + " can not be empty!"
+            msg: (req.body.type === 'In' ? 'Suplyer' : 'Customer') + " can not be empty!"
         });
         return;
     }
@@ -23,7 +23,7 @@ exports.create = async (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message:
+                msg:
                     err.message || "Some error occurred while creating the Transaction."
             });
         });
@@ -31,16 +31,52 @@ exports.create = async (req, res) => {
 
 // Retrieve all Transaction from the database.
 exports.findAll = (req, res) => {
-    const title = req.query.title;
-    var condition = title ? { title: { [Op.iLike]: `%${title}%` } } : null;
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 3;
+    let sort = req.query.sort || "createdAt";
+    let total = null
+    let filterType = req.query.type || "All";
+    req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
 
-    Transaction.findAll({ where: condition })
-        .then(data => {
-            res.send(data);
+    const typeOption = [
+        "In",
+        "Out",
+    ];
+
+    filterType === "All" ? filterType = [...typeOption] : filterType = req.query.type.split(",");
+
+    var condition = req.query.search ? { secondParty: { [Op.iLike]: `%${req.query.search}%` } } : null;
+    condition = req.query.type && condition ? { ...condition, type: { [Op.or]: filterType } } : condition ? condition : req.query.type ? { type: { [Op.or]: filterType } } : null;
+
+    Transaction.count({
+        where: condition
+    })
+        .then(totalData => total = totalData)
+        .catch(err => {
+            res.status(500).send({
+                msg:
+                    err.message || "Some error occurred while retrieving item."
+            });
+        });
+
+    Transaction.findAll({
+        where: condition,
+        offset: page * limit,
+        limit: limit,
+        order: [sort]
+    })
+        .then(transactions => {
+            res.send({
+                page,
+                limit,
+                transactions,
+                total,
+                type: typeOption
+            });
         })
         .catch(err => {
             res.status(500).send({
-                message:
+                msg:
                     err.message || "Some error occurred while retrieving transaction."
             });
         });
@@ -72,13 +108,13 @@ exports.findOne = (req, res) => {
                 res.send(data);
             } else {
                 res.status(404).send({
-                    message: `Cannot find Transaction with id=${id}.`
+                    msg: `Cannot find Transaction with id=${id}.`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving Transaction with id=" + id
+                msg: "Error retrieving Transaction with id=" + id
             });
         });
 };
@@ -93,17 +129,17 @@ exports.update = (req, res) => {
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "Transaction was updated successfully."
+                    msg: "Transaction was updated successfully."
                 });
             } else {
                 res.send({
-                    message: `Cannot update Transaction with id=${id}. Maybe Transaction was not found or req.body is empty!`
+                    msg: `Cannot update Transaction with id=${id}. Maybe Transaction was not found or req.body is empty!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error updating Transaction with id=" + id
+                msg: "Error updating Transaction with id=" + id
             });
         });
 };
@@ -118,17 +154,17 @@ exports.delete = (req, res) => {
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "Transaction was deleted successfully!"
+                    msg: "Transaction was deleted successfully!"
                 });
             } else {
                 res.send({
-                    message: `Cannot delete Transaction with id=${id}. Maybe Transaction was not found!`
+                    msg: `Cannot delete Transaction with id=${id}. Maybe Transaction was not found!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Could not delete Transaction with id=" + id
+                msg: "Could not delete Transaction with id=" + id
             });
         });
 };
