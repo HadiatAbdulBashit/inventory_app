@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Swal from 'sweetalert2'
+import moment from 'moment';
 
 import Pagination from '../../Components/Pagination'
 import Search from '../../Components/Search'
@@ -77,11 +78,6 @@ const Transactions = () => {
         <div className="panel-heading">
           <div className="d-flex justify-content-between">
             <div className="row">
-              <div className="col-auto">
-                <Link to="/dashboard/transaction/add" className="btn btn-primary">
-                  Add New
-                </Link>
-              </div>
               <Search setSearch={(search) => setSearch(search)} />
             </div>
             <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
@@ -109,6 +105,8 @@ const Transactions = () => {
                       <th>Customer/Suplyer</th>
                       <th>Total Price</th>
                       <th>Status</th>
+                      <th>Order Date</th>
+                      <th>POC Office</th>
                       <th>View</th>
                     </tr>
                   </thead>
@@ -133,9 +131,11 @@ const Transactions = () => {
                           </ul>
                         </td>
                         <td>{transaction.type}</td>
-                        <td width={'40%'}>{transaction.secondParty}</td>
+                        <td width={'20%'}>{transaction.secondParty}</td>
                         <td>{formatRupiah(transaction.totalPrice)}</td>
                         <td>{transaction.status}</td>
+                        <td>{moment(transaction.createdAt).format('llll')}</td>
+                        <td>{transaction.userOffice.name}</td>
                         <td>
                           <Link to={`${transaction.id}`} className="btn btn-success">
                             <RiEyeLine />
