@@ -17,7 +17,10 @@ import ProtectedRoute from './Containers/ProtectedRoute/ProtectedRoute.container
 import Dashboard from './Containers/Dashboard/Dashboard.container';
 
 import Purchase from './Containers/Purchase/Purchase.container';
-import Sale from './Containers/Sale/Sale.container';
+
+// Sales Page
+import Sales from './Containers/Sale/Sales.container';
+import AddSale from './Containers/Sale/AddSale.container';
 
 // User Page
 import User from './Containers/User/Users.container';
@@ -33,6 +36,10 @@ import Item from './Containers/Item/Item.container';
 // Item Detail page
 import AddItemDetail from './Containers/Item/Detail/AddItemDetail.container';
 import EditItemDetail from './Containers/Item/Detail/EditItemDetail.container';
+
+// Transaction Page
+import Transactions from './Containers/Transaction/Transactions.container';
+import AddTransaction from './Containers/Transaction/AddTransaction.container';
 
 import UserContext from './Contexts/UserContext';
 
@@ -78,8 +85,17 @@ function App() {
               <Route path='add' element={<AddUser />} />
               <Route path=':id/edit' element={<EditUser />} />
             </Route>
+            <Route path='transaction'>
+              <Route index element={<Transactions />} />
+              <Route path='add' element={<AddTransaction />} />
+              <Route path=':id/edit' element={<EditUser />} />
+            </Route>
+            <Route path='sale'>
+              <Route index element={<Sales />} />
+              <Route path='add' element={<AddSale />} />
+              <Route path=':id/edit' element={<EditUser />} />
+            </Route>
             <Route path='purchase' element={<Purchase />} />
-            <Route path='sale' element={<Sale />} />
             <Route path='acount' element={<Acount />} />
           </Route>
         </Route>
