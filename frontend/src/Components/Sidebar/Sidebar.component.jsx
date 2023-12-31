@@ -21,7 +21,6 @@ import Swal from 'sweetalert2';
 const SidebarMenu = () => {
     const [collapsed, setCollapsed] = useState(false);
     const { user, setUser } = useContext(UserContext)
-    console.log(user);
 
     const handleLogout = async () => {
         try {
@@ -62,6 +61,7 @@ const SidebarMenu = () => {
                 <MenuItem component={<Link to="/dashboard" />} icon={<GoHomeFill />}>Dashboard</MenuItem>
                 <MenuItem component={<Link to="/dashboard/purchase" />} icon={<BiSolidPurchaseTag />}>Purchases</MenuItem>
                 <MenuItem component={<Link to="/dashboard/sale" />} icon={<FaMoneyCheck />}>Sales</MenuItem>
+                <MenuItem component={<Link to="/dashboard/transaction" />} icon={<FaMoneyCheck />}>Transactions</MenuItem>
                 <hr />
                 <MenuItem component={<Link to="/dashboard/item" />} icon={<FaBox />}>Items</MenuItem>
                 <hr />
