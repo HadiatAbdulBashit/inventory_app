@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize');
 
 module.exports = (table) => {
-    const PurchaseDetail = table.define("purchaseDetail", {
+    const TransactionDetail = table.define("transactionDetail", {
         id: {
             type: Sequelize.STRING,
             defaultValue: Sequelize.UUIDV4,
@@ -19,5 +19,5 @@ module.exports = (table) => {
         freezeTableName: true
     });
 
-    return PurchaseDetail;
+    return TransactionDetail;
 };
