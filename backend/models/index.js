@@ -58,10 +58,10 @@ db.transactionDetail.belongsTo(db.transaction, {
 });
 
 // Item and TransactionDetail Relationship
-db.item.hasMany(db.transactionDetail, { as: "transactionDetail" });
-db.transactionDetail.belongsTo(db.item, {
-  foreignKey: "itemId",
-  as: "item",
+db.itemDetail.hasMany(db.transactionDetail, { as: "transactionDetail" });
+db.transactionDetail.belongsTo(db.itemDetail, {
+  foreignKey: "itemDetailId",
+  as: "itemDetail",
 });
 
 // Item and returnItem Relationship
