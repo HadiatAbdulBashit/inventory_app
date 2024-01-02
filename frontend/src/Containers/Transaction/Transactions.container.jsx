@@ -68,7 +68,7 @@ const Transactions = () => {
       });
     }
   };
-  
+
   const sortBy = ['Status'];
 
   return (
@@ -133,7 +133,11 @@ const Transactions = () => {
                         <td>{transaction.type}</td>
                         <td width={'20%'}>{transaction.secondParty}</td>
                         <td>{formatRupiah(transaction.totalPrice)}</td>
-                        <td>{transaction.status}</td>
+                        <td>
+                          <span className="badge bg-primary bg-light text-dark">
+                            {transaction.status}
+                          </span>
+                        </td>
                         <td>{moment(transaction.createdAt).format('llll')}</td>
                         <td>{transaction.userOffice.name}</td>
                         <td>
