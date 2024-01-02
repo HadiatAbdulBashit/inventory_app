@@ -90,14 +90,14 @@ const Sales = () => {
         </div>
         {
           isLoading ? (
-            <div style={{ minHeight: '300px', display: 'flex', alignItem: 'center', justifyContent: 'center' }}>
+            <div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <div className="spinner-border" style={{ width: '3rem', height: '3rem' }} role="status">
                 <span className="visually-hidden">Loading...</span>
               </div>
             </div>
           ) : (
             data.length === 0 ? (
-              <div style={{ minHeight: '300px', display: 'flex', alignItem: 'center', justifyContent: 'center' }}>
+              <div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <h1>No Transaction</h1>
               </div>
             ) : (
