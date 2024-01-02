@@ -37,6 +37,7 @@ exports.findAll = (req, res) => {
 
     TransactionDetail.findAll({ 
         where: condition,
+        order: [['createdAt', 'desc']],
         include: [{
             model: ItemDetail,
             attributes: ['unit', 'price'],
