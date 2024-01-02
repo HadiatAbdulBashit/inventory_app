@@ -170,6 +170,12 @@ const Transaction = () => {
     setShowForm(true)
   }
 
+  const onButtonCloseClick = () => {
+    setShowForm(false)
+    reset();
+    setInitialData(null)
+  }
+
   return (
     <div className="container my-5">
       <div className="row shadow p-4 mx-3 rounded-3">
@@ -198,7 +204,7 @@ const Transaction = () => {
                 {
                   transaction.userWarehouse ? (
                     <p>
-                      POC Warehouse: {transaction.userWarehouse.name}
+                      POC Warehouse: {transaction.userWarehouse.name || 0}
                     </p>
                   ) : null
                 }
@@ -211,9 +217,13 @@ const Transaction = () => {
                 >
                   Delete
                 </button>
-                <button className="btn btn-primary" onClick={() => onButtonAddClick()}>
-                  Add Item
-                </button>
+                {
+                  showForm === true ? null : (
+                    <button className="btn btn-primary" onClick={() => onButtonAddClick()}>
+                      Add Item
+                    </button>
+                  )
+                }
                 <div className="panel-body table-responsive shadow mt-4 rounded-4">
                   <div ref={formAddDetailTransaction} className={"collapse " + (showForm ? 'show' : null)} id="formDetailTransaction">
                     <TransactionDetailForm
@@ -225,6 +235,7 @@ const Transaction = () => {
                       initialData={initialData}
                       clearErrors={clearErrors}
                       title={formStatus}
+                      onButtonCloseClick={onButtonCloseClick}
                     />
                   </div>
                   <table className="table table-striped align-middle">
@@ -256,12 +267,14 @@ const Transaction = () => {
                                 <button
                                   onClick={() => editTransactionDetail(transactionDetail.id)}
                                   className="btn btn-primary me-1"
+                                  disabled={showForm === true ? true : false}
                                 >
                                   Edit
                                 </button>
                                 <button
                                   onClick={() => deleteTransactionDetail(transactionDetail.id)}
                                   className="btn btn-danger"
+                                  disabled={showForm === true ? true : false}
                                 >
                                   Delete
                                 </button>
