@@ -31,7 +31,7 @@ const TransactionForm = ({ onFormSubmit, initialData, title, secondParty }) => {
                 </div>
             </div>
             {
-                title === 'Add Sale' ? null : (
+                title === 'Add Sale' || title === 'Edit Sale' ? null : (
                     <div className="mb-3 col-6">
                         <label className="form-label">Total Price</label>
                         <input
