@@ -10,6 +10,7 @@ const TransactionForm = (
         handleSubmit,
         errors,
         setValue,
+        clearErrors
     }
 ) => {
     const [optionsItem, setOptionsItem] = useState([]);
@@ -17,28 +18,33 @@ const TransactionForm = (
     const [maxItem, setMaxItem] = useState(null);
     const [selectedItem, setSelectedItem] = useState(null);
     const [selectedItemDetail, setSelectedItemDetail] = useState(null);
+    const [selectedItemDetailId, setSelectedItemDetailId] = useState('');
 
     const selectItem = async(selectedOption) => {
         setSelectedItem(selectedOption);
         await getItemDetail(selectedOption.value)
+        setSelectedItemDetail(null);
+        setMaxItem(null)
     };
 
     const selectItemDetail = async (data) => {
-        setValue("itemDetailId", data.value);
-        setValue("totalItem", 0)
+        setSelectedItemDetailId(data.value)
+        setValue("itemDetailId", selectedItemDetailId);
+        setValue("totalItem", null)
         setMaxItem(data.stock)
         setSelectedItemDetail(data)
     }
     
-    const resetSelect = () => {
+    const resetForm = () => {
         setSelectedItem(null);
         setSelectedItemDetail(null);
         setMaxItem(null)
         setValue("itemDetailId", null);
         setValue("totalItem", null)
         setOptionsItemDetail([])
+        setSelectedItemDetailId('')
+        clearErrors(["itemDetailId", "totalItem "])
     };
-    console.log(optionsItemDetail);
 
     const getItem = async () => {
         try {
@@ -71,6 +77,12 @@ const TransactionForm = (
             console.error('Error fetching data:', error);
         }
     };
+    
+    const onSubmit = async (data) => {
+        data.itemDetailId = selectedItemDetailId
+        await onFormSubmit(data)
+        resetForm()
+    }
 
 
     useEffect(() => {
@@ -82,8 +94,7 @@ const TransactionForm = (
     }, [initialData])
 
     return (
-        <>
-        <form className="row shadow p-4 rounded-3 align-items-end" onSubmit={handleSubmit(onFormSubmit)}>
+        <form className="row shadow p-4 rounded-3 align-items-end" onSubmit={handleSubmit(onSubmit)}>
             <div className={'col-4'}>
                 <label className="form-label">Item</label>
                 <Select
@@ -92,9 +103,6 @@ const TransactionForm = (
                     placeholder={`Select item`}
                     value={selectedItem}
                 />
-                <div className="invalid-feedback">
-                    {errors.item && errors.item.message}
-                </div>
             </div>
             <div className={'col-3'}>
                 <label className="form-label">Unit {maxItem === null ? null : <span className="badge bg-primary bg-light text-dark">Stock: {maxItem}</span>}</label>
@@ -108,14 +116,9 @@ const TransactionForm = (
                 <input
                     {...register('itemDetailId', { required: 'Unit is Require' })}
                     type={'hidden'}
+                    value={selectedItemDetailId}
+                    className='form-control'
                 />
-                {
-                    errors.itemDetailId && errors.itemDetailId.message ? (
-                        <div className="invalid-feedback d-block">
-                            {errors.itemDetailId && errors.itemDetailId.message}
-                        </div>
-                    ) : null
-                }
             </div>
             <div className="col-3">
                 <label className="form-label">Total Item</label>
@@ -127,16 +130,30 @@ const TransactionForm = (
                     disabled={optionsItemDetail.length === 0 ? true : false}
                     className={"form-control " + (errors.totalItem && errors.totalItem.message ? 'is-invalid' : null)}
                 />
-                <div className="invalid-feedback">
-                    {errors.totalItem && errors.totalItem.message}
-                </div>
             </div>
             <div className="col-2 align-self-bottom">
                 <button className="btn btn-primary" type="submit">Add Item</button>
             </div>
+            <div className={'col-4'}>
+                <div className="invalid-feedback">
+                    {errors.item && errors.item.message}
+                </div>
+            </div>
+            <div className={'col-3'}>
+                {
+                    errors.itemDetailId && errors.itemDetailId.message && selectedItemDetailId === '' ? (
+                        <div className="invalid-feedback d-block">
+                            {errors.itemDetailId && errors.itemDetailId.message}
+                        </div>
+                    ) : null
+                }
+            </div>
+            <div className="col-3">
+                <div className="invalid-feedback d-block">
+                    {errors.totalItem && errors.totalItem.message}
+                </div>
+            </div>
         </form>
-                <button onClick={() => resetSelect()}>add</button>
-        </>
     )
 }
 
