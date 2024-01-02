@@ -11,7 +11,8 @@ const TransactionDetailForm = (
         errors,
         setValue,
         clearErrors,
-        title
+        title,
+        onButtonCloseClick
     }
 ) => {
     const [optionsItem, setOptionsItem] = useState([]);
@@ -117,7 +118,7 @@ const TransactionDetailForm = (
         <form className="row shadow p-4 rounded-3 align-items-end mx-0" onSubmit={handleSubmit(onSubmit)}>
             <div className="d-flex justify-content-between">
                 <h2>{title}</h2>
-                <button type="button" className="btn-close" aria-label="Close"></button>
+                <button type="button" className="btn-close" aria-label="Close" onClick={() => onButtonCloseClick()} />
             </div>
             <div className={'col-4'}>
                 <label className="form-label">Item</label>
