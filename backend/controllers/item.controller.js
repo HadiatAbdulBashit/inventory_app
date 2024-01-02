@@ -100,6 +100,20 @@ exports.findAll = (req, res) => {
         });
 };
 
+// Retrieve all Item from the database.
+exports.list = (req, res) => {
+    Item.findAll()
+        .then(items => {
+            res.send(items);
+        })
+        .catch(err => {
+            res.status(500).send({
+                msg:
+                    err.message || "Some error occurred while retrieving users."
+            });
+        });
+};
+
 // Find a single Item with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
