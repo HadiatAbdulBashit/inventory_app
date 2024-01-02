@@ -6,6 +6,10 @@
   --box-shadow: 0 0 10px rgba(0,0,0,0.08);
 }
 
+* {
+  transition: .5s;
+}
+
 .color-one {
   background-color: var(--color-one);
 }
