@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Select from 'react-select'
 
-const TransactionForm = (
+const TransactionDetailForm = (
     {
         onFormSubmit,
         initialData,
@@ -10,7 +10,8 @@ const TransactionForm = (
         handleSubmit,
         errors,
         setValue,
-        clearErrors
+        clearErrors,
+        title
     }
 ) => {
     const [optionsItem, setOptionsItem] = useState([]);
@@ -20,7 +21,7 @@ const TransactionForm = (
     const [selectedItemDetail, setSelectedItemDetail] = useState(null);
     const [selectedItemDetailId, setSelectedItemDetailId] = useState('');
 
-    const selectItem = async(selectedOption) => {
+    const selectItem = async (selectedOption) => {
         setSelectedItem(selectedOption);
         await getItemDetail(selectedOption.value)
         setSelectedItemDetail(null);
@@ -34,7 +35,7 @@ const TransactionForm = (
         setMaxItem(data.stock)
         setSelectedItemDetail(data)
     }
-    
+
     const resetForm = () => {
         setSelectedItem(null);
         setSelectedItemDetail(null);
@@ -43,7 +44,7 @@ const TransactionForm = (
         setValue("totalItem", null)
         setOptionsItemDetail([])
         setSelectedItemDetailId('')
-        clearErrors(["itemDetailId", "totalItem "])
+        clearErrors("totalItem")
     };
 
     const getItem = async () => {
@@ -73,11 +74,28 @@ const TransactionForm = (
             }));
 
             setOptionsItemDetail(optionsArray);
+            if (initialData) {
+                const selectedOptionsArray = optionsArray.find((data) => initialData.itemDetailId === data.value)
+                setSelectedItemDetail(selectedOptionsArray);
+            }
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
-    
+
+    const getOneItemDetail = async (id) => {
+        try {
+            const response = await axios.get(`/api/item-detail/${id}`);
+            await getItemDetail(response.data.itemId)
+            if (initialData) {
+                const selectedOptionsArray = optionsItem.find((data) => response.data.itemId === data.value)
+                setSelectedItem(selectedOptionsArray);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
     const onSubmit = async (data) => {
         data.itemDetailId = selectedItemDetailId
         await onFormSubmit(data)
@@ -86,20 +104,27 @@ const TransactionForm = (
 
 
     useEffect(() => {
+        resetForm()
         if (initialData) {
-            setValue("item", initialData.item);
+            setSelectedItemDetailId(initialData.itemDetailId);
             setValue("totalItem", initialData.totalItem);
+            getOneItemDetail(initialData.itemDetailId)
         }
         getItem()
     }, [initialData])
 
     return (
-        <form className="row shadow p-4 rounded-3 align-items-end" onSubmit={handleSubmit(onSubmit)}>
+        <form className="row shadow p-4 rounded-3 align-items-end mx-0" onSubmit={handleSubmit(onSubmit)}>
+            <div className="d-flex justify-content-between">
+                <h2>{title}</h2>
+                <button type="button" className="btn-close" aria-label="Close"></button>
+            </div>
             <div className={'col-4'}>
                 <label className="form-label">Item</label>
                 <Select
                     options={optionsItem}
                     onChange={(selectedOption) => selectItem(selectedOption)}
+                    isDisabled={initialData ? true : false}
                     placeholder={`Select item`}
                     value={selectedItem}
                 />
@@ -108,13 +133,13 @@ const TransactionForm = (
                 <label className="form-label">Unit {maxItem === null ? null : <span className="badge bg-primary bg-light text-dark">Stock: {maxItem}</span>}</label>
                 <Select
                     options={optionsItemDetail}
-                    isDisabled={optionsItemDetail.length === 0 ? true : false}
+                    isDisabled={optionsItemDetail.length === 0 || initialData ? true : false}
                     onChange={(selectedOption) => selectItemDetail(selectedOption)}
                     placeholder={`Select Unit`}
                     value={selectedItemDetail}
                 />
                 <input
-                    {...register('itemDetailId', { required: 'Unit is Require' })}
+                    // {...register('itemDetailId', { required: 'Unit is Require' })}
                     type={'hidden'}
                     value={selectedItemDetailId}
                     className='form-control'
@@ -127,26 +152,21 @@ const TransactionForm = (
                     type={'number'}
                     min={0}
                     max={maxItem}
-                    disabled={optionsItemDetail.length === 0 ? true : false}
+                    disabled={selectedItemDetail === null ? true : false}
                     className={"form-control " + (errors.totalItem && errors.totalItem.message ? 'is-invalid' : null)}
                 />
             </div>
             <div className="col-2 align-self-bottom">
-                <button className="btn btn-primary" type="submit">Add Item</button>
+                <button className="btn btn-primary" type="submit">{title}</button>
             </div>
-            <div className={'col-4'}>
-                <div className="invalid-feedback">
-                    {errors.item && errors.item.message}
-                </div>
-            </div>
-            <div className={'col-3'}>
-                {
-                    errors.itemDetailId && errors.itemDetailId.message && selectedItemDetailId === '' ? (
+            <div className={'col-7'}>
+                {/* {
+                    selectedItemDetailId === null ? (
                         <div className="invalid-feedback d-block">
-                            {errors.itemDetailId && errors.itemDetailId.message}
+                            Item is Require
                         </div>
                     ) : null
-                }
+                } */}
             </div>
             <div className="col-3">
                 <div className="invalid-feedback d-block">
@@ -157,4 +177,4 @@ const TransactionForm = (
     )
 }
 
-export default TransactionForm
+export default TransactionDetailForm

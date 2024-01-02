@@ -17,14 +17,17 @@ const Transaction = () => {
   const [transactionDetails, setTransactionDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
   const formAddDetailTransaction = useRef(null);
-  const [initialData, setInitialData] = useState({})
+  const [initialData, setInitialData] = useState(null)
+  const [formStatus, setFormStatus] = useState('Add Item')
+  const [showForm, setShowForm] = useState(false)
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-    reset
+    reset,
+    clearErrors
   } = useForm()
 
   const getTransactionById = async () => {
@@ -41,6 +44,15 @@ const Transaction = () => {
     const response = await axios.get(`/api/transaction-detail?transactionId=${id}`);
     setTransactionDetails(response.data);
     setIsLoading(false)
+  };
+
+  const getSelectedTransactionDetail = async (transactionDetailId) => {
+    const response = await axios.get(`/api/transaction-detail/${transactionDetailId}`);
+    setInitialData({
+      totalItem: response.data.totalItem,
+      itemDetailId: response.data.itemDetailId,
+      transactionDetailId: transactionDetailId
+    });
   };
 
   useEffect(() => {
@@ -111,11 +123,10 @@ const Transaction = () => {
     }
   };
 
-  const editTransactionDetail = async (transactionId) => {
-    setInitialData({
-      totalItem: 20,
-      transactionId: transactionId
-    })
+  const editTransactionDetail = async (transactionDetailId) => {
+    getSelectedTransactionDetail(transactionDetailId)
+    setFormStatus('Edit Item')
+    setShowForm(true)
   };
 
   const saveDetailTransaction = async (data) => {
@@ -128,25 +139,36 @@ const Transaction = () => {
     }
   }
 
-  const addTransactionDetail = async (data) => {
+  const editDetailTransaction = async (id, data) => {
+    try {
+      await axios.put(`/api/transaction-detail/${id}`, data);
+      reset();
+    } catch (error) {
+      toast.error(error.response.data.msg)
+      throw new Error(error);
+    }
+  }
+
+  const submitFormTransactionDetail = async (data) => {
     data.transactionId = id
     await toast.promise(
-      saveDetailTransaction(data),
+      initialData ? editDetailTransaction(initialData.transactionDetailId, data) : saveDetailTransaction(data),
       {
-        pending: 'Adding item...',
-        success: 'Item added',
-        error: 'Adding item failed'
+        pending: initialData ? 'Editing' : 'Adding' + ' item...',
+        success: 'Item ' + initialData ? 'Edited' : 'Added',
+        error: initialData ? 'Editing' : 'Adding' + ' item failed'
       }
     )
-    hideForm()
+    setShowForm(false)
     getTransactionDetail()
   };
 
-  const hideForm = () => {
-    if (formAddDetailTransaction.current) {
-      formAddDetailTransaction.current.classList.remove('show');
-    }
-  };
+  const onButtonAddClick = () => {
+    setFormStatus('Add Item')
+    reset();
+    setInitialData(null)
+    setShowForm(true)
+  }
 
   return (
     <div className="container my-5">
@@ -162,19 +184,16 @@ const Transaction = () => {
             <>
               <div className="col-12">
                 <h2>
-                  {transaction.type === 'In' ? 'Purchase' : 'Sale'} to {transaction.secondParty} <span className="badge bg-primary bg-light text-dark">{transaction.status}</span>
+                  {transaction.type === 'In' ? 'Purchase from' : 'Sale to'} {transaction.secondParty} <span className="badge bg-primary bg-light text-dark">{transaction.status}</span>
                 </h2>
                 <p>
-
-                </p>
-                <p>
-                  Total Price: {formatRupiah(transaction.totalPrice)}
+                  Total Price: {formatRupiah(transaction.totalPrice || 0)}
                 </p>
                 <p>
                   Order Date: {moment(transaction.createdAt).format('LLLL')}
                 </p>
                 <p>
-                  POC Office: {transaction.userOffice.name}
+                  POC Office: {transaction.userOffice.name || 0}
                 </p>
                 {
                   transaction.userWarehouse ? (
@@ -192,12 +211,21 @@ const Transaction = () => {
                 >
                   Delete
                 </button>
-                <a className="btn btn-primary" data-bs-toggle="collapse" href="#formDetailTransaction" role="button" aria-expanded="false" aria-controls="formDetailTransaction" onClick={() => {reset(), setInitialData({})}}>
-                  Add Item to Purcase
-                </a>
+                <button className="btn btn-primary" onClick={() => onButtonAddClick()}>
+                  Add Item
+                </button>
                 <div className="panel-body table-responsive shadow mt-4 rounded-4">
-                  <div ref={formAddDetailTransaction} className="collapse" id="formDetailTransaction">
-                    <TransactionDetailForm onFormSubmit={addTransactionDetail} register={register} handleSubmit={handleSubmit} errors={errors} setValue={setValue} initialData={initialData} />
+                  <div ref={formAddDetailTransaction} className={"collapse " + (showForm ? 'show' : null)} id="formDetailTransaction">
+                    <TransactionDetailForm
+                      onFormSubmit={submitFormTransactionDetail}
+                      register={register}
+                      handleSubmit={handleSubmit}
+                      errors={errors}
+                      setValue={setValue}
+                      initialData={initialData}
+                      clearErrors={clearErrors}
+                      title={formStatus}
+                    />
                   </div>
                   <table className="table table-striped align-middle">
                     <thead>
@@ -221,14 +249,13 @@ const Transaction = () => {
                         ) : (
                           transactionDetails.map((transactionDetail) => (
                             <tr key={transactionDetail.id}>
-                              <td>{transactionDetail.itemDetail.item.name}</td>
+                              <td>{transactionDetail.itemDetail.item.name || 0}</td>
                               <td>{transactionDetail.itemDetail.unit}</td>
                               <td>{transactionDetail.totalItem}</td>
                               <td>
                                 <button
                                   onClick={() => editTransactionDetail(transactionDetail.id)}
                                   className="btn btn-primary me-1"
-                                  data-bs-toggle="collapse" data-bs-target="#formDetailTransaction" aria-expanded="false" aria-controls="formDetailTransaction"
                                 >
                                   Edit
                                 </button>
