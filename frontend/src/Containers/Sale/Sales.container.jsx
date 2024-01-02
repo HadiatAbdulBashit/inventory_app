@@ -138,7 +138,7 @@ const Sales = () => {
                         <td>{transaction.status}</td>
                         <td>{moment(transaction.createdAt).format('llll')}</td>
                         <td>
-                          <Link to={`${transaction.id}`} className="btn btn-success">
+                          <Link to={`/dashboard/transaction/${transaction.id}`} className="btn btn-success">
                             <RiEyeLine />
                           </Link>
                         </td>
