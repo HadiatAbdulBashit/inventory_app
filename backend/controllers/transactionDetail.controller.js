@@ -33,7 +33,7 @@ exports.create = async(req, res) => {
 
 // Retrieve all Transaction Detail from the database.
 exports.findAll = (req, res) => {
-    var condition = req.query.TransactionId ? { TransactionId: { [Op.iLike]: `%${req.query.TransactionId}%` } } : null;
+    var condition = req.query.transactionId ? { transactionId: { [Op.iLike]: `%${req.query.transactionId}%` } } : null;
 
     TransactionDetail.findAll({ 
         where: condition,
