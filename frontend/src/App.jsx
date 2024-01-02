@@ -21,6 +21,7 @@ import Purchase from './Containers/Purchase/Purchase.container';
 // Sales Page
 import Sales from './Containers/Sale/Sales.container';
 import AddSale from './Containers/Sale/AddSale.container';
+import EditSale from './Containers/Sale/EditSale.container';
 
 // User Page
 import User from './Containers/User/Users.container';
@@ -39,7 +40,7 @@ import EditItemDetail from './Containers/Item/Detail/EditItemDetail.container';
 
 // Transaction Page
 import Transactions from './Containers/Transaction/Transactions.container';
-import AddTransaction from './Containers/Transaction/AddTransaction.container';
+import Transaction from './Containers/Transaction/Transaction.container';
 
 import UserContext from './Contexts/UserContext';
 
@@ -87,13 +88,12 @@ function App() {
             </Route>
             <Route path='transaction'>
               <Route index element={<Transactions />} />
-              <Route path='add' element={<AddTransaction />} />
-              <Route path=':id/edit' element={<EditUser />} />
+              <Route path=':id' element={<Transaction />} />
             </Route>
             <Route path='sale'>
               <Route index element={<Sales />} />
               <Route path='add' element={<AddSale />} />
-              <Route path=':id/edit' element={<EditUser />} />
+              <Route path=':id/edit' element={<EditSale />} />
             </Route>
             <Route path='purchase' element={<Purchase />} />
             <Route path='acount' element={<Acount />} />
