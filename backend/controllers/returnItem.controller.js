@@ -9,15 +9,15 @@ const Op = Sequelize.Op;
 // Create and Save a new ReturnItem
 exports.create = async(req, res) => {
     // Validate request
-    if (!req.body.saleId) {
+    if (!req.body.totalItem || req.body.totalItem === 0) {
         res.status(400).send({
-            message: "saleId can not be empty!"
+            msg: "Total item can not be empty!"
         });
         return;
     }
 
     // Save ReturnItem in the database
-    ReturnItem.create({...req.body, userId: req.user.id})
+    ReturnItem.create(req.body)
         .then(data => {
             res.send(data);
         })
@@ -31,8 +31,7 @@ exports.create = async(req, res) => {
 
 // Retrieve all ReturnItem from the database.
 exports.findAll = (req, res) => {
-    const title = req.query.title;
-    var condition = title ? { title: { [Op.iLike]: `%${title}%` } } : null;
+    var condition = req.query.transactionId ? { transactionId: { [Op.iLike]: `%${req.query.transactionId}%` } } : null;
 
     ReturnItem.findAll({ where: condition })
         .then(data => {
