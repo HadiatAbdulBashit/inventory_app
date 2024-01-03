@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -16,10 +16,10 @@ const Transaction = () => {
   const [transaction, setTransaction] = useState([]);
   const [transactionDetails, setTransactionDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
-  const formAddDetailTransaction = useRef(null);
   const [initialData, setInitialData] = useState(null)
-  const [formStatus, setFormStatus] = useState('Add Item')
-  const [showForm, setShowForm] = useState(false)
+  const [formItemStatus, setFormItemStatus] = useState('Add Item')
+  const [showFormItem, setShowFormItem] = useState(false)
+  const [showFormReturn, setShowFormReturn] = useState(false)
 
   const {
     register,
@@ -111,6 +111,7 @@ const Transaction = () => {
           error: 'Delete transaction failed'
         });
         getTransactionDetail();
+        getTransactionById()
       }
     } catch (error) {
       console.log(error);
@@ -187,8 +188,8 @@ const Transaction = () => {
 
   const editTransactionDetail = async (transactionDetailId) => {
     getSelectedTransactionDetail(transactionDetailId)
-    setFormStatus('Edit Item')
-    setShowForm(true)
+    setFormItemStatus('Edit Item')
+    setShowFormItem(true)
   };
 
   const saveDetailTransaction = async (data) => {
@@ -221,24 +222,23 @@ const Transaction = () => {
         error: initialData ? 'Editing' : 'Adding' + ' item failed'
       }
     )
-    setShowForm(false)
+    setShowFormItem(false)
     getTransactionDetail()
+    getTransactionById()
   };
 
   const onButtonAddClick = () => {
-    setFormStatus('Add Item')
+    setFormItemStatus('Add Item')
     reset();
     setInitialData(null)
-    setShowForm(true)
+    setShowFormItem(true)
   }
 
   const onButtonCloseClick = () => {
-    setShowForm(false)
+    setShowFormItem(false)
     reset();
     setInitialData(null)
   }
-
-  console.log(transactionDetails);
 
   return (
     <div className="container my-5">
@@ -253,63 +253,68 @@ const Transaction = () => {
           ) : (
             <>
               <div className="col-12">
-                <h2>
-                  {transaction.type === 'In' ? 'Purchase from' : 'Sale to'} {transaction.secondParty} <span className="badge bg-primary bg-light text-dark">{transaction.status}</span>
-                </h2>
-                <p>
-                  Total Price: {formatRupiah(transaction.totalPrice || 0)}
-                </p>
-                <p>
-                  Order Date: {moment(transaction.createdAt).format('LLLL')}
-                </p>
-                <p>
-                  POC Office: {transaction.userOffice.name || 0}
-                </p>
-                {
-                  transaction.userWarehouse ? (
-                    <p>
-                      POC Warehouse: {transaction.userWarehouse.name || 0}
-                    </p>
-                  ) : null
-                }
-                <Link to={`edit`} className="btn btn-primary me-1">
-                  Edit
-                </Link>
-                <button
-                  onClick={() => deleteTransaction(transaction.id)}
-                  className="btn btn-danger me-1"
-                >
-                  Delete
-                </button>
-                {
-                  showForm === false && transaction.status === 'Inisialization' ? (
-                    <button className="btn btn-primary me-1" onClick={() => onButtonAddClick()}>
-                      Add Item
-                    </button>
-                  ) : null
-                }
-                {
-                  transaction.status === 'Inisialization' && transactionDetails.length !== 0 ? (
-                    <button
-                      onClick={() => readyToCheckTransaction(transaction.id)}
-                      className="btn btn-success"
-                    >
-                      Ready to Check
-                    </button>
-                  ) : null
-                }
-                {
-                  transaction.status === 'Ready to Check' ? (
-                    <button
-                      onClick={() => checkTransaction(transaction.id)}
-                      className="btn btn-success"
-                    >
-                      Check
-                    </button>
-                  ) : null
-                }
+                <div>
+                  <h2>
+                    {transaction.type === 'In' ? 'Purchase from' : 'Sale to'} {transaction.secondParty} <span className="badge bg-primary bg-light text-dark">{transaction.status}</span>
+                  </h2>
+                  <p>
+                    Total Price: {formatRupiah(transaction.totalPrice || 0)}
+                  </p>
+                  <p>
+                    Order Date: {moment(transaction.createdAt).format('LLLL')}
+                  </p>
+                  <p>
+                    POC Office: {transaction.userOffice?.name || 0}
+                  </p>
+                  {
+                    transaction.userWarehouse ? (
+                      <p>
+                        POC Warehouse: {transaction.userWarehouse?.name}
+                      </p>
+                    ) : null
+                  }
+                  <Link to={`edit`} className="btn btn-primary me-1">
+                    Edit
+                  </Link>
+                  <button
+                    onClick={() => deleteTransaction(transaction.id)}
+                    className="btn btn-danger me-1"
+                  >
+                    Delete
+                  </button>
+                  {
+                    showFormItem === false && transaction.status === 'Inisialization' ? (
+                      <button className="btn btn-primary me-1" onClick={() => onButtonAddClick()}>
+                        Add Item
+                      </button>
+                    ) : null
+                  }
+                  {
+                    transaction.status === 'Inisialization' && transactionDetails.length !== 0 ? (
+                      <button
+                        onClick={() => readyToCheckTransaction(transaction.id)}
+                        className="btn btn-success"
+                      >
+                        Ready to Check
+                      </button>
+                    ) : null
+                  }
+                  {
+                    transaction.status === 'Ready to Check' ? (
+                      <button
+                        onClick={() => checkTransaction(transaction.id)}
+                        className="btn btn-success"
+                      >
+                        Check
+                      </button>
+                    ) : null
+                  }
+                </div>
+
+                {/* Items / Detail Transaction */}
+                <h2 className="mt-4">Items</h2>
                 <div className="panel-body table-responsive shadow mt-4 rounded-4">
-                  <div ref={formAddDetailTransaction} className={"collapse " + (showForm ? 'show' : null)} id="formDetailTransaction">
+                  <div className={"collapse " + (showFormItem ? 'show' : null)} id="formDetailTransaction">
                     <TransactionDetailForm
                       onFormSubmit={submitFormTransactionDetail}
                       register={register}
@@ -318,7 +323,7 @@ const Transaction = () => {
                       setValue={setValue}
                       initialData={initialData}
                       clearErrors={clearErrors}
-                      title={formStatus}
+                      title={formItemStatus}
                       onButtonCloseClick={onButtonCloseClick}
                     />
                   </div>
@@ -330,7 +335,7 @@ const Transaction = () => {
                         <th scope="col">Total Item</th>
                         <th scope="col">Price</th>
                         {
-                          transaction.status === 'Inisialization' ? (
+                          transaction.status === 'Inisialization' || transaction.status === 'On Check' ? (
                             <th scope="col">Action</th>
                           ) : null
                         }
@@ -352,23 +357,50 @@ const Transaction = () => {
                               <td>{`${transactionDetail.itemDetail.item.merk} ${transactionDetail.itemDetail.item.name}`}</td>
                               <td>{transactionDetail.itemDetail.unit}</td>
                               <td>{transactionDetail.totalItem}</td>
-                              <td>{transactionDetail.itemDetail.price * transactionDetail.totalItem}</td>
+                              <td>{formatRupiah((transactionDetail.itemDetail.price * transactionDetail.totalItem) || 0)}</td>
                               {
                                 transaction.status === 'Inisialization' ? (
                                   <td>
                                     <button
                                       onClick={() => editTransactionDetail(transactionDetail.id)}
                                       className="btn btn-primary me-1"
-                                      disabled={showForm === true ? true : false}
+                                      disabled={showFormItem ?? false}
                                     >
                                       Edit
                                     </button>
                                     <button
                                       onClick={() => deleteTransactionDetail(transactionDetail.id)}
                                       className="btn btn-danger"
-                                      disabled={showForm === true ? true : false}
+                                      disabled={showFormItem ?? false}
                                     >
                                       Delete
+                                    </button>
+                                  </td>
+                                ) : null
+                              }
+                              {
+                                transaction.status === 'On Check' ? (
+                                  <td>
+                                    <button
+                                      onClick={() => editTransactionDetail(transactionDetail.id)}
+                                      className="btn btn-primary me-1"
+                                      disabled={showFormItem ?? false}
+                                    >
+                                      Accept
+                                    </button>
+                                    <button
+                                      onClick={() => deleteTransactionDetail(transactionDetail.id)}
+                                      className="btn btn-warning me-1"
+                                      disabled={showFormItem ?? false}
+                                    >
+                                      Return
+                                    </button>
+                                    <button
+                                      onClick={() => deleteTransactionDetail(transactionDetail.id)}
+                                      className="btn btn-danger"
+                                      disabled={showFormItem ?? false}
+                                    >
+                                      Cancel
                                     </button>
                                   </td>
                                 ) : null
@@ -380,6 +412,109 @@ const Transaction = () => {
                     </tbody>
                   </table>
                 </div>
+
+
+                {/* Return Item on Transaction */}
+                {/* <h2 className="mt-4">Return</h2>
+                <div className="panel-body table-responsive shadow mt-4 rounded-4">
+                  <div className={"collapse " + (showFormReturn ? 'show' : null)} id="formDetailTransaction">
+                    <TransactionDetailForm
+                      onFormSubmit={submitFormTransactionDetail}
+                      register={register}
+                      handleSubmit={handleSubmit}
+                      errors={errors}
+                      setValue={setValue}
+                      initialData={initialData}
+                      clearErrors={clearErrors}
+                      title={formItemStatus}
+                      onButtonCloseClick={onButtonCloseClick}
+                    />
+                  </div>
+                  <table className="table table-striped align-middle">
+                    <thead>
+                      <tr>
+                        <th scope="col">Item Name</th>
+                        <th scope="col">Unit</th>
+                        <th scope="col">Total Item</th>
+                        <th scope="col">Price</th>
+                        {
+                          transaction.status === 'Inisialization' || transaction.status === 'On Check' ? (
+                            <th scope="col">Action</th>
+                          ) : null
+                        }
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {
+                        transactionDetails.length === 0 ? (
+                          <tr>
+                            <td colSpan="5" align="center" height='200px'>
+                              <h1>
+                                No Data
+                              </h1>
+                            </td>
+                          </tr>
+                        ) : (
+                          transactionDetails.map((transactionDetail) => (
+                            <tr key={transactionDetail.id}>
+                              <td>{`${transactionDetail.itemDetail.item.merk} ${transactionDetail.itemDetail.item.name}`}</td>
+                              <td>{transactionDetail.itemDetail.unit}</td>
+                              <td>{transactionDetail.totalItem}</td>
+                              <td>{formatRupiah((transactionDetail.itemDetail.price * transactionDetail.totalItem) || 0)}</td>
+                              {
+                                transaction.status === 'Inisialization' ? (
+                                  <td>
+                                    <button
+                                      onClick={() => editTransactionDetail(transactionDetail.id)}
+                                      className="btn btn-primary me-1"
+                                      disabled={showFormReturn ?? false}
+                                    >
+                                      Edit
+                                    </button>
+                                    <button
+                                      onClick={() => deleteTransactionDetail(transactionDetail.id)}
+                                      className="btn btn-danger"
+                                      disabled={showFormReturn ?? false}
+                                    >
+                                      Delete
+                                    </button>
+                                  </td>
+                                ) : null
+                              }
+                              {
+                                transaction.status === 'On Check' ? (
+                                  <td>
+                                    <button
+                                      onClick={() => editTransactionDetail(transactionDetail.id)}
+                                      className="btn btn-primary me-1"
+                                      disabled={showFormReturn ?? false}
+                                    >
+                                      Accept
+                                    </button>
+                                    <button
+                                      onClick={() => deleteTransactionDetail(transactionDetail.id)}
+                                      className="btn btn-warning me-1"
+                                      disabled={showFormReturn ?? false}
+                                    >
+                                      Return
+                                    </button>
+                                    <button
+                                      onClick={() => deleteTransactionDetail(transactionDetail.id)}
+                                      className="btn btn-danger"
+                                      disabled={showFormReturn ?? false}
+                                    >
+                                      Cancel
+                                    </button>
+                                  </td>
+                                ) : null
+                              }
+                            </tr>
+                          ))
+                        )
+                      }
+                    </tbody>
+                  </table>
+                </div> */}
               </div>
             </>
           )
