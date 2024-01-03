@@ -45,7 +45,7 @@ exports.create = async (req, res) => {
 // Retrieve all Item from the database.
 exports.findAll = (req, res) => {
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit) || 3;
+    const limit = parseInt(req.query.limit) || 10;
     let sort = req.query.sort || "name";
     let total = null
     let filterCategory = req.query.category || "All";

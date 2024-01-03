@@ -32,7 +32,7 @@ exports.create = async (req, res) => {
 // Retrieve all Transaction from the database.
 exports.findAll = (req, res) => {
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit) || 3;
+    const limit = parseInt(req.query.limit) || 10;
     let sort = req.query.sort || "createdAt";
     let total = null
     let filterType = req.query.type || "All";
