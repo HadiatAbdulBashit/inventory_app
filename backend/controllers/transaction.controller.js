@@ -103,11 +103,11 @@ exports.findOne = (req, res) => {
                 attributes: ['name', 'role'],
                 as: 'userOffice', // Specify the alias for the association
             },
-            // {
-            //     model: User,
-            //     attributes: ['name', 'role'],
-            //     as: 'userOffice', // Specify the alias for the association
-            // }
+            {
+                model: User,
+                attributes: ['name', 'role'],
+                as: 'userWarehouse', // Specify the alias for the association
+            }
         ]
     })
         .then(data => {
