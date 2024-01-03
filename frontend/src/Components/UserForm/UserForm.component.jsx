@@ -50,9 +50,10 @@ const UserForm = ({ onFormSubmit, initialData, title }) => {
                     disabled={initialData}
                 >
                     <option disabled value={''}>-- Role --</option>
-                    <option value={'super'}>Super Admin</option>
-                    <option value={'admin'}>Office Staff</option>
-                    <option value={'staff'}>Warehouse Staff</option>
+                    <option value={'Super Admin'}>Super Admin</option>
+                    <option value={'Admin'}>Admin</option>
+                    <option value={'Office'}>Office Staff</option>
+                    <option value={'Warehouse'}>Warehouse Staff</option>
                 </select>
                 <div className="invalid-feedback">
                     {errors.role && errors.role.message}
