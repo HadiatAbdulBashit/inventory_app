@@ -130,6 +130,8 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
 
+    req.body.status === 'On Check' ? req.body.pocWarehouse = req.user.id : null;
+
     Transaction.update(req.body, {
         where: { id: id }
     })
