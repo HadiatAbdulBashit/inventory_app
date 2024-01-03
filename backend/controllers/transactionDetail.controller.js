@@ -79,13 +79,13 @@ exports.create = async (req, res) => {
                                                     .then(num => {
                                                         if (num < 1) {
                                                             res.send({
-                                                                msg: `Cannot update Item Detail with id = ${id}. Maybe Item Detail was not found or req.body is empty!`
+                                                                msg: `Cannot update Item Detail with id = ${req.body.itemDetailId}. Maybe Item Detail was not found or req.body is empty!`
                                                             });
                                                         }
                                                     })
                                                     .catch(err => {
                                                         res.status(500).send({
-                                                            msg: "Error updating Item Detail with id=" + id
+                                                            msg: "Error updating Item Detail with id=" + req.body.itemDetailId
                                                         });
                                                     });
 
@@ -106,18 +106,18 @@ exports.create = async (req, res) => {
                                 })
                                 .catch(err => {
                                     res.status(500).send({
-                                        msg: "Error retrieving Item Detail with id=" + id
+                                        msg: "Error retrieving Item Detail with id=" + req.body.transactionId
                                     });
                                 });
                         } else {
                             res.status(404).send({
-                                msg: `Cannot find Item Detail with id=${id}.`
+                                msg: `Cannot find Item Detail with id = ${req.body.itemDetailId}.`
                             });
                         }
                     })
                     .catch(err => {
                         res.status(500).send({
-                            msg: "Error retrieving Item Detail with id=" + id
+                            msg: "Error retrieving Item Detail with id=" + req.body.itemDetailId
                         });
                     });
             }
