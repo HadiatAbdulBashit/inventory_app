@@ -132,7 +132,7 @@ const Transactions = () => {
                         </td>
                         <td>{transaction.type}</td>
                         <td width={'20%'}>{transaction.secondParty}</td>
-                        <td>{formatRupiah(transaction.totalPrice)}</td>
+                        <td>{formatRupiah(transaction.totalPrice || 0)}</td>
                         <td>
                           <span className="badge bg-primary bg-light text-dark">
                             {transaction.status}
