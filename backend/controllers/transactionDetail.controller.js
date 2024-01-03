@@ -11,24 +11,49 @@ const Op = Sequelize.Op;
 // Create and Save a new Transaction Detail
 exports.create = async(req, res) => {
     // Validate request
-    if (!req.body.totalItem) {
+    if (!req.body.totalItem || req.body.totalItem === 0) {
         res.status(400).send({
             message: "Total item can not be empty!"
         });
         return;
     }
 
-    // Save Transaction Detail in the database
-    TransactionDetail.create(req.body)
+    var condition = { 
+        itemDetailId: { [Op.iLike]: req.body.itemDetailId }, 
+        transactionId: { [Op.iLike]: req.body.transactionId }
+    };
+
+
+    TransactionDetail.findAll({ 
+        where: condition,
+     })
         .then(data => {
-            res.send(data);
+            if (data.length > 0) {
+                res.status(401).send({
+                    msg: "Theres same item and unit on this transaction!"
+                });
+            } else {
+                // Save Transaction Detail in the database
+                TransactionDetail.create(req.body)
+                    .then(data => {
+                        res.send(data);
+                    })
+                    .catch(err => {
+                        res.status(500).send({
+                            msg:
+                                err.message || "Some error occurred while creating the Transaction Detail."
+                        });
+                    });
+            }
         })
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while creating the Transaction Detail."
+                    err.message || "Some error occurred while retrieving transaction detail."
             });
         });
+
+
 };
 
 // Retrieve all Transaction Detail from the database.
