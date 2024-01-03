@@ -72,6 +72,12 @@ db.returnItem.belongsTo(db.item, {
 });
 
 // Transaction and returnItem Relationship
+db.returnItem.belongsTo(db.transactionDetail, {
+  foreignKey: "transactionDetailId",
+  as: "transactionDetail",
+});
+
+// Transaction and returnItem Relationship
 db.transaction.hasMany(db.returnItem, { as: "returnItem" });
 db.returnItem.belongsTo(db.transaction, {
   foreignKey: "transactionId",
