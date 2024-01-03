@@ -27,8 +27,8 @@ exports.create = async (req, res) => {
     TransactionDetail.findAll({
         where: condition,
     })
-        .then(data => {
-            if (data.length > 0) {
+        .then(dataTransactionDetail => {
+            if (dataTransactionDetail.length > 0) {
                 res.status(401).send({
                     msg: "Theres same item and unit on this transaction!"
                 });
@@ -38,22 +38,24 @@ exports.create = async (req, res) => {
                 ItemDetail.findOne({
                     where: { id: req.body.itemDetailId }
                 })
-                    .then(data => {
-                        if (data) {
-                            const price = data.price * req.body.totalItem
-                            const updateStock = data.stock - req.body.totalItem
+                    .then(dataItemDetail => {
+                        if (dataItemDetail) {
+                            const price = dataItemDetail.price * req.body.totalItem
+                            const updateStock = dataItemDetail.stock - req.body.totalItem
 
                             // get total price transaction before this add items
                             Transaction.findOne({
                                 where: { id: req.body.transactionId }
                             })
-                                .then(data => {
-                                    if (data) {
-                                        const oldTotalPrice = data.totalPrice || 0
+                                .then(dataTransaction => {
+                                    if (dataTransaction) {
+                                        const oldTotalPrice = dataTransaction.totalPrice || 0
 
-                                        // Save Transaction Detail in the database
+                                        // Save Transaction Detail to the database
                                         TransactionDetail.create(req.body)
-                                            .then(data => {
+                                            .then(dataTransactionDetail => {
+
+                                                // Update total price in Transaction
                                                 Transaction.update({ totalPrice: price + oldTotalPrice }, {
                                                     where: { id: req.body.transactionId }
                                                 })
@@ -69,7 +71,7 @@ exports.create = async (req, res) => {
                                                             msg: "Error updating Transaction with id = " + req.body.transactionId
                                                         });
                                                     });
-                                                res.send(data);
+                                                res.send(dataTransactionDetail);
                                             })
                                             .catch(err => {
                                                 res.status(500).send({
@@ -179,102 +181,93 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    let newPrice = null;
-    let oldPrice = null;
-    let oldTotalPrice = null;
-    let updateStock = null;
+    // =============================
+    ItemDetail.findOne({ where: { id: req.body.itemDetailId } })
+        .then(dataItemDetail => {
+            if (dataItemDetail) {
+                const newPrice = dataItemDetail.price * req.body.totalItem
+                const updateStock = dataItemDetail.stock - req.body.totalItem
 
-    ItemDetail.findOne({
-        where: { id: req.body.itemDetailId }
-    })
-        .then(data => {
-            if (data) {
-                newPrice = data.price * req.body.totalItem
-                updateStock = data.stock - req.body.totalItem
-            } else {
-                res.status(404).send({
-                    msg: `Cannot find Item Detail with id=${id}.`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                msg: "Error retrieving Item Detail with id=" + id
-            });
-        });
+                // =============================
+                TransactionDetail.findOne({ where: { id: id } })
+                    .then(dataTransactionDetail => {
+                        if (dataTransactionDetail) {
+                            const oldPrice = dataTransactionDetail.totalItem * dataItemDetail.price || 0
 
-    TransactionDetail.findOne({
-        where: { id: id }
-    })
-        .then(data => {
-            if (data) {
-                oldPrice = data.price * req.body.totalItem
-                updateStock = data.stock - req.body.totalItem
-            } else {
-                res.status(404).send({
-                    msg: `Cannot find Item Detail with id=${id}.`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                msg: "Error retrieving Item Detail with id=" + id
-            });
-        });
+                            // ================================
+                            Transaction.findOne({ where: { id: req.body.transactionId } })
+                                .then(data => {
+                                    if (data) {
+                                        const oldTotalPrice = data.totalPrice
 
-    Transaction.findOne({
-        where: { id: req.body.transactionId }
-    })
-        .then(data => {
-            if (data) {
-                oldTotalPrice = data.totalPrice
-            } else {
-                res.status(404).send({
-                    msg: `Cannot find Item Detail with id=${id}.`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                msg: "Error retrieving Item Detail with id=" + id
-            });
-        });
+                                        // ===============================
+                                        TransactionDetail.update(req.body, {
+                                            where: { id: id }
+                                        })
+                                            .then(num => {
+                                                if (num == 1) {
 
-    TransactionDetail.update(req.body, {
-        where: { id: id }
-    })
-        .then(num => {
-            if (num == 1) {
-                console.log(oldPrice);
-                console.log(oldTotalPrice);
-                console.log(newPrice);
-                Transaction.update({ totalPrice: oldPrice - oldTotalPrice + newPrice }, {
-                    where: { id: req.body.transactionId }
-                })
-                    .then(num => {
-                        if (num < 1) {
-                            res.send({
-                                msg: `Cannot update Transaction with id = ${req.body.transactionId}. Maybe Transaction was not found or request is empty!`
+                                                    // ===========================
+                                                    Transaction.update({ totalPrice: oldTotalPrice + newPrice - oldPrice }, {
+                                                        where: { id: req.body.transactionId }
+                                                    })
+                                                        .then(num => {
+                                                            if (num < 1) {
+                                                                res.send({
+                                                                    msg: `Cannot update Transaction with id = ${req.body.transactionId}. Maybe Transaction was not found or request is empty!`
+                                                                });
+                                                            }
+                                                        })
+                                                        .catch(err => {
+                                                            res.status(500).send({
+                                                                msg: "Error updating Transaction with id = " + req.body.transactionId
+                                                            });
+                                                        });
+                                                    res.send({
+                                                        msg: "Transaction Detail was updated successfully."
+                                                    });
+                                                } else {
+                                                    res.send({
+                                                        msg: `Cannot update Transaction Detail with id=${id}. Maybe Transaction Detail was not found or req.body is empty!`
+                                                    });
+                                                }
+                                            })
+                                            .catch(err => {
+                                                res.status(500).send({
+                                                    msg: "Error updating Transaction Detail with id=" + id
+                                                });
+                                            });
+                                    } else {
+                                        res.status(404).send({
+                                            msg: `Cannot find Item Detail with id=${id}.`
+                                        });
+                                    }
+                                })
+                                .catch(err => {
+                                    res.status(500).send({
+                                        msg: "Error retrieving Item Detail with id=" + id
+                                    });
+                                });
+                        } else {
+                            res.status(404).send({
+                                msg: `Cannot find Item Detail with id=${id}.`
                             });
                         }
                     })
                     .catch(err => {
                         res.status(500).send({
-                            msg: "Error updating Transaction with id = " + req.body.transactionId
+                            msg: "Error retrieving Item Detail with id=" + id
                         });
                     });
-                res.send({
-                    msg: "Transaction Detail was updated successfully."
-                });
             } else {
-                res.send({
-                    msg: `Cannot update Transaction Detail with id=${id}. Maybe Transaction Detail was not found or req.body is empty!`
+                res.status(404).send({
+                    msg: `Cannot find Item Detail with id=${id}.`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                msg: "Error updating Transaction Detail with id=" + id
+                msg: "Error retrieving Item Detail with id=" + id
             });
         });
 };
