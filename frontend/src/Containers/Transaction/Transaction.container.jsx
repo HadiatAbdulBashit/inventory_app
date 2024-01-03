@@ -117,7 +117,69 @@ const Transaction = () => {
 
       Swal.fire({
         title: "Error",
+        text: "An error occurred while update the transaction.",
+        icon: "error"
+      });
+    }
+  };
+
+  const readyToCheckTransaction = async (transactionId) => {
+    try {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "This transaction will continue to next step!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes!"
+      });
+
+      if (result.isConfirmed) {
+        await toast.promise(axios.put(`/api/transaction/${transactionId}`, { status: 'Ready to Check' }), {
+          pending: 'Update transaction...',
+          success: 'Transaction Updated',
+          error: 'Update transaction failed'
+        });
+        getTransactionById(transaction.id)
+      }
+    } catch (error) {
+      console.log(error);
+
+      Swal.fire({
+        title: "Error",
         text: "An error occurred while deleting the transaction.",
+        icon: "error"
+      });
+    }
+  };
+  
+  const checkTransaction = async (transactionId) => {
+    try {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You will be POC from warehouse in this transaction!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes!"
+      });
+
+      if (result.isConfirmed) {
+        await toast.promise(axios.put(`/api/transaction/${transactionId}`, { status: 'On Check' }), {
+          pending: 'Update transaction...',
+          success: 'Transaction Updated',
+          error: 'Update transaction failed'
+        });
+        getTransactionById(transaction.id)
+      }
+    } catch (error) {
+      console.log(error);
+
+      Swal.fire({
+        title: "Error",
+        text: "An error occurred while update the transaction.",
         icon: "error"
       });
     }
@@ -218,11 +280,31 @@ const Transaction = () => {
                   Delete
                 </button>
                 {
-                  showForm === true ? null : (
-                    <button className="btn btn-primary" onClick={() => onButtonAddClick()}>
+                  showForm === false && transaction.status === 'Inisialization' ? (
+                    <button className="btn btn-primary me-1" onClick={() => onButtonAddClick()}>
                       Add Item
                     </button>
-                  )
+                  ) : null
+                }
+                {
+                  transaction.status === 'Inisialization' ? (
+                    <button
+                      onClick={() => readyToCheckTransaction(transaction.id)}
+                      className="btn btn-success"
+                    >
+                      Ready to Check
+                    </button>
+                  ) : null
+                }
+                {
+                  transaction.status === 'Ready to Check' ? (
+                    <button
+                      onClick={() => checkTransaction(transaction.id)}
+                      className="btn btn-success"
+                    >
+                      Check
+                    </button>
+                  ) : null
                 }
                 <div className="panel-body table-responsive shadow mt-4 rounded-4">
                   <div ref={formAddDetailTransaction} className={"collapse " + (showForm ? 'show' : null)} id="formDetailTransaction">
