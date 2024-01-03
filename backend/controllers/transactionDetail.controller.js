@@ -69,7 +69,7 @@ exports.findAll = (req, res) => {
             as: 'itemDetail', // Specify the alias for the association
             include: [{
                 model: Item,
-                attributes: ['name'],
+                attributes: ['name', 'merk'],
                 as: 'item', // Specify the alias for the association
             }]
         }]
