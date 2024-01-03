@@ -15,6 +15,11 @@ module.exports = (table) => {
             type: Sequelize.INTEGER,
             allowNull: false,
         },
+        status: {
+            type: Sequelize.ENUM('Ready to Check', 'Accept', 'Accept with Return', 'Canceled'),
+            allowNull: false,
+            defaultValue: 'Ready to Check',
+        },
     }, {
         freezeTableName: true
     });
