@@ -153,7 +153,7 @@ const Transaction = () => {
       });
     }
   };
-  
+
   const checkTransaction = async (transactionId) => {
     try {
       const result = await Swal.fire({
@@ -238,6 +238,8 @@ const Transaction = () => {
     setInitialData(null)
   }
 
+  console.log(transactionDetails);
+
   return (
     <div className="container my-5">
       <div className="row shadow p-4 mx-3 rounded-3">
@@ -287,7 +289,7 @@ const Transaction = () => {
                   ) : null
                 }
                 {
-                  transaction.status === 'Inisialization' ? (
+                  transaction.status === 'Inisialization' && transactionDetails.length !== 0 ? (
                     <button
                       onClick={() => readyToCheckTransaction(transaction.id)}
                       className="btn btn-success"
@@ -326,7 +328,12 @@ const Transaction = () => {
                         <th scope="col">Item Name</th>
                         <th scope="col">Unit</th>
                         <th scope="col">Total Item</th>
-                        <th scope="col">Action</th>
+                        <th scope="col">Price</th>
+                        {
+                          transaction.status === 'Inisialization' ? (
+                            <th scope="col">Action</th>
+                          ) : null
+                        }
                       </tr>
                     </thead>
                     <tbody>
@@ -342,25 +349,30 @@ const Transaction = () => {
                         ) : (
                           transactionDetails.map((transactionDetail) => (
                             <tr key={transactionDetail.id}>
-                              <td>{transactionDetail.itemDetail.item.name || 0}</td>
+                              <td>{`${transactionDetail.itemDetail.item.merk} ${transactionDetail.itemDetail.item.name}`}</td>
                               <td>{transactionDetail.itemDetail.unit}</td>
                               <td>{transactionDetail.totalItem}</td>
-                              <td>
-                                <button
-                                  onClick={() => editTransactionDetail(transactionDetail.id)}
-                                  className="btn btn-primary me-1"
-                                  disabled={showForm === true ? true : false}
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() => deleteTransactionDetail(transactionDetail.id)}
-                                  className="btn btn-danger"
-                                  disabled={showForm === true ? true : false}
-                                >
-                                  Delete
-                                </button>
-                              </td>
+                              <td>{transactionDetail.itemDetail.price * transactionDetail.totalItem}</td>
+                              {
+                                transaction.status === 'Inisialization' ? (
+                                  <td>
+                                    <button
+                                      onClick={() => editTransactionDetail(transactionDetail.id)}
+                                      className="btn btn-primary me-1"
+                                      disabled={showForm === true ? true : false}
+                                    >
+                                      Edit
+                                    </button>
+                                    <button
+                                      onClick={() => deleteTransactionDetail(transactionDetail.id)}
+                                      className="btn btn-danger"
+                                      disabled={showForm === true ? true : false}
+                                    >
+                                      Delete
+                                    </button>
+                                  </td>
+                                ) : null
+                              }
                             </tr>
                           ))
                         )
