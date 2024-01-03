@@ -7,34 +7,55 @@ const User = db.user;
 const Op = Sequelize.Op;
 
 // Create and Save a new User
-exports.create = async(req, res) => {
+exports.create = (req, res) => {
     // Validate request
     if (!req.body.username) {
         res.status(400).send({
-            message: "Content can not be empty!"
+            message: "Username can not be empty!"
         });
         return;
     }
 
-    const hashPassword = await argon2.hash(req.body.password);
-
-    // Create a User
-    const user = {
-        username: req.body.username,
-        name: req.body.name,
-        password: hashPassword,
-        role: req.body.role,
+    var condition = {
+        username: { [Op.iLike]: req.body.username }
     };
 
-    // Save User in the database
-    User.create(user)
-        .then(data => {
-            res.send(data);
+    User.findAll({
+        where: condition,
+    })
+        .then(async (data) => {
+            if (data.length > 0) {
+                res.status(401).send({
+                    msg: "Username already taken!"
+                });
+            } else {
+                const hashPassword = await argon2.hash(req.body.password);
+
+                // Create a User
+                const user = {
+                    username: req.body.username,
+                    name: req.body.name,
+                    password: hashPassword,
+                    role: req.body.role,
+                };
+
+                // Save User in the database
+                User.create(user)
+                    .then(data => {
+                        res.send(data);
+                    })
+                    .catch(err => {
+                        res.status(500).send({
+                            message:
+                                err.message || "Some error occurred while creating the User."
+                        });
+                    });
+            }
         })
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while creating the User."
+                    err.message || "Some error occurred while retrieving users."
             });
         });
 };
@@ -47,7 +68,7 @@ exports.findAll = (req, res) => {
     let total = null
     let filterRole = req.query.role || "All";
     req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
-    
+
     const roleOption = [
         "super",
         "admin",
@@ -71,7 +92,7 @@ exports.findAll = (req, res) => {
             });
         });
 
-    User.findAll({ 
+    User.findAll({
         where: condition,
         offset: page * limit,
         limit: limit,
@@ -145,12 +166,12 @@ exports.update = (req, res) => {
 };
 
 // Reset Password by the id in the request
-exports.resetPassword = async(req, res) => {
+exports.resetPassword = async (req, res) => {
     const id = req.params.id;
-    
+
     const hashPassword = await argon2.hash(req.query.password);
 
-    User.update({password: hashPassword}, {
+    User.update({ password: hashPassword }, {
         where: { id: id }
     })
         .then(num => {
