@@ -19,13 +19,11 @@ exports.create = async (req, res) => {
         return;
     }
 
-    let condition = {
-        itemDetailId: { [Op.iLike]: req.body.itemDetailId },
-        transactionId: { [Op.iLike]: req.body.transactionId }
-    };
-
     TransactionDetail.findAll({
-        where: condition,
+        where: {
+            itemDetailId: { [Op.iLike]: req.body.itemDetailId },
+            transactionId: { [Op.iLike]: req.body.transactionId }
+        },
     })
         .then(dataTransactionDetail => {
             if (dataTransactionDetail.length > 0) {
