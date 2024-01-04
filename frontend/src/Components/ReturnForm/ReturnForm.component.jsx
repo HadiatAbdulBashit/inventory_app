@@ -4,14 +4,12 @@ import { useForm } from "react-hook-form";
 
 import formatRupiah from "../../Utils/formatRupiah";
 
-const ReturnForm = (
-    {
-        onFormSubmit,
-        initialData,
-        title,
-        onButtonCloseClick
-    }
-) => {
+const ReturnForm = ({
+    onFormSubmit,
+    initialData,
+    title,
+    onButtonCloseClick
+}) => {
     const {
         register,
         handleSubmit,
@@ -52,6 +50,10 @@ const ReturnForm = (
         resetForm()
         if (initialData) {
             getSelectedTransactionDetail(initialData.detailTransactionId)
+            if (initialData.totalItem) {
+                setValue('totalItem', initialData.totalItem)
+                setValue('description', initialData.description)
+            }
         }
     }, [initialData])
 
