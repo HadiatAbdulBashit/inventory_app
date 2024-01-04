@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import Swal from 'sweetalert2'
 import moment from "moment";
-import { useForm } from "react-hook-form";
 
 import formatRupiah from "../../Utils/formatRupiah";
 
@@ -25,15 +24,6 @@ const Transaction = () => {
   const [showFormItem, setShowFormItem] = useState(false)
   const [showFormReturn, setShowFormReturn] = useState(false)
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    reset,
-    clearErrors
-  } = useForm()
-
   const getTransactionById = async () => {
     try {
       const response = await axios.get(`/api/transaction/${id}`);
@@ -49,7 +39,7 @@ const Transaction = () => {
     setTransactionDetails(response.data);
     setIsLoading(false)
   };
-  
+
   const getReturnItem = async () => {
     const response = await axios.get(`/api/return?transactionId=${id}`);
     setReturnItems(response.data);
@@ -135,6 +125,38 @@ const Transaction = () => {
     }
   };
 
+  const deleteReturn = async (returnId) => {
+    try {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      });
+
+      if (result.isConfirmed) {
+        await toast.promise(axios.delete(`/api/return/${returnId}`), {
+          pending: 'Delete transaction...',
+          success: 'Transaction Deleted',
+          error: 'Delete transaction failed'
+        });
+        getTransactionDetail();
+        getReturnItem()
+      }
+    } catch (error) {
+      console.log(error);
+
+      Swal.fire({
+        title: "Error",
+        text: "An error occurred while update the transaction.",
+        icon: "error"
+      });
+    }
+  };
+
   const readyToCheckTransaction = async (transactionId) => {
     try {
       const result = await Swal.fire({
@@ -206,7 +228,6 @@ const Transaction = () => {
   const saveDetailTransaction = async (data) => {
     try {
       await axios.post("/api/transaction-detail", data);
-      reset();
     } catch (error) {
       toast.error(error.response.data.msg)
       throw new Error(error);
@@ -216,7 +237,6 @@ const Transaction = () => {
   const saveReturn = async (data) => {
     try {
       await axios.post("/api/return", data);
-      reset();
     } catch (error) {
       toast.error(error.response.data.msg)
       throw new Error(error);
@@ -226,7 +246,6 @@ const Transaction = () => {
   const editDetailTransaction = async (id, data) => {
     try {
       await axios.put(`/api/transaction-detail/${id}`, data);
-      reset();
     } catch (error) {
       toast.error(error.response.data.msg)
       throw new Error(error);
@@ -266,27 +285,26 @@ const Transaction = () => {
 
   const onButtonAddItemClick = () => {
     setFormItemStatus('Add Item')
-    reset();
     setInitialDataItem(null)
     setShowFormItem(true)
   }
-  
-  const onButtonAddReturnClick = (detailTransactionId) => {
+
+  const onButtonAddReturnClick = (detailTransactionId, type) => {
     setFormReturnStatus('Add Return Item')
-    reset();
-    setInitialDataReturn({detailTransactionId})
+    setInitialDataReturn({
+      detailTransactionId,
+      type
+    })
     setShowFormReturn(true)
   }
 
   const onButtonCloseItemClick = () => {
     setShowFormItem(false)
-    reset();
     setInitialDataItem(null)
   }
-  
+
   const onButtonCloseReturnClick = () => {
     setShowFormReturn(false)
-    reset();
     setInitialDataReturn(null)
   }
 
@@ -308,7 +326,7 @@ const Transaction = () => {
                     {transaction.type === 'In' ? 'Purchase from' : 'Sale to'} {transaction.secondParty} <span className="badge bg-primary bg-light text-dark">{transaction.status}</span>
                   </h2>
                   <p>
-                    Total Price: {formatRupiah(transaction.totalPrice || 0)}
+                    Total Transaction Price: {formatRupiah(transaction.totalPrice || 0)}
                   </p>
                   <p>
                     Order Date: {moment(transaction.createdAt).format('LLLL')}
@@ -367,12 +385,7 @@ const Transaction = () => {
                   <div className={"collapse " + (showFormItem ? 'show' : null)}>
                     <TransactionDetailForm
                       onFormSubmit={submitFormTransactionDetail}
-                      register={register}
-                      handleSubmit={handleSubmit}
-                      errors={errors}
-                      setValue={setValue}
                       initialDataItem={initialDataItem}
-                      clearErrors={clearErrors}
                       title={formItemStatus}
                       onButtonCloseClick={onButtonCloseItemClick}
                     />
@@ -383,10 +396,10 @@ const Transaction = () => {
                         <th scope="col">Item Name</th>
                         <th scope="col">Unit</th>
                         <th scope="col">Total Item</th>
-                        <th scope="col">Price</th>
+                        <th scope="col">Total Price</th>
                         {
                           transaction.status === 'Inisialization' || transaction.status === 'On Check' ? (
-                            <th scope="col">Action</th>
+                            <th scope="col">{transaction.status === 'On Check' ? 'Action/Status' : 'Action'}</th>
                           ) : null
                         }
                       </tr>
@@ -409,6 +422,11 @@ const Transaction = () => {
                               <td>{transactionDetail.totalItem}</td>
                               <td>{formatRupiah((transactionDetail.itemDetail.price * transactionDetail.totalItem) || 0)}</td>
                               {
+                                transaction.status === 'On Check' && transactionDetail.status !== "Ready to Check" ? (
+                                  <td>{transactionDetail.status}</td>
+                                ) : null
+                              }
+                              {
                                 transaction.status === 'Inisialization' ? (
                                   <td>
                                     <button
@@ -429,26 +447,26 @@ const Transaction = () => {
                                 ) : null
                               }
                               {
-                                transaction.status === 'On Check' ? (
+                                transaction.status === 'On Check' && transactionDetail.status === "Ready to Check" ? (
                                   <td>
                                     <button
                                       onClick={() => editTransactionDetail(transactionDetail.id)}
                                       className="btn btn-primary me-1"
-                                      disabled={showFormItem ?? false}
+                                      disabled={showFormReturn ?? false}
                                     >
                                       Accept
                                     </button>
                                     <button
-                                      onClick={() => onButtonAddReturnClick(transactionDetail.id)}
+                                      onClick={() => onButtonAddReturnClick(transactionDetail.id, 'Return')}
                                       className="btn btn-warning me-1"
-                                      disabled={showFormItem ?? false}
+                                      disabled={showFormReturn ?? false}
                                     >
                                       Return
                                     </button>
                                     <button
-                                      onClick={() => deleteTransactionDetail(transactionDetail.id)}
+                                      onClick={() => onButtonAddReturnClick(transactionDetail.id, 'Cancel')}
                                       className="btn btn-danger"
-                                      disabled={showFormItem ?? false}
+                                      disabled={showFormReturn ?? false}
                                     >
                                       Cancel
                                     </button>
@@ -461,83 +479,75 @@ const Transaction = () => {
                       }
                     </tbody>
                   </table>
-                </div>
-
-
-                {/* Return Item on Transaction */}
-                <h2 className="mt-4">Return</h2>
-                <div className="panel-body table-responsive shadow mt-4 rounded-4">
-                  <div className={"collapse " + (showFormReturn ? 'show' : null)}>
+                  <div className={"collapse mt-3 " + (showFormReturn ? 'show' : null)}>
                     <ReturnForm
                       onFormSubmit={submitFormReturn}
-                      register={register}
-                      handleSubmit={handleSubmit}
-                      errors={errors}
-                      setValue={setValue}
                       initialData={initialDataReturn}
-                      clearErrors={clearErrors}
                       title={formReturnStatus}
                       onButtonCloseClick={onButtonCloseReturnClick}
                     />
                   </div>
-                  <table className="table table-striped align-middle">
-                    <thead>
-                      <tr>
-                        <th scope="col">Item Name</th>
-                        <th scope="col">Unit</th>
-                        <th scope="col">Total Item</th>
-                        <th scope="col">Price</th>
-                        {
-                          transaction.status === 'Inisialization' || transaction.status === 'On Check' ? (
-                            <th scope="col">Action</th>
-                          ) : null
-                        }
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {
-                        returnItems.length === 0 ? (
-                          <tr>
-                            <td colSpan="5" align="center" height='200px'>
-                              <h1>
-                                No Data
-                              </h1>
-                            </td>
-                          </tr>
-                        ) : (
-                          returnItems.map((returnItem) => (
-                            <tr key={returnItem.id}>
-                              {/* <td>{`${returnItem.itemDetail.item.merk} ${returnItem.itemDetail.item.name}`}</td> */}
-                              {/* <td>{returnItem.itemDetail.unit}</td> */}
-                              <td>{returnItem.totalItem}</td>
-                              <td>{returnItem.description}</td>
+                </div>
+
+                {
+                  // Return Item on Transaction
+                  returnItems.length === 0 ? null : (
+                    <>
+                      <h2 className="mt-4">Return</h2>
+                      <div className="panel-body table-responsive shadow mt-4 rounded-4">
+                        <table className="table table-striped align-middle">
+                          <thead>
+                            <tr>
+                              <th scope="col">Item Name</th>
+                              <th scope="col">Unit</th>
+                              <th scope="col">Total Item</th>
+                              <th scope="col">Return Item</th>
+                              <th scope="col">Description</th>
                               {
-                                transaction.status === 'On Check' ? (
-                                  <td>
-                                    <button
-                                      onClick={() => editTransactionDetail(returnItem.id)}
-                                      className="btn btn-primary me-1"
-                                      disabled={showFormReturn ?? false}
-                                    >
-                                      Edit
-                                    </button>
-                                    <button
-                                      onClick={() => deleteTransactionDetail(returnItem.id)}
-                                      className="btn btn-danger"
-                                      disabled={showFormReturn ?? false}
-                                    >
-                                      Delete
-                                    </button>
-                                  </td>
+                                transaction.status === 'Inisialization' || transaction.status === 'On Check' ? (
+                                  <th scope="col">Action</th>
                                 ) : null
                               }
                             </tr>
-                          ))
-                        )
-                      }
-                    </tbody>
-                  </table>
-                </div>
+                          </thead>
+                          <tbody>
+                            {
+                              returnItems.map((returnItem) => (
+                                <tr key={returnItem.id}>
+                                  <td>{`${returnItem?.transactionDetail?.itemDetail?.item?.merk} ${returnItem?.transactionDetail?.itemDetail?.item?.name}`}</td>
+                                  <td>{returnItem?.transactionDetail?.itemDetail?.unit}</td>
+                                  <td>{returnItem?.transactionDetail?.totalItem}</td>
+                                  <td>{returnItem.totalItem}</td>
+                                  <td>{returnItem.description}</td>
+                                  {
+                                    transaction.status === 'On Check' ? (
+                                      <td>
+                                        <button
+                                          onClick={() => editTransactionDetail(returnItem.id)}
+                                          className="btn btn-primary me-1"
+                                          disabled={showFormReturn ?? false}
+                                        >
+                                          Edit
+                                        </button>
+                                        <button
+                                          onClick={() => deleteReturn(returnItem.id)}
+                                          className="btn btn-danger"
+                                          disabled={showFormReturn ?? false}
+                                        >
+                                          Delete
+                                        </button>
+                                      </td>
+                                    ) : null
+                                  }
+                                </tr>
+                              ))
+                            }
+                          </tbody>
+                        </table>
+                      </div>
+                    </>
+                  )
+                }
               </div>
             </>
           )
