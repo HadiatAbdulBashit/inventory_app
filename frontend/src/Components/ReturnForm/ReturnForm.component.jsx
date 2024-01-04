@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 import formatRupiah from "../../Utils/formatRupiah";
 
@@ -7,15 +8,18 @@ const ReturnForm = (
     {
         onFormSubmit,
         initialData,
-        register,
-        handleSubmit,
-        errors,
-        setValue,
-        clearErrors,
         title,
         onButtonCloseClick
     }
 ) => {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        setValue,
+        clearErrors
+    } = useForm()
+
     const [selectedTransactionDetail, setSelectedTransactionDetail] = useState(null);
 
     const resetForm = () => {
@@ -29,6 +33,9 @@ const ReturnForm = (
         try {
             const response = await axios.get(`/api/transaction-detail/${id}`);
             setSelectedTransactionDetail(response.data)
+            if (initialData.type === 'Cancel') {
+                setValue("totalItem", response.data.totalItem)
+            }
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -38,6 +45,7 @@ const ReturnForm = (
         data.transactionDetailId = initialData.detailTransactionId
         await onFormSubmit(data)
         resetForm()
+        onButtonCloseClick()
     }
 
     useEffect(() => {
@@ -93,14 +101,15 @@ const ReturnForm = (
             <div className="col-2">
                 <label className="form-label">Total Return Item</label>
                 <input
-                    {...register('totalItem', { 
-                        required: 'Total Item is Require', 
-                        min: { value: 1, message: 'Min 1 item' }, 
-                        max: { value: selectedTransactionDetail?.totalItem || 0, message: `Max ${selectedTransactionDetail?.totalItem || 0} Item` } })}
+                    {...register('totalItem', {
+                        required: 'Total Item is Require',
+                        min: { value: 1, message: 'Min 1 item' },
+                        max: { value: initialData?.type === 'Cancel' ? selectedTransactionDetail?.totalItem : selectedTransactionDetail?.totalItem - 1 || 0, message: `Max ${selectedTransactionDetail?.totalItem - 1 || 0} Item` }
+                    })}
                     type={'number'}
-                    max={selectedTransactionDetail?.totalItem}
+                    max={selectedTransactionDetail?.totalItem - 1}
                     min={1}
-                    // disabled={true}
+                    disabled={initialData?.type === 'Cancel' ?? false}
                     className={"form-control " + (errors.totalItem && errors.totalItem.message ? 'is-invalid' : null)}
                 />
             </div>
