@@ -18,7 +18,7 @@ const Transactions = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState({ sort: "createdAt", order: "asc" });
+  const [sort, setSort] = useState({ sort: "createdAt", order: "desc" });
   const [limit, setLimit] = useState(5);
   const [filter, setFilter] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
@@ -117,7 +117,7 @@ const Transactions = () => {
                         <td width={'120px'}>
                           <ul className="action-list">
                             <li>
-                              <Link to={`${transaction.id}/edit`} className="btn btn-primary me-2">
+                              <Link to={'/dashboard/' + (transaction.type === 'Out' ? 'sale' : 'purchase') + `/${transaction.id}/edit`} className="btn btn-primary me-2">
                                 <RiPencilLine />
                               </Link>
                             </li>

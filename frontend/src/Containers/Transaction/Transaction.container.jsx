@@ -204,7 +204,7 @@ const Transaction = () => {
     setFormItemStatus('Edit Item')
     setShowFormItem(true)
   };
-  
+
   const editReturn = async (returnItemId, type) => {
     getSelectedReturn(returnItemId, type)
     setFormReturnStatus('Edit Return Item')
@@ -237,7 +237,7 @@ const Transaction = () => {
       throw new Error(error);
     }
   }
-  
+
   const saveEditedReturn = async (id, data) => {
     try {
       await axios.put(`/api/return/${id}`, data);
@@ -325,23 +325,43 @@ const Transaction = () => {
                   <h2>
                     {transaction.type === 'In' ? 'Purchase from' : 'Sale to'} {transaction.secondParty} <span className="badge bg-primary bg-light text-dark">{transaction.status}</span>
                   </h2>
-                  <p>
-                    Total Transaction Price: {formatRupiah(transaction.totalPrice || 0)}
-                  </p>
-                  <p>
-                    Order Date: {moment(transaction.createdAt).format('LLLL')}
-                  </p>
-                  <p>
-                    POC Office: {transaction.userOffice?.name || 0}
-                  </p>
-                  {
-                    transaction.userWarehouse ? (
-                      <p>
-                        POC Warehouse: {transaction.userWarehouse?.name}
-                      </p>
-                    ) : null
-                  }
-                  <Link to={`edit`} className="btn btn-primary me-1">
+                  <table width={'100%'} className='my-3'>
+                    <tr>
+                      <td>
+                        Total Transaction Price:
+                      </td>
+                      <td>
+                        {formatRupiah(transaction.totalPrice || 0)}
+                      </td>
+                      <td>
+                        POC Office:
+                      </td>
+                      <td>
+                        {transaction.userOffice?.name || 0}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        Order Date:
+                      </td>
+                      <td>
+                        {moment(transaction.createdAt).format('LLLL')}
+                      </td>
+                      {
+                        transaction.userWarehouse ? (
+                          <>
+                            <td>
+                              POC Warehouse:
+                            </td>
+                            <td>
+                              {transaction.userWarehouse?.name}
+                            </td>
+                          </>
+                        ) : null
+                      }
+                    </tr>
+                  </table>
+                  <Link to={'/dashboard/' + (transaction.type === 'Out' ? 'sale' : 'purchase') + `/${id}/edit`} className="btn btn-primary me-1">
                     Edit
                   </Link>
                   <button
@@ -429,14 +449,14 @@ const Transaction = () => {
                             <tr key={transactionDetail.id}>
                               <td>{`${transactionDetail.itemDetail.item.merk} ${transactionDetail.itemDetail.item.name}`}</td>
                               <td>{transactionDetail.itemDetail.unit}</td>
-                              <td>{transactionDetail.totalItem}</td>
+                              <td width={'105px'}>{transactionDetail.totalItem}</td>
                               <td>{formatRupiah((transactionDetail.itemDetail.price * transactionDetail.totalItem) || 0)}</td>
                               {
                                 transaction.status === 'On Check' && transactionDetail.status !== "Ready to Check" ? (
                                   <td>
                                     {transactionDetail.status}
                                     {
-                                      transactionDetail.status === 'Accept' && transaction.status === 'On Check'? (
+                                      transactionDetail.status === 'Accept' && transaction.status === 'On Check' ? (
                                         <button
                                           onClick={() => onButtonUpdateStatusItemClick(transactionDetail.id, 'Ready to Check')}
                                           className="btn btn-warning ms-3"
@@ -539,8 +559,8 @@ const Transaction = () => {
                                 <tr key={returnItem.id}>
                                   <td>{`${returnItem?.transactionDetail?.itemDetail?.item?.merk} ${returnItem?.transactionDetail?.itemDetail?.item?.name}`}</td>
                                   <td>{returnItem?.transactionDetail?.itemDetail?.unit}</td>
-                                  <td>{returnItem?.transactionDetail?.totalItem}</td>
-                                  <td>{returnItem.totalItem}</td>
+                                  <td width={'105px'}>{returnItem?.transactionDetail?.totalItem}</td>
+                                  <td width={'120px'}>{returnItem.totalItem}</td>
                                   <td>{returnItem.description}</td>
                                   {
                                     transaction.status === 'On Check' ? (

@@ -18,7 +18,7 @@ const Sales = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState({ sort: "createdAt", order: "asc" });
+  const [sort, setSort] = useState({ sort: "createdAt", order: "desc" });
   const [limit, setLimit] = useState(5);
   const [filter, setFilter] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
