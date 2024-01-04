@@ -130,12 +130,7 @@ exports.findOne = (req, res) => {
     ReturnItem.findOne({
         where: {
             id: id
-        },
-        include: [{
-            model: Sale,
-            attributes: ['customer'],
-            as: 'sale', // Specify the alias for the association
-        }]
+        }
     })
         .then(data => {
             if (data) {
