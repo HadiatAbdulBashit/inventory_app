@@ -1,20 +1,22 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import Select from 'react-select'
 
-const TransactionDetailForm = (
-    {
-        onFormSubmit,
-        initialData,
+const TransactionDetailForm = ({
+    onFormSubmit,
+    initialData,
+    title,
+    onButtonCloseClick
+}) => {
+    const {
         register,
         handleSubmit,
-        errors,
+        formState: { errors },
         setValue,
-        clearErrors,
-        title,
-        onButtonCloseClick
-    }
-) => {
+        clearErrors
+    } = useForm()
+
     const [optionsItem, setOptionsItem] = useState([]);
     const [optionsItemDetail, setOptionsItemDetail] = useState([]);
     const [maxItem, setMaxItem] = useState(null);
@@ -103,7 +105,6 @@ const TransactionDetailForm = (
         await onFormSubmit(data)
         resetForm()
     }
-
 
     useEffect(() => {
         resetForm()
