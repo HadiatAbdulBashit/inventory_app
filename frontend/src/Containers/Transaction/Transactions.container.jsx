@@ -107,6 +107,7 @@ const Transactions = () => {
                       <th>Status</th>
                       <th>Order Date</th>
                       <th>POC Office</th>
+                      <th>POC Warehouse</th>
                       <th>View</th>
                     </tr>
                   </thead>
@@ -140,6 +141,7 @@ const Transactions = () => {
                         </td>
                         <td>{moment(transaction.createdAt).format('llll')}</td>
                         <td>{transaction.userOffice.name}</td>
+                        <td>{transaction.userWarehouse?.name || '-'}</td>
                         <td>
                           <Link to={`${transaction.id}`} className="btn btn-success">
                             <RiEyeLine />
