@@ -3,6 +3,7 @@ const { Sequelize } = require('sequelize');
 const db = require("../models");
 
 const Transaction = db.transaction;
+const TransactionDetail = db.transactionDetail;
 const User = db.user;
 const Op = Sequelize.Op;
 
@@ -70,6 +71,11 @@ exports.findAll = (req, res) => {
                 attributes: ['name'],
                 as: 'userOffice',
             },
+            {
+                model: User,
+                attributes: ['name'],
+                as: 'userWarehouse',
+            },
         ]
     })
         .then(transactions => {
@@ -127,30 +133,59 @@ exports.findOne = (req, res) => {
 };
 
 // Update a Transaction by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     const id = req.params.id;
 
     req.body.status === 'On Check' ? req.body.pocWarehouse = req.user.id : null;
 
-    Transaction.update(req.body, {
-        where: { id: id }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    msg: "Transaction was updated successfully."
-                });
-            } else {
-                res.send({
-                    msg: `Cannot update Transaction with id=${id}. Maybe Transaction was not found or req.body is empty!`
-                });
-            }
+    if (req.body.status === 'Done') {
+        await TransactionDetail.findAll({
+            where: {
+                transactionId: { [Op.iLike]: id }
+            },
         })
-        .catch(err => {
-            res.status(500).send({
-                msg: "Error updating Transaction with id=" + id
+            .then(dataTransactionDetails => {
+                const isNotDone = dataTransactionDetails.some(TransactionDetail => TransactionDetail.status === 'Ready to Check')
+                if (isNotDone) {
+                    return res.status(401).send({
+                        msg: `Transaction canot be done. Because in this transaction have item not validated!`
+                    });
+                }
+                const isAccept = dataTransactionDetails.every(TransactionDetail => TransactionDetail.status === 'Accept')
+                const isCancel = dataTransactionDetails.every(TransactionDetail => TransactionDetail.status === 'Cancel')
+                req.body.status = isAccept ? 'Success' : isCancel ? 'Canceled' : 'Success with Return'
+            })
+            .catch(err => {
+                res.status(500).send({
+                    msg:
+                        err.message || "Some error occurred while retrieving transaction detail."
+                });
+                return;
             });
-        });
+    }
+
+    if (req.body.status !== 'Done') {
+        Transaction.update(req.body, {
+            where: { id: id }
+        })
+            .then(num => {
+                if (num == 1) {
+                    res.send({
+                        msg: "Transaction was updated successfully."
+                    });
+                } else {
+                    res.send({
+                        msg: `Cannot update Transaction with id=${id}. Maybe Transaction was not found or req.body is empty!`
+                    });
+                }
+            })
+            .catch(err => {
+                res.status(500).send({
+                    msg: "Error updating Transaction with id=" + id
+                });
+            });
+    }
+
 };
 
 // Delete a Transaction with the specified id in the request
