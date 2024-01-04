@@ -16,7 +16,7 @@ module.exports = (table) => {
             allowNull: false,
         },
         status: {
-            type: Sequelize.ENUM('Ready to Check', 'Accept', 'Accept with Return', 'Canceled'),
+            type: Sequelize.ENUM('Ready to Check', 'Accept', 'Accept with Return', 'Cancel'),
             allowNull: false,
             defaultValue: 'Ready to Check',
         },
