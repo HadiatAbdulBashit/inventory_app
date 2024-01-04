@@ -198,6 +198,27 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
 
+    if (req.body.status) {
+        TransactionDetail.update(req.body, {
+            where: { id: id }
+        })
+            .then(num => {
+                if (num == 1) {
+                    res.send({ msg: "Transaction Detail was updated successfully." });
+                } else {
+                    res.send({
+                        msg: `Cannot update Transaction Detail with id=${id}. Maybe Transaction Detail was not found or req.body is empty!`
+                    });
+                }
+            })
+            .catch(err => {
+                res.status(500).send({
+                    msg: "Error updating Transaction Detail with id=" + id
+                });
+            });
+            return;
+    }
+
     // =============================
     ItemDetail.findOne({ where: { id: req.body.itemDetailId } })
         .then(dataItemDetail => {
