@@ -55,6 +55,17 @@ const Transaction = () => {
     });
   };
 
+  const getSelectedReturn = async (returnId, type) => {
+    const response = await axios.get(`/api/return/${returnId}`);
+    setInitialDataReturn({
+      returnId,
+      totalItem: response.data.totalItem,
+      description: response.data.description,
+      detailTransactionId: response.data.transactionDetailId,
+      type
+    });
+  };
+
   useEffect(() => {
     setIsLoading(true)
     getTransactionById();
@@ -224,6 +235,12 @@ const Transaction = () => {
     setFormItemStatus('Edit Item')
     setShowFormItem(true)
   };
+  
+  const editReturn = async (returnItemId, type) => {
+    getSelectedReturn(returnItemId, type)
+    setFormReturnStatus('Edit Return Item')
+    setShowFormReturn(true)
+  };
 
   const saveDetailTransaction = async (data) => {
     try {
@@ -251,6 +268,15 @@ const Transaction = () => {
       throw new Error(error);
     }
   }
+  
+  const saveEditedReturn = async (id, data) => {
+    try {
+      await axios.put(`/api/return/${id}`, data);
+    } catch (error) {
+      toast.error(error.response.data.msg)
+      throw new Error(error);
+    }
+  }
 
   const submitFormTransactionDetail = async (data) => {
     data.transactionId = id
@@ -270,11 +296,11 @@ const Transaction = () => {
   const submitFormReturn = async (data) => {
     data.transactionId = id
     await toast.promise(
-      initialDataReturn.totalItem ? editDetailTransaction(initialDataItem.transactionDetailId, data) : saveReturn(data),
+      initialDataReturn.totalItem ? saveEditedReturn(initialDataReturn.returnId, data) : saveReturn(data),
       {
-        pending: initialDataItem ? 'Editing' : 'Adding' + ' return item...',
-        success: 'Return Item ' + initialDataItem ? 'Edited' : 'Added',
-        error: initialDataItem ? 'Editing' : 'Adding' + ' return item failed'
+        pending: initialDataReturn ? 'Editing' : 'Adding' + ' return item...',
+        success: 'Return Item ' + initialDataReturn ? 'Edited' : 'Added',
+        error: initialDataReturn ? 'Editing' : 'Adding' + ' return item failed'
       }
     )
     setShowFormItem(false)
@@ -289,7 +315,7 @@ const Transaction = () => {
     setShowFormItem(true)
   }
 
-  const onButtonAddReturnClick = (detailTransactionId, type) => {
+  const onButtonReturnClick = (detailTransactionId, type) => {
     setFormReturnStatus('Add Return Item')
     setInitialDataReturn({
       detailTransactionId,
@@ -306,6 +332,11 @@ const Transaction = () => {
   const onButtonCloseReturnClick = () => {
     setShowFormReturn(false)
     setInitialDataReturn(null)
+  }
+
+  const onButtonUpdateStatusItemClick = (transactionDetailId, statusTransactionDetail) => {
+    editDetailTransaction(transactionDetailId, { status: statusTransactionDetail })
+    getTransactionDetail()
   }
 
   return (
@@ -377,6 +408,16 @@ const Transaction = () => {
                       </button>
                     ) : null
                   }
+                  {
+                    transaction.status === 'On Check' ? (
+                      <button
+                        onClick={() => checkTransaction(transaction.id)}
+                        className="btn btn-success"
+                      >
+                        Done
+                      </button>
+                    ) : null
+                  }
                 </div>
 
                 {/* Items / Detail Transaction */}
@@ -423,7 +464,20 @@ const Transaction = () => {
                               <td>{formatRupiah((transactionDetail.itemDetail.price * transactionDetail.totalItem) || 0)}</td>
                               {
                                 transaction.status === 'On Check' && transactionDetail.status !== "Ready to Check" ? (
-                                  <td>{transactionDetail.status}</td>
+                                  <td>
+                                    {transactionDetail.status}
+                                    {
+                                      transactionDetail.status === 'Accept' && transaction.status === 'On Check'? (
+                                        <button
+                                          onClick={() => onButtonUpdateStatusItemClick(transactionDetail.id, 'Ready to Check')}
+                                          className="btn btn-warning ms-3"
+                                          disabled={showFormReturn ?? false}
+                                        >
+                                          Cancel
+                                        </button>
+                                      ) : null
+                                    }
+                                  </td>
                                 ) : null
                               }
                               {
@@ -450,21 +504,21 @@ const Transaction = () => {
                                 transaction.status === 'On Check' && transactionDetail.status === "Ready to Check" ? (
                                   <td>
                                     <button
-                                      onClick={() => editTransactionDetail(transactionDetail.id)}
+                                      onClick={() => onButtonUpdateStatusItemClick(transactionDetail.id, 'Accept')}
                                       className="btn btn-primary me-1"
                                       disabled={showFormReturn ?? false}
                                     >
                                       Accept
                                     </button>
                                     <button
-                                      onClick={() => onButtonAddReturnClick(transactionDetail.id, 'Return')}
+                                      onClick={() => onButtonReturnClick(transactionDetail.id, 'Return')}
                                       className="btn btn-warning me-1"
                                       disabled={showFormReturn ?? false}
                                     >
                                       Return
                                     </button>
                                     <button
-                                      onClick={() => onButtonAddReturnClick(transactionDetail.id, 'Cancel')}
+                                      onClick={() => onButtonReturnClick(transactionDetail.id, 'Cancel')}
                                       className="btn btn-danger"
                                       disabled={showFormReturn ?? false}
                                     >
@@ -523,7 +577,7 @@ const Transaction = () => {
                                     transaction.status === 'On Check' ? (
                                       <td>
                                         <button
-                                          onClick={() => editTransactionDetail(returnItem.id)}
+                                          onClick={() => editReturn(returnItem.id, returnItem?.transactionDetail?.totalItem === returnItem.totalItem ? 'Cancel' : 'Return')}
                                           className="btn btn-primary me-1"
                                           disabled={showFormReturn ?? false}
                                         >
