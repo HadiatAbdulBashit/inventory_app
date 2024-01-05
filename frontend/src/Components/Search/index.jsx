@@ -1,6 +1,6 @@
 const Search = ({ setSearch }) => {
 	return (
-		<div className="col">
+		<div className="me-2" style={{minWidth: '100px'}}>
 			<input
 				type="text"
 				className="form-control"

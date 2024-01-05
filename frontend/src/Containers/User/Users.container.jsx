@@ -126,12 +126,10 @@ const Users = () => {
       <div className="panel">
         <div className="panel-heading">
           <div className="d-flex justify-content-between">
-            <div className="row">
-              <div className="col-auto">
-                <Link to="/dashboard/user/add" className="btn btn-primary">
+            <div className="d-flex">
+                <Link to="/dashboard/user/add" className="btn btn-primary me-2">
                   Add New
                 </Link>
-              </div>
               <Search setSearch={(search) => setSearch(search)} />
             </div>
             <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy}/>
