@@ -43,8 +43,6 @@ const Transactions = () => {
     setIsLoading(false)
   };
 
-  console.log(monthFilter);
-
   const deleteTransaction = async (transactionId) => {
     try {
       const result = await Swal.fire({
@@ -199,7 +197,7 @@ const Transactions = () => {
                         <td width={'20%'}>{transaction.secondParty}</td>
                         <td>{formatRupiah(transaction.totalPrice || 0)}</td>
                         <td>
-                          <span className={"badge text-dark " + (transaction.status === 'Success' || transaction.status === 'Success with Return' ? 'bg-badge-success' : transaction.status === 'Canceled' ? 'bg-badge-danger' : 'bg-badge-warning' )}>
+                          <span className={"badge text-dark " + (transaction.status === 'Success' || transaction.status === 'Success with Return' ? 'bg-badge-success' : transaction.status === 'Canceled' ? 'bg-badge-danger' : 'bg-badge-warning')}>
                             {transaction.status}
                           </span>
                         </td>
@@ -220,46 +218,38 @@ const Transactions = () => {
           )
         }
         <div className="panel-footer">
-          <div className="row row-cols-2 align-transactions-center justify-content-between">
-            <div className="col">
-              <div className="row total-show">
-                <label htmlFor="total-show" className="col-auto align-self-center">Show :</label>
-                <div className="col-auto">
-                  <select className="form-select" id="total-show" value={limit} onChange={(e) => setLimit(e.target.value)}>
-                    <option>5</option>
-                    <option>10</option>
-                    <option>15</option>
-                    <option>20</option>
-                  </select>
-                </div>
-                <div className="col-auto align-self-center">
-                  out of <b>{data.total}</b> entries
-                </div>
+          <div className="d-flex justify-content-between align-items-center">
+            <div className="d-flex align-items-center gap-2">
+              <label htmlFor="total-show">Show :</label>
+              <div>
+                <select className="form-select" id="total-show" value={limit} onChange={(e) => setLimit(e.target.value)}>
+                  <option>5</option>
+                  <option>10</option>
+                  <option>15</option>
+                  <option>20</option>
+                </select>
+              </div>
+              <div>
+                out of <b>{data.total}</b> entries
               </div>
             </div>
-            <div className="col">
-              <div className="row justify-content-right">
-                <div className="col align-self-center d-flex justify-content-evenly">
-                  <Filter
-                    listFilter={data.type ? data.type : []}
-                    setFilter={(filtered) => setFilterType(filtered)}
-                    title='Type'
-                  />
-                  <Filter
-                    listFilter={data.status ? data.status : []}
-                    setFilter={(filtered) => setFilterStatus(filtered)}
-                    title='Status'
-                  />
-                </div>
-                <div className="col-auto align-self-center">
-                  <Pagination
-                    page={page}
-                    limit={data.limit ? data.limit : 0}
-                    total={data.total ? data.total : 0}
-                    setPage={(page) => setPage(page)}
-                  />
-                </div>
-              </div>
+            <div className="d-flex align-items-center gap-2">
+              <Filter
+                listFilter={data.type ? data.type : []}
+                setFilter={(filtered) => setFilterType(filtered)}
+                title='Type'
+              />
+              <Filter
+                listFilter={data.status ? data.status : []}
+                setFilter={(filtered) => setFilterStatus(filtered)}
+                title='Status'
+              />
+              <Pagination
+                page={page}
+                limit={data.limit ? data.limit : 0}
+                total={data.total ? data.total : 0}
+                setPage={(page) => setPage(page)}
+              />
             </div>
           </div>
         </div>

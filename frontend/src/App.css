@@ -132,6 +132,15 @@ aside svg {
   background-color: #ffa7a7;
 }
 
+.page-link.active {
+  background-color: #555;
+  border-color: #555;
+}
+
+.page-link {
+  color: #555;
+}
+
 .shadow {
   box-shadow: var(--box-shadow)!important;
 }

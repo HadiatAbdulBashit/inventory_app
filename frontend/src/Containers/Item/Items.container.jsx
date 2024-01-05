@@ -65,7 +65,7 @@ const Items = () => {
       });
     }
   };
-  
+
   const sortBy = [
     {
       value: 'name',
@@ -88,9 +88,9 @@ const Items = () => {
         <div className="panel-heading">
           <div className="d-flex justify-content-between">
             <div className="d-flex">
-                <Link to="/dashboard/item/add" className="btn btn-primary me-2">
-                  Add New
-                </Link>
+              <Link to="/dashboard/item/add" className="btn btn-primary me-2">
+                Add New
+              </Link>
               <Search setSearch={(search) => setSearch(search)} />
             </div>
             <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
@@ -157,41 +157,33 @@ const Items = () => {
           )
         }
         <div className="panel-footer">
-          <div className="row row-cols-2 align-items-center justify-content-between">
-            <div className="col">
-              <div className="row total-show">
-                <label htmlFor="total-show" className="col-auto align-self-center">Show :</label>
-                <div className="col-auto">
-                  <select className="form-select" id="total-show" value={limit} onChange={(e) => setLimit(e.target.value)}>
-                    <option>5</option>
-                    <option>10</option>
-                    <option>15</option>
-                    <option>20</option>
-                  </select>
-                </div>
-                <div className="col-auto align-self-center">
-                  out of <b>{data.total}</b> entries
-                </div>
+          <div className="d-flex align-items-center justify-content-between">
+            <div className="d-flex align-items-center gap-2">
+              <label htmlFor="total-show">Show :</label>
+              <div>
+                <select className="form-select" id="total-show" value={limit} onChange={(e) => setLimit(e.target.value)}>
+                  <option>5</option>
+                  <option>10</option>
+                  <option>15</option>
+                  <option>20</option>
+                </select>
+              </div>
+              <div>
+                out of <b>{data.total}</b> entries
               </div>
             </div>
-            <div className="col">
-              <div className="row justify-content-right">
-                <div className="col align-self-center">
-                  <Filter
-                    listFilter={data.category ? data.category : []}
-                    setFilter={(filtered) => setFilter(filtered)}
-                    title='Category'
-                  />
-                </div>
-                <div className="col-auto align-self-center">
-                  <Pagination
-                    page={page}
-                    limit={data.limit ? data.limit : 0}
-                    total={data.total ? data.total : 0}
-                    setPage={(page) => setPage(page)}
-                  />
-                </div>
-              </div>
+            <div className="d-flex align-items-center gap-2">
+              <Filter
+                listFilter={data.category ? data.category : []}
+                setFilter={(filtered) => setFilter(filtered)}
+                title='Category'
+              />
+              <Pagination
+                page={page}
+                limit={data.limit ? data.limit : 0}
+                total={data.total ? data.total : 0}
+                setPage={(page) => setPage(page)}
+              />
             </div>
           </div>
         </div>

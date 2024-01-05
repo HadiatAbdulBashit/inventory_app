@@ -41,7 +41,7 @@ const Pagination = ({ page, total, limit, setPage }) => {
 	};
 
 	return (
-		<ul className="pagination justify-content-end">
+		<ul className="pagination justify-content-end m-0">
 			<li className={"page-item " + (page === 1 ? 'disabled' : null)}>
 				<button className="page-link" onClick={() => handlePrevious()}>&laquo;</button>
 			</li>

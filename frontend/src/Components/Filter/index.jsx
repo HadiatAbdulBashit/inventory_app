@@ -23,6 +23,7 @@ const Filter = ({ listFilter, setFilter, title }) => {
 			isMulti
 			onChange={onChange}
 			placeholder={`Filter by ${title}...`}
+			styles={{ width: '200px' }}
 		/>
 	);
 };
