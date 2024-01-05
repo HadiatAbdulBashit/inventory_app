@@ -19,7 +19,7 @@ const TransactionForm = ({ onFormSubmit, initialData, title, secondParty }) => {
 
     return (
         <form className="row g-3 shadow p-4 rounded-3" onSubmit={handleSubmit(onFormSubmit)}>
-            <div className={"mb-3 " + title === 'Add Sale' ? 'col-6' : 'col-12'}>
+            <div className={"mb-3 " + (title === 'Add Purchase' || title === 'Edit Purchase' ? 'col-6' : 'col-12')}>
                 <label className="form-label">{secondParty}</label>
                 <input
                     {...register('secondParty', { required: `${secondParty} is Require` })}
@@ -36,7 +36,7 @@ const TransactionForm = ({ onFormSubmit, initialData, title, secondParty }) => {
                         <label className="form-label">Total Price</label>
                         <input
                             {...register('totalPrice', { required: 'Total Price is Require' })}
-                            type="text"
+                            type={'number'}
                             className={"form-control " + (errors.totalPrice && errors.totalPrice.message ? 'is-invalid' : null)}
                         />
                         <div className="invalid-feedback">
