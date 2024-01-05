@@ -156,7 +156,7 @@ const Users = () => {
               </div>
             </div>
           ) : (
-            data.length === 0 ? (
+            data.users?.length === 0 ? (
               <div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <h1>No User</h1>
               </div>
@@ -172,7 +172,7 @@ const Users = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {data.user?.map((user) => (
+                    {data.users?.map((user) => (
                       <tr key={user.id}>
                         <td style={{ width: '170px' }}>
                           <ul className="action-list">
