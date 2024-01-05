@@ -104,7 +104,7 @@ const Items = () => {
               </div>
             </div>
           ) : (
-            data.length === 0 ? (
+            data.items.length === 0 ? (
               <div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <h1>No Item</h1>
               </div>

@@ -70,9 +70,10 @@ exports.findAll = (req, res) => {
     req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
 
     const roleOption = [
-        "super",
-        "admin",
-        "staff",
+        "Super Admin",
+        "Admin",
+        "Office",
+        "Warehouse",
     ];
 
     filterRole === "All" ? filterRole = [...roleOption] : filterRole = req.query.role.split(",");
@@ -98,11 +99,11 @@ exports.findAll = (req, res) => {
         limit: limit,
         order: [sort]
     })
-        .then(user => {
+        .then(users => {
             res.send({
                 page,
                 limit,
-                user,
+                users,
                 total,
                 role: roleOption
             });

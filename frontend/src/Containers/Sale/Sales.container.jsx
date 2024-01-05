@@ -115,7 +115,7 @@ const Sales = () => {
               </div>
             </div>
           ) : (
-            data.length === 0 ? (
+            data.transactions.length === 0 ? (
               <div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <h1>No Transaction</h1>
               </div>
