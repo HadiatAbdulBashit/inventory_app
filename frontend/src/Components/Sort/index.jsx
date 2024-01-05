@@ -26,7 +26,7 @@ const Sort = ({ sort, setSort, listSort }) => {
 				<option value="createdAt">Date</option>
 				{
 					listSort.map((sortBy, index) => (
-						<option value={sortBy.toLowerCase()} key={index}>{sortBy}</option>
+						<option value={sortBy.value} key={index}>{sortBy.name}</option>
 					))
 				}
 			</select>
