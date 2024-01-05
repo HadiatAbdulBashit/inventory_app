@@ -62,10 +62,18 @@ exports.findAll = (req, res) => {
     condition = req.query.status && condition ? { ...condition, status: { [Op.or]: filterStatus } } : condition ? condition : req.query.status ? { status: { [Op.or]: filterStatus } } : null;
 
     if (req.query.startDate && req.query.endDate) {
+        let startDate = new Date(req.query.startDate);
+        startDate = startDate.toISOString().split('T')[0];
+
+        let endDate = new Date(req.query.endDate);
+        endDate = endDate.setDate(endDate.getDate() + 1)
+        let newEndDate = new Date(endDate)
+        newEndDate = newEndDate.toISOString().split('T')[0];
+        
         condition = {
             ...condition,
             createdAt: {
-                [Op.between]: [new Date(req.query.startDate), new Date(req.query.endDate)],
+                [Op.between]: [startDate, newEndDate],
             },
         };
     } else if (req.query.month && req.query.year) {
