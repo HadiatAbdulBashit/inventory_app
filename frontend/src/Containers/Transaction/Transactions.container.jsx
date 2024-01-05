@@ -25,21 +25,25 @@ const Transactions = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [monthFilter, setMonthFilter] = useState(moment().format("YYYY-MM"))
+  const [filterDate, setFilterDate] = useState('month');
 
   useEffect(() => {
     setIsLoading(true)
     getTransactions();
-  }, [page, search, sort, filterType, limit, filterStatus]);
+  }, [page, search, sort, filterType, limit, filterStatus, monthFilter, startDate, endDate, filterDate]);
 
   useEffect(() => {
     setPage(1);
-  }, [search, limit, filterType, filterStatus]);
+  }, [search, limit, filterType, filterStatus, monthFilter, startDate, endDate, filterDate]);
 
   const getTransactions = async () => {
-    const response = await axios.get(`/api/transaction?page=${page}&search=${search}&sort=${sort.sort},${sort.order}&type=${filterType}&limit=${limit}&status=${filterStatus}&startDate=${startDate}&endDate=${endDate}`);
+    const response = await axios.get(`/api/transaction?page=${page}&search=${search}&sort=${sort.sort},${sort.order}&type=${filterType}&limit=${limit}&status=${filterStatus}` + (filterDate === 'month' ? `&month=${monthFilter.split('-')[1]}&year=${monthFilter.split('-')[0]}` : filterDate === 'range' ? `&startDate=${startDate}&endDate=${endDate}` : ''));
     setData(response.data);
     setIsLoading(false)
   };
+
+  console.log(monthFilter);
 
   const deleteTransaction = async (transactionId) => {
     try {
@@ -119,9 +123,26 @@ const Transactions = () => {
           <div className="d-flex justify-content-between">
             <div className="d-flex">
               <Search setSearch={(search) => setSearch(search)} />
-              <input type="date" onChange={onStartDateRangeChange} className='form-control me-2' style={{ width: '130px' }} value={startDate.toISOString().split('T')[0]} />
-              <input type="date" onChange={onEndDateRangeChange} className='form-control me-2' style={{ width: '130px' }} value={endDate.toISOString().split('T')[0]} />
-              <button className="btn btn-primary" onClick={() => getTransactions()}>Filter</button>
+              <div className="dropdown me-2">
+                <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownFilterDate" data-bs-toggle="dropdown" aria-expanded="false">
+                  Filter Date
+                </button>
+                <ul className="dropdown-menu" aria-labelledby="dropdownFilterDate">
+                  <li><button className="dropdown-item" type="button" onClick={() => setFilterDate(false)}>None</button></li>
+                  <li><button className="dropdown-item" type="button" onClick={() => setFilterDate('month')}>Month</button></li>
+                  <li><button className="dropdown-item" type="button" onClick={() => setFilterDate('range')}>Range Date</button></li>
+                </ul>
+              </div>
+              {
+                filterDate === 'month' ? (
+                  <input type="month" className='form-control me-2' onChange={e => setMonthFilter(e.target.value)} style={{ width: '150px' }} value={monthFilter} />
+                ) : filterDate === 'range' ? (
+                  <>
+                    <input type="date" onChange={onStartDateRangeChange} className='form-control me-2' style={{ width: '130px' }} value={startDate.toISOString().split('T')[0]} />
+                    <input type="date" onChange={onEndDateRangeChange} className='form-control me-2' style={{ width: '130px' }} value={endDate.toISOString().split('T')[0]} />
+                  </>
+                ) : null
+              }
             </div>
             <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
           </div>
@@ -178,7 +199,7 @@ const Transactions = () => {
                         <td width={'20%'}>{transaction.secondParty}</td>
                         <td>{formatRupiah(transaction.totalPrice || 0)}</td>
                         <td>
-                          <span className="badge bg-primary bg-light text-dark">
+                          <span className={"badge text-dark " + (transaction.status === 'Success' || transaction.status === 'Success with Return' ? 'bg-badge-success' : transaction.status === 'Canceled' ? 'bg-badge-danger' : 'bg-badge-warning' )}>
                             {transaction.status}
                           </span>
                         </td>

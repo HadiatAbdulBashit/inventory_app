@@ -115,6 +115,23 @@ aside svg {
   color: var(--color-danger);
 }
 
+.btn-secondary {
+  background-color: transparent;
+  color: #555;
+}
+
+.bg-badge-warning {
+  background-color: #fff3a7;
+}
+
+.bg-badge-success {
+  background-color: #b0ffa7;
+}
+
+.bg-badge-danger {
+  background-color: #ffa7a7;
+}
+
 .shadow {
   box-shadow: var(--box-shadow)!important;
 }
