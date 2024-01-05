@@ -22,18 +22,22 @@ const Sales = () => {
   const [limit, setLimit] = useState(5);
   const [filter, setFilter] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [monthFilter, setMonthFilter] = useState(moment().format("YYYY-MM"))
+  const [filterDate, setFilterDate] = useState('month');
 
   useEffect(() => {
     setIsLoading(true)
     getTransaction();
-  }, [page, search, sort, filter, limit]);
+  }, [page, search, sort, filter, limit, monthFilter, startDate, endDate, filterDate]);
 
   useEffect(() => {
     setPage(1);
-  }, [search, limit, filter]);
+  }, [search, limit, filter, monthFilter, startDate, endDate, filterDate]);
 
   const getTransaction = async () => {
-    const response = await axios.get(`/api/transaction?page=${page}&search=${search}&sort=${sort.sort},${sort.order}&type=Out&limit=${limit}&status=${filter}`);
+    const response = await axios.get(`/api/transaction?page=${page}&search=${search}&sort=${sort.sort},${sort.order}&type=Out&limit=${limit}&status=${filter}` + (filterDate === 'month' ? `&month=${monthFilter.split('-')[1]}&year=${monthFilter.split('-')[0]}` : filterDate === 'range' ? `&startDate=${startDate}&endDate=${endDate}` : ''));
     setData(response.data);
     setIsLoading(false)
   };
@@ -92,6 +96,18 @@ const Sales = () => {
     }
   ];
 
+  const onStartDateRangeChange = (e) => {
+    const newStartDate = new Date(e.target.value);
+    newStartDate.toISOString().split('T')[0]
+    setStartDate(newStartDate);
+  };
+
+  const onEndDateRangeChange = (e) => {
+    const newEndDate = new Date(e.target.value);
+    newEndDate.toISOString().split('T')[0]
+    setEndDate(newEndDate);
+  };
+
   return (
     <div className="container p-4">
       <h1>List Sales</h1>
@@ -103,6 +119,26 @@ const Sales = () => {
                 Add New Sales
               </Link>
               <Search setSearch={(search) => setSearch(search)} />
+              <div className="dropdown me-2">
+                <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownFilterDate" data-bs-toggle="dropdown" aria-expanded="false">
+                  Filter Date
+                </button>
+                <ul className="dropdown-menu" aria-labelledby="dropdownFilterDate">
+                  <li><button className="dropdown-item" type="button" onClick={() => setFilterDate(false)}>None</button></li>
+                  <li><button className="dropdown-item" type="button" onClick={() => setFilterDate('month')}>Month</button></li>
+                  <li><button className="dropdown-item" type="button" onClick={() => setFilterDate('range')}>Range Date</button></li>
+                </ul>
+              </div>
+              {
+                filterDate === 'month' ? (
+                  <input type="month" className='form-control me-2' onChange={e => setMonthFilter(e.target.value)} style={{ width: '150px' }} value={monthFilter} />
+                ) : filterDate === 'range' ? (
+                  <>
+                    <input type="date" onChange={onStartDateRangeChange} className='form-control me-2' style={{ width: '130px' }} value={startDate.toISOString().split('T')[0]} />
+                    <input type="date" onChange={onEndDateRangeChange} className='form-control me-2' style={{ width: '130px' }} value={endDate.toISOString().split('T')[0]} />
+                  </>
+                ) : null
+              }
             </div>
             <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
           </div>
