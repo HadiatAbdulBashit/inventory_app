@@ -118,7 +118,20 @@ const Users = () => {
     }
   };
 
-  const sortBy = ['Name', 'Username', 'Role'];
+  const sortBy = [
+    {
+      value: 'name',
+      name: 'Name'
+    },
+    {
+      value: 'username',
+      name: 'Username'
+    },
+    {
+      value: 'role',
+      name: 'Role'
+    }
+  ];
 
   return (
     <div className="container p-4">

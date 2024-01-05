@@ -69,7 +69,28 @@ const Sales = () => {
     }
   };
   
-  const sortBy = ['Status'];
+  const sortBy = [
+    {
+      value: 'secondParty',
+      name: 'Customer Name'
+    },
+    {
+      value: 'totalPrice',
+      name: 'Total Price'
+    },
+    {
+      value: 'status',
+      name: 'Status'
+    },
+    {
+      value: 'pocOffice',
+      name: 'POC Office'
+    },
+    {
+      value: 'pocWarehouse',
+      name: 'POC Warehouse'
+    }
+  ];
 
   return (
     <div className="container p-4">

@@ -66,7 +66,20 @@ const Items = () => {
     }
   };
   
-  const sortBy = ['Name', 'Category', 'Merk'];
+  const sortBy = [
+    {
+      value: 'name',
+      name: 'Name'
+    },
+    {
+      value: 'category',
+      name: 'Category'
+    },
+    {
+      value: 'merk',
+      name: 'Merk'
+    }
+  ];
 
   return (
     <div className="container p-4">
