@@ -16,7 +16,10 @@ import Login from './Containers/Login/Login.container';
 import ProtectedRoute from './Containers/ProtectedRoute/ProtectedRoute.container';
 import Dashboard from './Containers/Dashboard/Dashboard.container';
 
+// Purchase Page
 import Purchase from './Containers/Purchase/Purchase.container';
+import AddPurchase from './Containers/Purchase/AddPurchase.container';
+import EditPurchase from './Containers/Purchase/EditPurchase.container';
 
 // Sales Page
 import Sales from './Containers/Sale/Sales.container';
@@ -95,7 +98,11 @@ function App() {
               <Route path='add' element={<AddSale />} />
               <Route path=':id/edit' element={<EditSale />} />
             </Route>
-            <Route path='purchase' element={<Purchase />} />
+            <Route path='purchase'>
+              <Route index element={<Purchase />} />
+              <Route path='add' element={<AddPurchase />} />
+              <Route path=':id/edit' element={<EditPurchase />} />
+            </Route>
             <Route path='acount' element={<Acount />} />
           </Route>
         </Route>
