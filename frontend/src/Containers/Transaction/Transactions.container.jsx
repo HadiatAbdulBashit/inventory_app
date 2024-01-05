@@ -23,18 +23,20 @@ const Transactions = () => {
   const [filterType, setFilterType] = useState([]);
   const [filterStatus, setFilterStatus] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   useEffect(() => {
     setIsLoading(true)
-    getTransaction();
+    getTransactions();
   }, [page, search, sort, filterType, limit, filterStatus]);
 
   useEffect(() => {
     setPage(1);
   }, [search, limit, filterType, filterStatus]);
 
-  const getTransaction = async () => {
-    const response = await axios.get(`/api/transaction?page=${page}&search=${search}&sort=${sort.sort},${sort.order}&type=${filterType}&limit=${limit}&status=${filterStatus}`);
+  const getTransactions = async () => {
+    const response = await axios.get(`/api/transaction?page=${page}&search=${search}&sort=${sort.sort},${sort.order}&type=${filterType}&limit=${limit}&status=${filterStatus}&startDate=${startDate}&endDate=${endDate}`);
     setData(response.data);
     setIsLoading(false)
   };
@@ -57,7 +59,7 @@ const Transactions = () => {
           success: 'Transaction Deleted',
           error: 'Delete transaction failed'
         });
-        getTransaction();
+        getTransactions();
       }
     } catch (error) {
       console.log(error);
@@ -70,7 +72,44 @@ const Transactions = () => {
     }
   };
 
-  const sortBy = ['Status'];
+  const sortBy = [
+    {
+      value: 'type',
+      name: 'Type'
+    },
+    {
+      value: 'secondParty',
+      name: 'Customer/Suplyer Name'
+    },
+    {
+      value: 'totalPrice',
+      name: 'Total Price'
+    },
+    {
+      value: 'status',
+      name: 'Status'
+    },
+    {
+      value: 'pocOffice',
+      name: 'POC Office'
+    },
+    {
+      value: 'pocWarehouse',
+      name: 'POC Warehouse'
+    }
+  ];
+
+  const onStartDateRangeChange = (e) => {
+    const newStartDate = new Date(e.target.value);
+    newStartDate.toISOString().split('T')[0]
+    setStartDate(newStartDate);
+  };
+
+  const onEndDateRangeChange = (e) => {
+    const newEndDate = new Date(e.target.value);
+    newEndDate.toISOString().split('T')[0]
+    setEndDate(newEndDate);
+  };
 
   return (
     <div className="container p-4">
@@ -80,7 +119,9 @@ const Transactions = () => {
           <div className="d-flex justify-content-between">
             <div className="d-flex">
               <Search setSearch={(search) => setSearch(search)} />
-              <input type="date" onChange={e => console.log(e.target.value)} className='form-control' defaultValue={new Date()} />
+              <input type="date" onChange={onStartDateRangeChange} className='form-control me-2' style={{ width: '130px' }} value={startDate.toISOString().split('T')[0]} />
+              <input type="date" onChange={onEndDateRangeChange} className='form-control me-2' style={{ width: '130px' }} value={endDate.toISOString().split('T')[0]} />
+              <button className="btn btn-primary" onClick={() => getTransactions()}>Filter</button>
             </div>
             <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
           </div>
@@ -93,7 +134,7 @@ const Transactions = () => {
               </div>
             </div>
           ) : (
-            data.length === 0 ? (
+            data.transactions.length === 0 ? (
               <div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <h1>No Transaction</h1>
               </div>
