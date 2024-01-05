@@ -68,7 +68,7 @@ const Sales = () => {
       });
     }
   };
-  
+
   const sortBy = [
     {
       value: 'secondParty',
@@ -99,9 +99,9 @@ const Sales = () => {
         <div className="panel-heading">
           <div className="d-flex justify-content-between">
             <div className="d-flex">
-                <Link to="/dashboard/sale/add" className="btn btn-primary me-2">
-                  Add New Sales
-                </Link>
+              <Link to="/dashboard/sale/add" className="btn btn-primary me-2">
+                Add New Sales
+              </Link>
               <Search setSearch={(search) => setSearch(search)} />
             </div>
             <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
@@ -154,7 +154,11 @@ const Sales = () => {
                         </td>
                         <td width={'40%'}>{transaction.secondParty}</td>
                         <td>{formatRupiah(transaction.totalPrice)}</td>
-                        <td>{transaction.status}</td>
+                        <td>
+                          <span className={"badge text-dark " + (transaction.status === 'Success' || transaction.status === 'Success with Return' ? 'bg-badge-success' : transaction.status === 'Canceled' ? 'bg-badge-danger' : 'bg-badge-warning')}>
+                            {transaction.status}
+                          </span>
+                        </td>
                         <td>{moment(transaction.createdAt).format('llll')}</td>
                         <td>
                           <Link to={`/dashboard/transaction/${transaction.id}`} className="btn btn-success">
