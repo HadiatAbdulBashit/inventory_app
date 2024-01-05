@@ -33,7 +33,7 @@ const Sales = () => {
   }, [search, limit, filter]);
 
   const getTransaction = async () => {
-    const response = await axios.get(`/api/transaction?page=${page}&search=${search}&sort=${sort.sort},${sort.order}&type=Out&limit=${limit}`);
+    const response = await axios.get(`/api/transaction?page=${page}&search=${search}&sort=${sort.sort},${sort.order}&type=Out&limit=${limit}&status=${filter}`);
     setData(response.data);
     setIsLoading(false)
   };
@@ -77,12 +77,10 @@ const Sales = () => {
       <div className="panel">
         <div className="panel-heading">
           <div className="d-flex justify-content-between">
-            <div className="row">
-              <div className="col-auto">
-                <Link to="/dashboard/sale/add" className="btn btn-primary">
+            <div className="d-flex">
+                <Link to="/dashboard/sale/add" className="btn btn-primary me-2">
                   Add New Sales
                 </Link>
-              </div>
               <Search setSearch={(search) => setSearch(search)} />
             </div>
             <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
@@ -172,9 +170,9 @@ const Sales = () => {
               <div className="row justify-content-right">
                 <div className="col align-self-center">
                   <Filter
-                    listFilter={data.type ? data.type : []}
+                    listFilter={data.status ? data.status : []}
                     setFilter={(filtered) => setFilter(filtered)}
-                    title='Type'
+                    title='Status'
                   />
                 </div>
                 <div className="col-auto align-self-center">

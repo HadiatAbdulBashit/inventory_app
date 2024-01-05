@@ -20,20 +20,21 @@ const Transactions = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState({ sort: "createdAt", order: "desc" });
   const [limit, setLimit] = useState(5);
-  const [filter, setFilter] = useState([]);
+  const [filterType, setFilterType] = useState([]);
+  const [filterStatus, setFilterStatus] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     setIsLoading(true)
     getTransaction();
-  }, [page, search, sort, filter, limit]);
+  }, [page, search, sort, filterType, limit, filterStatus]);
 
   useEffect(() => {
     setPage(1);
-  }, [search, limit, filter]);
+  }, [search, limit, filterType, filterStatus]);
 
   const getTransaction = async () => {
-    const response = await axios.get(`/api/transaction?page=${page}&search=${search}&sort=${sort.sort},${sort.order}&type=${filter}&limit=${limit}`);
+    const response = await axios.get(`/api/transaction?page=${page}&search=${search}&sort=${sort.sort},${sort.order}&type=${filterType}&limit=${limit}&status=${filterStatus}`);
     setData(response.data);
     setIsLoading(false)
   };
@@ -77,8 +78,9 @@ const Transactions = () => {
       <div className="panel">
         <div className="panel-heading">
           <div className="d-flex justify-content-between">
-            <div className="row">
+            <div className="d-flex">
               <Search setSearch={(search) => setSearch(search)} />
+              <input type="date" onChange={e => console.log(e.target.value)} className='form-control' defaultValue={new Date()} />
             </div>
             <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
           </div>
@@ -175,11 +177,16 @@ const Transactions = () => {
             </div>
             <div className="col">
               <div className="row justify-content-right">
-                <div className="col align-self-center">
+                <div className="col align-self-center d-flex justify-content-evenly">
                   <Filter
                     listFilter={data.type ? data.type : []}
-                    setFilter={(filtered) => setFilter(filtered)}
+                    setFilter={(filtered) => setFilterType(filtered)}
                     title='Type'
+                  />
+                  <Filter
+                    listFilter={data.status ? data.status : []}
+                    setFilter={(filtered) => setFilterStatus(filtered)}
+                    title='Status'
                   />
                 </div>
                 <div className="col-auto align-self-center">
