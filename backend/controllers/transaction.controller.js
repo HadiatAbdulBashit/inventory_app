@@ -37,6 +37,7 @@ exports.findAll = (req, res) => {
     let sort = req.query.sort || "createdAt";
     let total = null
     let filterType = req.query.type || "All";
+    let filterStatus = req.query.status || "All";
     req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
 
     const typeOption = [
@@ -44,10 +45,41 @@ exports.findAll = (req, res) => {
         "Out",
     ];
 
+    const statusOption = [
+        "Inisialization",
+        "Ready to Check",
+        "On Check",
+        "Success",
+        "Success with Return",
+        "Canceled",
+    ];
+
     filterType === "All" ? filterType = [...typeOption] : filterType = req.query.type.split(",");
+    filterStatus === "All" ? filterStatus = [...statusOption] : filterStatus = req.query.status.split(",");
 
     var condition = req.query.search ? { secondParty: { [Op.iLike]: `%${req.query.search}%` } } : null;
     condition = req.query.type && condition ? { ...condition, type: { [Op.or]: filterType } } : condition ? condition : req.query.type ? { type: { [Op.or]: filterType } } : null;
+    condition = req.query.status && condition ? { ...condition, status: { [Op.or]: filterStatus } } : condition ? condition : req.query.status ? { status: { [Op.or]: filterStatus } } : null;
+
+    if (req.query.startDate && req.query.endDate) {
+        condition = {
+            ...condition,
+            createdAt: {
+                [Op.between]: [new Date(req.query.startDate), new Date(req.query.endDate)],
+            },
+        };
+    } else if (req.query.month && req.query.year) {
+        const firstDayOfMonth = new Date(req.query.year, req.query.month - 1, 1);
+        const lastDayOfMonth = new Date(req.query.year, req.query.month, 0);
+
+        condition = {
+            ...condition,
+            createdAt: {
+                [Op.gte]: firstDayOfMonth,
+                [Op.lt]: lastDayOfMonth,
+            },
+        };
+    }
 
     Transaction.count({
         where: condition
@@ -84,7 +116,8 @@ exports.findAll = (req, res) => {
                 limit,
                 transactions,
                 total,
-                type: typeOption
+                type: typeOption,
+                status: statusOption
             });
         })
         .catch(err => {
