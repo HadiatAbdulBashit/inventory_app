@@ -7,7 +7,8 @@ const TransactionDetailForm = ({
     onFormSubmit,
     initialData,
     title,
-    onButtonCloseClick
+    onButtonCloseClick,
+    type
 }) => {
     const {
         register,
@@ -116,11 +117,18 @@ const TransactionDetailForm = ({
         getItem()
     }, [initialData])
 
+    const onCloseClick = () => {
+        resetForm()
+        onButtonCloseClick()
+    }
+
+    const validationStock = type === 'Out' ? { value: maxItem, message: `Max ${maxItem} Item` } : null
+
     return (
         <form className="row shadow p-4 rounded-3 align-items-end mx-0" onSubmit={handleSubmit(onSubmit)}>
             <div className="d-flex justify-content-between">
                 <h2>{title}</h2>
-                <button type="button" className="btn-close" aria-label="Close" onClick={() => onButtonCloseClick()} />
+                <button type="button" className="btn-close" aria-label="Close" onClick={() => onCloseClick()} />
             </div>
             <div className={'col-4'}>
                 <label className="form-label">Item</label>
@@ -151,12 +159,12 @@ const TransactionDetailForm = ({
             <div className="col-3">
                 <label className="form-label">Total Item</label>
                 <input
-                    {...register('totalItem', { required: 'Total Item is Require', min: { value: 1, message: 'Min 1 item' }, max: { value: maxItem, message: `Max ${maxItem} Item` } })}
+                    {...register('totalItem', { required: 'Total Item is Require', min: { value: 1, message: 'Min 1 item' }, max: validationStock })}
                     type={'number'}
                     min={0}
-                    max={maxItem}
+                    max={type === 'Out' ? maxItem : null}
                     disabled={selectedItemDetail === null ? true : false}
-                    className={"form-control " + (errors.totalItem && errors.totalItem.message ? 'is-invalid' : null)}
+                    className={"form-control" + (errors.totalItem && errors.totalItem.message ? ' is-invalid' : '')}
                 />
             </div>
             <div className="col-2 align-self-bottom">

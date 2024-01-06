@@ -189,8 +189,6 @@ const Transaction = () => {
         getTransactionById(transaction.id)
       }
     } catch (error) {
-      console.log(error.response.data.msg);
-
       Swal.fire({
         title: "Error",
         text: error.response.data.msg,
@@ -415,9 +413,10 @@ const Transaction = () => {
                   <div className={"collapse " + (showFormItem ? 'show' : null)}>
                     <TransactionDetailForm
                       onFormSubmit={submitFormTransactionDetail}
-                      initialDataItem={initialDataItem}
+                      initialData={initialDataItem}
                       title={formItemStatus}
                       onButtonCloseClick={onButtonCloseItemClick}
+                      type={transaction.type}
                     />
                   </div>
                   <table className="table table-striped align-middle">
