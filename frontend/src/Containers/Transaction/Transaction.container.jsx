@@ -150,19 +150,20 @@ const Transaction = () => {
 
       if (result.isConfirmed) {
         await toast.promise(axios.delete(`/api/return/${returnId}`), {
-          pending: 'Delete transaction...',
-          success: 'Transaction Deleted',
-          error: 'Delete transaction failed'
+          pending: 'Delete return item...',
+          success: 'Return item Deleted',
+          error: 'Delete return item failed'
         });
         getTransactionDetail();
-        getReturnItem()
+        getTransactionById();
+        getReturnItem();
       }
     } catch (error) {
       console.log(error);
 
       Swal.fire({
         title: "Error",
-        text: "An error occurred while update the transaction.",
+        text: "An error occurred while delete the return item.",
         icon: "error"
       });
     }
