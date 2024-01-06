@@ -189,7 +189,7 @@ const Sales = () => {
                           </ul>
                         </td>
                         <td width={'40%'}>{transaction.secondParty}</td>
-                        <td>{formatRupiah(transaction.totalPrice)}</td>
+                        <td>{formatRupiah(transaction.totalPrice || 0)}</td>
                         <td>
                           <span className={"badge text-dark " + (transaction.status === 'Success' || transaction.status === 'Success with Return' ? 'bg-badge-success' : transaction.status === 'Canceled' ? 'bg-badge-danger' : 'bg-badge-warning')}>
                             {transaction.status}
