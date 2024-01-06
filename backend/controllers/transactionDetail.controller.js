@@ -39,7 +39,6 @@ exports.create = async (req, res) => {
                     .then(dataItemDetail => {
                         if (dataItemDetail) {
                             const price = dataItemDetail.price * req.body.totalItem
-                            const updateStock = dataItemDetail.stock - req.body.totalItem
 
                             // get total price transaction before this add items
                             Transaction.findOne({
@@ -48,27 +47,31 @@ exports.create = async (req, res) => {
                                 .then(dataTransaction => {
                                     if (dataTransaction) {
                                         const oldTotalPrice = dataTransaction.totalPrice || 0
+                                        const typeTransaction = dataTransaction.type
+                                        const updateStock = typeTransaction === 'Out' ? dataItemDetail.stock - parseInt(req.body.totalItem) : dataItemDetail.stock + parseInt(req.body.totalItem)
 
                                         // Save Transaction Detail to the database
                                         TransactionDetail.create(req.body)
                                             .then(dataTransactionDetail => {
 
-                                                // Update total price in Transaction
-                                                Transaction.update({ totalPrice: price + oldTotalPrice }, {
-                                                    where: { id: req.body.transactionId }
-                                                })
-                                                    .then(num => {
-                                                        if (num < 1) {
-                                                            res.send({
-                                                                msg: `Cannot update Transaction with id = ${req.body.transactionId}. Maybe Transaction was not found or request is empty!`
-                                                            });
-                                                        }
+                                                if (typeTransaction === 'Out') {
+                                                    // Update total price in Transaction
+                                                    Transaction.update({ totalPrice: price + oldTotalPrice }, {
+                                                        where: { id: req.body.transactionId }
                                                     })
-                                                    .catch(err => {
-                                                        res.status(500).send({
-                                                            msg: "Error updating Transaction with id = " + req.body.transactionId
+                                                        .then(num => {
+                                                            if (num < 1) {
+                                                                res.send({
+                                                                    msg: `Cannot update Transaction with id = ${req.body.transactionId}. Maybe Transaction was not found or request is empty!`
+                                                                });
+                                                            }
+                                                        })
+                                                        .catch(err => {
+                                                            res.status(500).send({
+                                                                msg: "Error updating Transaction with id = " + req.body.transactionId
+                                                            });
                                                         });
-                                                    });
+                                                }
 
                                                 // Update stock in detail item
                                                 ItemDetail.update({ stock: updateStock }, {
@@ -216,7 +219,7 @@ exports.update = (req, res) => {
                     msg: "Error updating Transaction Detail with id=" + id
                 });
             });
-            return;
+        return;
     }
 
     // =============================
@@ -230,13 +233,14 @@ exports.update = (req, res) => {
                     .then(dataTransactionDetail => {
                         if (dataTransactionDetail) {
                             const oldPrice = dataTransactionDetail.totalItem * dataItemDetail.price
-                            const updateStock = dataItemDetail.stock - req.body.totalItem + dataTransactionDetail.totalItem
-
+                            
                             // ================================
                             Transaction.findOne({ where: { id: req.body.transactionId } })
-                                .then(data => {
-                                    if (data) {
-                                        const oldTotalPrice = data.totalPrice
+                            .then(dataTransaction => {
+                                if (dataTransaction) {
+                                    const oldTotalPrice = dataTransaction.totalPrice
+                                    const typeTransaction = dataTransaction.type
+                                    const updateStock = typeTransaction === 'Out' ? dataItemDetail.stock - parseInt(req.body.totalItem) + dataTransactionDetail.totalItem : dataItemDetail.stock + parseInt(req.body.totalItem) - dataTransactionDetail.totalItem
 
                                         // ===============================
                                         TransactionDetail.update(req.body, {
@@ -245,22 +249,24 @@ exports.update = (req, res) => {
                                             .then(num => {
                                                 if (num == 1) {
 
-                                                    // ===========================
-                                                    Transaction.update({ totalPrice: oldTotalPrice + newPrice - oldPrice }, {
-                                                        where: { id: req.body.transactionId }
-                                                    })
-                                                        .then(num => {
-                                                            if (num < 1) {
-                                                                res.send({
-                                                                    msg: `Cannot update Transaction with id = ${req.body.transactionId}. Maybe Transaction was not found or request is empty!`
-                                                                });
-                                                            }
+                                                    if (typeTransaction === 'Out') {
+                                                        // ===========================
+                                                        Transaction.update({ totalPrice: oldTotalPrice + newPrice - oldPrice }, {
+                                                            where: { id: req.body.transactionId }
                                                         })
-                                                        .catch(err => {
-                                                            res.status(500).send({
-                                                                msg: "Error updating Transaction with id = " + req.body.transactionId
+                                                            .then(num => {
+                                                                if (num < 1) {
+                                                                    res.send({
+                                                                        msg: `Cannot update Transaction with id = ${req.body.transactionId}. Maybe Transaction was not found or request is empty!`
+                                                                    });
+                                                                }
+                                                            })
+                                                            .catch(err => {
+                                                                res.status(500).send({
+                                                                    msg: "Error updating Transaction with id = " + req.body.transactionId
+                                                                });
                                                             });
-                                                        });
+                                                    }
 
                                                     // Update stock in detail item
                                                     ItemDetail.update({ stock: updateStock }, {
@@ -337,20 +343,19 @@ exports.delete = (req, res) => {
         .then(dataTransactionDetail => {
             if (dataTransactionDetail) {
 
-                console.log(dataTransactionDetail);
-
                 // ==================================
                 ItemDetail.findOne({ where: { id: dataTransactionDetail.itemDetailId } })
                     .then(dataItemDetail => {
                         if (dataItemDetail) {
                             const oldPrice = dataTransactionDetail.totalItem * dataItemDetail.price
-                            const updateStock = dataItemDetail.stock + dataTransactionDetail.totalItem
 
                             // ================================
                             Transaction.findOne({ where: { id: dataTransactionDetail.transactionId } })
                                 .then(dataTransaction => {
                                     if (dataTransaction) {
                                         const oldTotalPrice = dataTransaction.totalPrice
+                                        const typeTransaction = dataTransaction.type
+                                        const updateStock = typeTransaction === 'Out' ? dataItemDetail.stock + dataTransactionDetail.totalItem : dataItemDetail.stock - dataTransactionDetail.totalItem
 
                                         // ===============================
                                         TransactionDetail.destroy({
@@ -359,24 +364,25 @@ exports.delete = (req, res) => {
                                             .then(num => {
                                                 if (num == 1) {
 
-                                                    // ===========================
-                                                    Transaction.update({ totalPrice: oldTotalPrice - oldPrice }, {
-                                                        where: { id: dataTransactionDetail.transactionId }
-                                                    })
-                                                        .then(num => {
-                                                            if (num < 1) {
-                                                                res.send({
-                                                                    msg: `Cannot update Transaction with id = ${dataTransactionDetail.transactionId}. Maybe Transaction was not found or request is empty!`
-                                                                });
-                                                            }
+                                                    if (typeTransaction === 'Out') {
+                                                        // ===========================
+                                                        Transaction.update({ totalPrice: oldTotalPrice - oldPrice }, {
+                                                            where: { id: dataTransactionDetail.transactionId }
                                                         })
-                                                        .catch(err => {
-                                                            res.status(500).send({
-                                                                msg: "Error updating Transaction with id = " + dataTransactionDetail.transactionId
+                                                            .then(num => {
+                                                                if (num < 1) {
+                                                                    res.send({
+                                                                        msg: `Cannot update Transaction with id = ${dataTransactionDetail.transactionId}. Maybe Transaction was not found or request is empty!`
+                                                                    });
+                                                                }
+                                                            })
+                                                            .catch(err => {
+                                                                res.status(500).send({
+                                                                    msg: "Error updating Transaction with id = " + dataTransactionDetail.transactionId
+                                                                });
                                                             });
-                                                        });
+                                                    }
 
-                                                    console.log(updateStock);
                                                     // Update stock in detail item
                                                     ItemDetail.update({ stock: updateStock }, {
                                                         where: { id: dataTransactionDetail.itemDetailId }
