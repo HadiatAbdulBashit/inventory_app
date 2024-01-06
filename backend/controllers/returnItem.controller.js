@@ -274,10 +274,26 @@ exports.delete = (req, res) => {
 
     ReturnItem.findOne({
         where: { id: id },
+        include: [{
+            model: TransactionDetail,
+            attributes: ['totalItem', 'itemDetailId'],
+            as: 'transactionDetail',
+            include: [{
+                model: Transaction,
+                attributes: ['type'],
+                as: 'transaction',
+            }, {
+                model: ItemDetail,
+                attributes: ['stock'],
+                as: 'itemDetail',
+            }]
+        }]
     })
         .then(dataReturnItem => {
             // Validation if return have same detail transaction
             if (dataReturnItem) {
+                const typeTransaction = dataReturnItem.transactionDetail.transaction.type
+                const updateStock = typeTransaction === 'Out' ? dataReturnItem.transactionDetail.itemDetail.stock - dataReturnItem.totalItem : dataReturnItem.transactionDetail.itemDetail.stock - dataReturnItem.totalItem
 
                 // Delete return item
                 ReturnItem.destroy({
@@ -286,6 +302,7 @@ exports.delete = (req, res) => {
                     .then(num => {
                         if (num == 1) {
 
+                            // update status transaction detail / item on transaction
                             TransactionDetail.update({ status: 'Ready to Check' }, {
                                 where: { id: dataReturnItem.transactionDetailId }
                             })
@@ -302,31 +319,37 @@ exports.delete = (req, res) => {
                                     });
                                 });
 
-                            res.send({
-                                msg: "ReturnItem was deleted successfully!"
-                            });
+                            // Update stock in detail item
+                            ItemDetail.update({ stock: updateStock }, {
+                                where: { id: dataReturnItem.transactionDetail.itemDetailId }
+                            })
+                                .then(num => {
+                                    if (num < 1) {
+                                        res.send({
+                                            msg: `Cannot update Item Detail with id = ${dataReturnItem.transactionDetail.itemDetailId}. Maybe Item Detail was not found or req.body is empty!`
+                                        });
+                                    }
+                                })
+                                .catch(err => {
+                                    res.status(500).send({
+                                        msg: "Error updating Item Detail with id=" + dataReturnItem.transactionDetail.itemDetailId
+                                    });
+                                });
+
+                            res.send({ msg: "ReturnItem was deleted successfully!" });
                         } else {
-                            res.send({
-                                msg: `Cannot delete Return Item with id=${id}. Maybe ReturnItem was not found!`
-                            });
+                            res.send({ msg: `Cannot delete Return Item with id=${id}. Maybe ReturnItem was not found!` });
                         }
                     })
                     .catch(err => {
-                        res.status(500).send({
-                            msg: "Could not delete ReturnItem with id=" + id
-                        });
+                        res.status(500).send({ msg: "Could not delete ReturnItem with id=" + id });
                     });
             } else {
-                res.status(404).send({
-                    msg: `Cannot find Return Item with id=${id}.`
-                });
+                res.status(404).send({ msg: `Cannot find Return Item with id=${id}.` });
             }
         })
         .catch(err => {
-            res.status(500).send({
-                msg:
-                    err.message || "Some error occurred while retrieving return item."
-            });
+            res.status(500).send({ msg: err.message || "Some error occurred while retrieving return item." });
         });
 
 };
