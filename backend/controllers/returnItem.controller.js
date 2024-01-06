@@ -94,7 +94,7 @@ exports.create = async (req, res) => {
                                                         })
                                                         .catch(err => {
                                                             res.status(500).send({
-                                                                message:
+                                                                msg:
                                                                     err.message || "Some error occurred while creating the Return Item."
                                                             });
                                                         });
@@ -135,7 +135,7 @@ exports.create = async (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message:
+                msg:
                     err.message || "Some error occurred while retrieving return item."
             });
         });
@@ -151,15 +151,15 @@ exports.findAll = (req, res) => {
         include: [{
             model: TransactionDetail,
             attributes: ['totalItem'],
-            as: 'transactionDetail', // Specify the alias for the association
+            as: 'transactionDetail',
             include: [{
                 model: ItemDetail,
                 attributes: ['unit'],
-                as: 'itemDetail', // Specify the alias for the association
+                as: 'itemDetail',
                 include: [{
                     model: Item,
                     attributes: ['name', 'merk'],
-                    as: 'item', // Specify the alias for the association
+                    as: 'item',
                 }]
             }]
         }]
@@ -169,7 +169,7 @@ exports.findAll = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message:
+                msg:
                     err.message || "Some error occurred while retrieving return item."
             });
         });
@@ -189,13 +189,13 @@ exports.findOne = (req, res) => {
                 res.send(data);
             } else {
                 res.status(404).send({
-                    message: `Cannot find ReturnItem with id=${id}.`
+                    msg: `Cannot find ReturnItem with id=${id}.`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving ReturnItem with id=" + id
+                msg: "Error retrieving ReturnItem with id=" + id
             });
         });
 };
@@ -204,25 +204,68 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    ReturnItem.update(req.body, {
-        where: { id: id }
+    ReturnItem.findOne({
+        where: { id: id },
+        include: [{
+            model: TransactionDetail,
+            attributes: ['totalItem', 'itemDetailId'],
+            as: 'transactionDetail',
+            include: [{
+                model: Transaction,
+                attributes: ['type'],
+                as: 'transaction',
+            }, {
+                model: ItemDetail,
+                attributes: ['stock'],
+                as: 'itemDetail',
+            }]
+        }]
     })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "ReturnItem was updated successfully."
-                });
+        .then(dataReturnItem => {
+            if (dataReturnItem) {
+                const typeTransaction = dataReturnItem.transactionDetail.transaction.type
+                const updateStock = typeTransaction === 'Out' ? dataReturnItem.transactionDetail.itemDetail.stock + parseInt(req.body.totalItem) - dataReturnItem.totalItem : dataReturnItem.transactionDetail.itemDetail.stock - parseInt(req.body.totalItem) + dataReturnItem.totalItem
+
+                ReturnItem.update(req.body, {
+                    where: { id: id }
+                })
+                    .then(num => {
+                        if (num == 1) {
+
+                            // Update stock in detail item
+                            ItemDetail.update({ stock: updateStock }, {
+                                where: { id: dataReturnItem.transactionDetail.itemDetailId }
+                            })
+                                .then(num => {
+                                    if (num < 1) {
+                                        res.send({
+                                            msg: `Cannot update Item Detail with id = ${dataReturnItem.transactionDetail.itemDetailId}. Maybe Item Detail was not found or req.body is empty!`
+                                        });
+                                    }
+                                })
+                                .catch(err => {
+                                    res.status(500).send({
+                                        msg: "Error updating Item Detail with id=" + dataReturnItem.transactionDetail.itemDetailId
+                                    });
+                                });
+
+                            res.send({ msg: "ReturnItem was updated successfully." });
+                        } else {
+                            res.send({ msg: `Cannot update ReturnItem with id=${id}. Maybe Return Item was not found or req.body is empty!` });
+                        }
+                    })
+                    .catch(err => {
+                        res.status(500).send({ msg: "Error updating ReturnItem with id=" + id });
+                    });
             } else {
-                res.send({
-                    message: `Cannot update ReturnItem with id=${id}. Maybe Return Item was not found or req.body is empty!`
-                });
+                res.status(404).send({ msg: `Cannot find ReturnItem with id=${id}.` });
             }
         })
         .catch(err => {
-            res.status(500).send({
-                message: "Error updating ReturnItem with id=" + id
-            });
+            res.status(500).send({ msg: "Error retrieving ReturnItem with id=" + id });
         });
+
+
 };
 
 // Delete a ReturnItem with the specified id in the request
@@ -260,17 +303,17 @@ exports.delete = (req, res) => {
                                 });
 
                             res.send({
-                                message: "ReturnItem was deleted successfully!"
+                                msg: "ReturnItem was deleted successfully!"
                             });
                         } else {
                             res.send({
-                                message: `Cannot delete Return Item with id=${id}. Maybe ReturnItem was not found!`
+                                msg: `Cannot delete Return Item with id=${id}. Maybe ReturnItem was not found!`
                             });
                         }
                     })
                     .catch(err => {
                         res.status(500).send({
-                            message: "Could not delete ReturnItem with id=" + id
+                            msg: "Could not delete ReturnItem with id=" + id
                         });
                     });
             } else {
@@ -281,7 +324,7 @@ exports.delete = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message:
+                msg:
                     err.message || "Some error occurred while retrieving return item."
             });
         });
