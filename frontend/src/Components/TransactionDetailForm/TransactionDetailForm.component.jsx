@@ -91,7 +91,7 @@ const TransactionDetailForm = ({
         try {
             const response = await axios.get(`/api/item-detail/${id}`);
             await getItemDetail(response.data.itemId)
-            setMaxItem(response.data.stock)
+            setMaxItem(initialData ? response.data.stock + initialData.totalItem : response.data.stock)
             if (initialData) {
                 const selectedOptionsArray = optionsItem.find((data) => response.data.itemId === data.value)
                 setSelectedItem(selectedOptionsArray);
