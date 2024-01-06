@@ -425,7 +425,16 @@ const Transaction = () => {
                         <th scope="col">Item Name</th>
                         <th scope="col">Unit</th>
                         <th scope="col">Total Item</th>
-                        <th scope="col">Total Price</th>
+                        {
+                          transaction.type === 'Out' ? (
+                            <th scope="col">Total Price</th>
+                          ) : null
+                        }
+                        {
+                          transaction.status === 'Success with Return' || transaction.status === 'Canceled' || transaction.status === 'Success' ? (
+                            <th scope="col">Status</th>
+                          ) : null
+                        }
                         {
                           transaction.status === 'Inisialization' || transaction.status === 'On Check' ? (
                             <th scope="col">{transaction.status === 'On Check' ? 'Action/Status' : 'Action'}</th>
@@ -449,9 +458,13 @@ const Transaction = () => {
                               <td>{`${transactionDetail.itemDetail.item.merk} ${transactionDetail.itemDetail.item.name}`}</td>
                               <td>{transactionDetail.itemDetail.unit}</td>
                               <td width={'105px'}>{transactionDetail.totalItem}</td>
-                              <td>{formatRupiah((transactionDetail.itemDetail.price * transactionDetail.totalItem) || 0)}</td>
                               {
-                                transaction.status === 'On Check' && transactionDetail.status !== "Ready to Check" ? (
+                                transaction.type === 'Out' ? (
+                                  <td>{formatRupiah((transactionDetail.itemDetail.price * transactionDetail.totalItem) || 0)}</td>
+                                ) : null
+                              }
+                              {
+                                transaction.status === 'On Check' && transactionDetail.status !== "Ready to Check" || transaction.status === 'Success with Return'  || transaction.status === 'Canceled' || transaction.status === 'Success' ? (
                                   <td>
                                     {transactionDetail.status}
                                     {
