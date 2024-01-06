@@ -4,9 +4,9 @@ const db = require("../models");
 
 const ReturnItem = db.returnItem;
 const TransactionDetail = db.transactionDetail
+const Transaction = db.transaction;
 const ItemDetail = db.itemDetail;
 const Item = db.item;
-const Sale = db.sale;
 const Op = Sequelize.Op;
 
 // Create and Save a new ReturnItem
@@ -30,53 +30,105 @@ exports.create = async (req, res) => {
                 });
             } else {
 
-                TransactionDetail.findOne({
-                    where: {
-                        id: req.body.transactionDetailId
-                    }
+                Transaction.findOne({
+                    where: { id: req.body.transactionId }
                 })
-                    .then(dataTransactionDetail => {
-                        if (dataTransactionDetail) {
-                            const totalItemWant = dataTransactionDetail.totalItem
+                    .then(dataTransaction => {
+                        if (dataTransaction) {
+                            const typeTransaction = dataTransaction.type
 
-                            // Save ReturnItem in the database
-                            ReturnItem.create(req.body)
-                                .then(data => {
+                            TransactionDetail.findOne({
+                                where: { id: req.body.transactionDetailId }
+                            })
+                                .then(dataTransactionDetail => {
+                                    if (dataTransactionDetail) {
+                                        const totalItemWant = dataTransactionDetail.totalItem
 
-                                    TransactionDetail.update({ status: totalItemWant === req.body.totalItem ? 'Cancel' : 'Accept with Return' }, {
-                                        where: { id: req.body.transactionDetailId }
-                                    })
-                                        .then(num => {
-                                            if (num < 1) {
-                                                res.send({
-                                                    msg: `Cannot update Transaction Detail with id=${id}. Maybe Transaction Detail was not found or req.body is empty!`
-                                                });
-                                            }
+                                        ItemDetail.findOne({
+                                            where: { id: dataTransactionDetail.itemDetailId }
                                         })
-                                        .catch(err => {
-                                            res.status(500).send({
-                                                msg: "Error updating Transaction Detail with id=" + id
-                                            });
-                                        });
+                                            .then(dataItemDetail => {
+                                                if (dataItemDetail) {
+                                                    const updateStock = typeTransaction === 'Out' ? dataItemDetail.stock + parseInt(req.body.totalItem) : dataItemDetail.stock - parseInt(req.body.totalItem)
 
-                                    // Send Response
-                                    res.send(data);
+                                                    // Save ReturnItem in the database
+                                                    ReturnItem.create(req.body)
+                                                        .then(data => {
+
+                                                            // Update status Transaction
+                                                            TransactionDetail.update({ status: totalItemWant === req.body.totalItem ? 'Cancel' : 'Accept with Return' }, {
+                                                                where: { id: req.body.transactionDetailId }
+                                                            })
+                                                                .then(num => {
+                                                                    if (num < 1) {
+                                                                        res.send({
+                                                                            msg: `Cannot update Transaction Detail with id=${id}. Maybe Transaction Detail was not found or req.body is empty!`
+                                                                        });
+                                                                    }
+                                                                })
+                                                                .catch(err => {
+                                                                    res.status(500).send({
+                                                                        msg: "Error updating Transaction Detail with id=" + id
+                                                                    });
+                                                                });
+
+                                                            // Update stock in detail item
+                                                            ItemDetail.update({ stock: updateStock }, {
+                                                                where: { id: dataTransactionDetail.itemDetailId }
+                                                            })
+                                                                .then(num => {
+                                                                    if (num < 1) {
+                                                                        res.send({
+                                                                            msg: `Cannot update Item Detail with id = ${dataTransactionDetail.itemDetailId}. Maybe Item Detail was not found or req.body is empty!`
+                                                                        });
+                                                                    }
+                                                                })
+                                                                .catch(err => {
+                                                                    res.status(500).send({
+                                                                        msg: "Error updating Item Detail with id=" + dataTransactionDetail.itemDetailId
+                                                                    });
+                                                                });
+
+                                                            // Send Response
+                                                            res.send(data);
+                                                        })
+                                                        .catch(err => {
+                                                            res.status(500).send({
+                                                                message:
+                                                                    err.message || "Some error occurred while creating the Return Item."
+                                                            });
+                                                        });
+                                                } else {
+                                                    res.status(404).send({
+                                                        msg: `Cannot find Item Detail with id = ${req.body.itemDetailId}.`
+                                                    });
+                                                }
+                                            })
+                                            .catch(err => {
+                                                res.status(500).send({
+                                                    msg: "Error retrieving Item Detail with id=" + req.body.itemDetailId
+                                                });
+                                            });
+                                    } else {
+                                        res.status(404).send({
+                                            msg: `Cannot find Transaction Detail with id=${id}.`
+                                        });
+                                    }
                                 })
                                 .catch(err => {
                                     res.status(500).send({
-                                        message:
-                                            err.message || "Some error occurred while creating the Return Item."
+                                        msg: "Error retrieving Transaction Detail with id=" + id
                                     });
                                 });
                         } else {
                             res.status(404).send({
-                                msg: `Cannot find Transaction Detail with id=${id}.`
+                                msg: `Cannot find Item Detail with id=${id}.`
                             });
                         }
                     })
                     .catch(err => {
                         res.status(500).send({
-                            msg: "Error retrieving Transaction Detail with id=" + id
+                            msg: "Error retrieving Item Detail with id=" + req.body.transactionId
                         });
                     });
             }
