@@ -69,7 +69,7 @@ const TransactionDetailForm = ({
 
     const getItemDetail = async (id) => {
         try {
-            const response = await axios.get(`/api/item-detail?itemId=${id}`);
+            const response = await axios.get(`/api/item-detail/list?itemId=${id}`);
 
             const optionsArray = response.data.map(item => ({
                 value: item.id,
