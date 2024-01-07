@@ -36,6 +36,7 @@ import AddItem from './Containers/Item/AddItem.container';
 import EditItem from './Containers/Item/EditItem.container';
 import Items from './Containers/Item/Items.container';
 import Item from './Containers/Item/Item.container';
+import Stock from './Containers/Item/Stock.container';
 
 // Item Detail page
 import AddItemDetail from './Containers/Item/Detail/AddItemDetail.container';
@@ -79,6 +80,7 @@ function App() {
               <Route path='add' element={<AddItem />} />
               <Route path=':id' element={<Item />} />
               <Route path=':id/edit' element={<EditItem />} />
+              <Route path='stock' element={<Stock />} />
             </Route>
             <Route path='item-detail'>
               <Route path='add/:id' element={<AddItemDetail />} />

@@ -8,8 +8,8 @@ import { BiSolidPurchaseTag } from "react-icons/bi";
 import { FaMoneyCheck, FaBox, FaUserGroup, FaUser } from "react-icons/fa6";
 import { IoLogOut } from "react-icons/io5";
 import { FcElectricalSensor } from "react-icons/fc";
-import { Link } from 'react-router-dom';
-import { useContext, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -21,6 +21,8 @@ import Swal from 'sweetalert2';
 const SidebarMenu = () => {
     const [collapsed, setCollapsed] = useState(false);
     const { user, setUser } = useContext(UserContext)
+    const [url, setUrl] = useState(null);
+    const location = useLocation();
 
     const handleLogout = async () => {
         try {
@@ -52,18 +54,23 @@ const SidebarMenu = () => {
         }
     };
 
+    useEffect(() => {
+        setUrl(location.pathname);
+      }, [location]);
+
     return (
         <Sidebar collapsed={collapsed} width="230px" className={style.container}>
             <Menu>
                 <hr />
-                <MenuItem className={style.appName} icon={<FcElectricalSensor />} onClick={() => setCollapsed(!collapsed)}>Mega Electronic</MenuItem>
+                <MenuItem className={`${style.appName} nav-link`  + (url === "/dashboard" ?" active" : "")} icon={<FcElectricalSensor />} onClick={() => setCollapsed(!collapsed)}>Mega Electronic</MenuItem>
                 <hr />
-                <MenuItem component={<Link to="/dashboard" />} icon={<GoHomeFill />}>Dashboard</MenuItem>
-                <MenuItem component={<Link to="/dashboard/purchase" />} icon={<BiSolidPurchaseTag />}>Purchases</MenuItem>
+                <MenuItem component={<Link to="/dashboard" />} icon={<GoHomeFill />} className={`nav-link`  + (url === "/dashboard" ?" active" : "")}>Dashboard</MenuItem>
+                <MenuItem component={<Link to="/dashboard/purchase" />} icon={<BiSolidPurchaseTag />}  className={`nav-link`  + (url === "/dashboard/purchase" ?" active" : "")}>Purchases</MenuItem>
                 <MenuItem component={<Link to="/dashboard/sale" />} icon={<FaMoneyCheck />}>Sales</MenuItem>
                 <MenuItem component={<Link to="/dashboard/transaction" />} icon={<FaMoneyCheck />}>Transactions</MenuItem>
                 <hr />
                 <MenuItem component={<Link to="/dashboard/item" />} icon={<FaBox />}>Items</MenuItem>
+                <MenuItem component={<Link to="/dashboard/item/stock" />} icon={<FaBox />}>Stock</MenuItem>
                 <hr />
                 <MenuItem component={<Link to="/dashboard/user" />} icon={<FaUserGroup />}>Users</MenuItem>
                 <hr />
