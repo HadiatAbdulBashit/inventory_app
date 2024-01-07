@@ -53,6 +53,8 @@ const ReturnForm = ({
             if (initialData.totalItem) {
                 setValue('totalItem', initialData.totalItem)
                 setValue('description', initialData.description)
+            } else {
+                setValue('totalItem', 0);
             }
         }
     }, [initialData])
@@ -109,9 +111,9 @@ const ReturnForm = ({
                         max: { value: initialData?.type === 'Cancel' ? selectedTransactionDetail?.totalItem : selectedTransactionDetail?.totalItem - 1 || 0, message: `Max ${selectedTransactionDetail?.totalItem - 1 || 0} Item` }
                     })}
                     type={'number'}
-                    max={selectedTransactionDetail?.totalItem - 1}
+                    max={selectedTransactionDetail?.totalItem || 1 - 1}
                     min={1}
-                    disabled={initialData?.type === 'Cancel' ?? false}
+                    disabled={initialData?.type === 'Cancel'}
                     className={"form-control " + (errors.totalItem && errors.totalItem.message ? 'is-invalid' : null)}
                 />
             </div>

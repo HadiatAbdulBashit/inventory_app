@@ -325,40 +325,42 @@ const Transaction = () => {
                     {transaction.type === 'In' ? 'Purchase from' : 'Sale to'} {transaction.secondParty} <span className={"badge border " + (transaction.status === 'Success' || transaction.status === 'Success with Return' ? 'bg-success-subtle text-success-emphasis border-success-subtle' : transaction.status === 'Canceled' ? 'bg-danger-subtle text-danger-emphasis border-danger-subtle' : 'bg-warning-subtle text-warning-emphasis border-warning-subtle')}>{transaction.status}</span>
                   </h2>
                   <table width={'100%'} className='my-3'>
-                    <tr>
-                      <td>
-                        Total Transaction Price:
-                      </td>
-                      <td>
-                        {formatRupiah(transaction.totalPrice || 0)}
-                      </td>
-                      <td>
-                        POC Office:
-                      </td>
-                      <td>
-                        {transaction.userOffice?.name || 0}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        Order Date:
-                      </td>
-                      <td>
-                        {moment(transaction.createdAt).format('LLLL')}
-                      </td>
-                      {
-                        transaction.userWarehouse ? (
-                          <>
-                            <td>
-                              POC Warehouse:
-                            </td>
-                            <td>
-                              {transaction.userWarehouse?.name}
-                            </td>
-                          </>
-                        ) : null
-                      }
-                    </tr>
+                    <tbody>
+                      <tr>
+                        <td>
+                          Total Transaction Price:
+                        </td>
+                        <td>
+                          {formatRupiah(transaction.totalPrice || 0)}
+                        </td>
+                        <td>
+                          POC Office:
+                        </td>
+                        <td>
+                          {transaction.userOffice?.name || 0}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Order Date:
+                        </td>
+                        <td>
+                          {moment(transaction.createdAt).format('LLLL')}
+                        </td>
+                        {
+                          transaction.userWarehouse ? (
+                            <>
+                              <td>
+                                POC Warehouse:
+                              </td>
+                              <td>
+                                {transaction.userWarehouse?.name}
+                              </td>
+                            </>
+                          ) : null
+                        }
+                      </tr>
+                    </tbody>
                   </table>
                   <Link to={'/dashboard/' + (transaction.type === 'Out' ? 'sale' : 'purchase') + `/${id}/edit`} className="btn btn-primary me-1">
                     Edit
@@ -514,13 +516,17 @@ const Transaction = () => {
                                     >
                                       Accept
                                     </button>
-                                    <button
-                                      onClick={() => onButtonReturnClick(transactionDetail.id, 'Return')}
-                                      className="btn btn-warning me-1"
-                                      disabled={showFormReturn ?? false}
-                                    >
-                                      Return
-                                    </button>
+                                    {
+                                      transactionDetail.totalItem !== 1 ? (
+                                        <button
+                                          onClick={() => onButtonReturnClick(transactionDetail.id, 'Return')}
+                                          className="btn btn-warning me-1"
+                                          disabled={showFormReturn ?? false}
+                                        >
+                                          Return
+                                        </button>
+                                      ) : null
+                                    }
                                     <button
                                       onClick={() => onButtonReturnClick(transactionDetail.id, 'Cancel')}
                                       className="btn btn-danger"

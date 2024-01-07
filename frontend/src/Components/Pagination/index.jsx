@@ -20,7 +20,7 @@ const Pagination = ({ page, total, limit, setPage }) => {
 	}
 
 	const renderPageNumbers = () => {
-		const visiblePages = [];
+		let visiblePages = [];
 		const minPage = Math.max(1, page - 1);
 		const maxPage = Math.min(totalPages, page + 1);
 
@@ -51,7 +51,7 @@ const Pagination = ({ page, total, limit, setPage }) => {
 					<button className={"page-link " + (page === totalPages ? 'disabled' : null)} onClick={() => handleNext()}>&raquo;</button>
 				</li>
 			</ul>
-			of <b>{totalPages}</b> pages
+			of <b>{String(totalPages)}</b> pages
 		</>
 	);
 };
