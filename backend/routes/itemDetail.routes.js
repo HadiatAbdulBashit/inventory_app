@@ -4,19 +4,22 @@ const router = require("express").Router();
 
 module.exports = app => {
   
-    // Create a new Item
+    // Create a new Item detail
     router.post("/", itemDetail.create);
   
-    // Retrieve all Item
+    // Retrieve all Item detail
     router.get("/", itemDetail.findAll);
+    
+    // Retrieve all Item detail without pagination
+    router.get("/list", itemDetail.list);
   
-    // Retrieve a single Item with id
+    // Retrieve a single Item detail with id
     router.get("/:id", itemDetail.findOne);
     
-    // Update a Item with id
+    // Update a Item detail with id
     router.put("/:id", itemDetail.update);
   
-    // Delete a Item with id
+    // Delete a Item detail with id
     router.delete("/:id", itemDetail.delete);
   
     app.use('/api/item-detail', protect, router);
