@@ -1,5 +1,6 @@
 const argon2 = require("argon2");
 const { Sequelize } = require('sequelize');
+const asyncHandler = require('express-async-handler');
 
 const db = require("../models");
 
@@ -11,7 +12,7 @@ exports.create = (req, res) => {
     // Validate request
     if (!req.body.username) {
         res.status(400).send({
-            message: "Username can not be empty!"
+            msg: "Username can not be empty!"
         });
         return;
     }
@@ -46,7 +47,7 @@ exports.create = (req, res) => {
                     })
                     .catch(err => {
                         res.status(500).send({
-                            message:
+                            msg:
                                 err.message || "Some error occurred while creating the User."
                         });
                     });
@@ -54,7 +55,7 @@ exports.create = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message:
+                msg:
                     err.message || "Some error occurred while retrieving users."
             });
         });
@@ -88,7 +89,7 @@ exports.findAll = (req, res) => {
         .then(totalData => total = totalData)
         .catch(err => {
             res.status(500).send({
-                message:
+                msg:
                     err.message || "Some error occurred while retrieving user."
             });
         });
@@ -110,7 +111,7 @@ exports.findAll = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message:
+                msg:
                     err.message || "Some error occurred while retrieving users."
             });
         });
@@ -130,13 +131,13 @@ exports.findOne = (req, res) => {
                 res.send(data);
             } else {
                 res.status(404).send({
-                    message: `Cannot find User with id=${id}.`
+                    msg: `Cannot find User with id=${id}.`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving User with id=" + id
+                msg: "Error retrieving User with id=" + id
             });
         });
 };
@@ -151,26 +152,44 @@ exports.update = (req, res) => {
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "User was updated successfully."
+                    msg: "User was updated successfully."
                 });
             } else {
                 res.send({
-                    message: `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`
+                    msg: `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error updating User with id=" + id
+                msg: "Error updating User with id=" + id
             });
         });
 };
 
 // Reset Password by the id in the request
-exports.resetPassword = async (req, res) => {
+exports.resetPassword = asyncHandler(async (req, res) => {
     const id = req.params.id;
 
-    const hashPassword = await argon2.hash(req.query.password);
+    const user = await User.findOne({
+        where: {
+            id: id
+        }
+    });
+
+    if (req.body.password) {
+        if (!(await argon2.verify(user.password, req.body.password))) {
+            res.status(402).send({ msg: "Password was wrong." });
+            return;
+        } 
+        
+        if (req.body.newPassword !== req.body.confirmNewPassword) {
+            res.status(402).send({ msg: "Confirmation password dont march with new password" });
+            return;
+        }
+    }
+
+    const hashPassword = await argon2.hash(req.body.newPassword);
 
     User.update({ password: hashPassword }, {
         where: { id: id }
@@ -178,20 +197,20 @@ exports.resetPassword = async (req, res) => {
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "Password was update successfully."
+                    msg: "Password was update successfully."
                 });
             } else {
                 res.send({
-                    message: `Cannot update Password to user with id = ${id}. Maybe Password was not found or request is empty!`
+                    msg: `Cannot update Password to user with id = ${id}. Maybe Password was not found or request is empty!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error updating password in user with id = " + id
+                msg: "Error updating password in user with id = " + id
             });
         });
-};
+});
 
 // Delete a User with the specified id in the request
 exports.delete = (req, res) => {
@@ -203,17 +222,17 @@ exports.delete = (req, res) => {
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "User was deleted successfully!"
+                    msg: "User was deleted successfully!"
                 });
             } else {
                 res.send({
-                    message: `Cannot delete User with id=${id}. Maybe User was not found!`
+                    msg: `Cannot delete User with id=${id}. Maybe User was not found!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Could not delete User with id=" + id
+                msg: "Could not delete User with id=" + id
             });
         });
 };
@@ -225,11 +244,11 @@ exports.deleteAll = (req, res) => {
         truncate: false
     })
         .then(nums => {
-            res.send({ message: `${nums} User were deleted successfully!` });
+            res.send({ msg: `${nums} User were deleted successfully!` });
         })
         .catch(err => {
             res.status(500).send({
-                message:
+                msg:
                     err.message || "Some error occurred while removing all users."
             });
         });
