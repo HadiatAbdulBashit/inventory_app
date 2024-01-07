@@ -81,7 +81,7 @@ const Users = () => {
 
       if (result.isConfirmed) {
         try {
-          await axios.put(`/api/users/${user.id}/reset?password=${randomString}`)
+          await axios.put(`/api/users/${user.id}/reset`, { newPassword: randomString })
           await Swal.fire({
             title: "Reset Password Success",
             html: `
