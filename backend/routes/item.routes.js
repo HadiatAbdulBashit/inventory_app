@@ -10,7 +10,7 @@ module.exports = app => {
     // Retrieve all Item
     router.get("/", item.findAll);
 
-    // Retrieve all Item
+    // Retrieve all Item without pagination
     router.get("/list", item.list);
   
     // Retrieve a single Item with id
