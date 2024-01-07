@@ -191,7 +191,7 @@ const Sales = () => {
                         <td width={'40%'}>{transaction.secondParty}</td>
                         <td>{formatRupiah(transaction.totalPrice || 0)}</td>
                         <td>
-                          <span className={"badge text-dark " + (transaction.status === 'Success' || transaction.status === 'Success with Return' ? 'bg-badge-success' : transaction.status === 'Canceled' ? 'bg-badge-danger' : 'bg-badge-warning')}>
+                          <span className={"badge " + (transaction.status === 'Success' || transaction.status === 'Success with Return' ? 'bg-success-subtle text-success-emphasis' : transaction.status === 'Canceled' ? 'bg-danger-subtle text-danger-emphasis' : 'bg-warning-subtle text-warning-emphasis')}>
                             {transaction.status}
                           </span>
                         </td>

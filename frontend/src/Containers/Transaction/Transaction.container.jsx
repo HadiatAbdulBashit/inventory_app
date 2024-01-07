@@ -322,7 +322,7 @@ const Transaction = () => {
               <div className="col-12">
                 <div>
                   <h2>
-                    {transaction.type === 'In' ? 'Purchase from' : 'Sale to'} {transaction.secondParty} <span className="badge bg-primary bg-light text-dark">{transaction.status}</span>
+                    {transaction.type === 'In' ? 'Purchase from' : 'Sale to'} {transaction.secondParty} <span className={"badge border " + (transaction.status === 'Success' || transaction.status === 'Success with Return' ? 'bg-success-subtle text-success-emphasis border-success-subtle' : transaction.status === 'Canceled' ? 'bg-danger-subtle text-danger-emphasis border-danger-subtle' : 'bg-warning-subtle text-warning-emphasis border-warning-subtle')}>{transaction.status}</span>
                   </h2>
                   <table width={'100%'} className='my-3'>
                     <tr>
@@ -465,9 +465,11 @@ const Transaction = () => {
                                 ) : null
                               }
                               {
-                                transaction.status === 'On Check' && transactionDetail.status !== "Ready to Check" || transaction.status === 'Success with Return'  || transaction.status === 'Canceled' || transaction.status === 'Success' ? (
+                                transaction.status === 'On Check' && transactionDetail.status !== "Ready to Check" || transaction.status === 'Success with Return' || transaction.status === 'Canceled' || transaction.status === 'Success' ? (
                                   <td>
-                                    {transactionDetail.status}
+                                    <span className={"badge " + (transactionDetail.status === 'Accept' || transactionDetail.status === 'Accept with Return' ? 'bg-success-subtle text-success-emphasis' : transactionDetail.status === 'Cancel' ? 'bg-danger-subtle text-danger-emphasis' : 'bg-warning-subtle text-warning-emphasis')}>
+                                      {transactionDetail.status}
+                                    </span>
                                     {
                                       transactionDetail.status === 'Accept' && transaction.status === 'On Check' ? (
                                         <button
