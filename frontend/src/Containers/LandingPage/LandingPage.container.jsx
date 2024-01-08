@@ -9,7 +9,7 @@ const LandingPage = () => {
           <div className="col-xxl-5">
             <div className="text-center text-xxl-start">
               <div className="badge bg-primary text-white mb-4 text-uppercase">Logistic · Management · Marketing</div>
-              <div className="fs-3 fw-light text-muted">Lest make this shipment</div>
+              <div className="fs-3 fw-light text-muted">Lest make shipment</div>
               <h1 className="display-3 fw-bolder mb-5"><span className="text-gradient d-inline">Get faster and stay easy</span></h1>
               <div className="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
                 <Link className="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" to="/login">Login</Link>
