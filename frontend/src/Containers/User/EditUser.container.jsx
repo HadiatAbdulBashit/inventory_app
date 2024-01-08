@@ -6,13 +6,15 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import UserForm from "../../Components/UserForm/UserForm.component";
 
+import { IoChevronBackCircleOutline } from "react-icons/io5";
+
 const EditUser = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { reset } = useForm()
     const [initialData, setInitialData] = useState({})
 
-    const editData = async(data) => {
+    const editData = async (data) => {
         console.log(data);
         try {
             await axios.put(`/api/users/${id}`, data);
@@ -33,7 +35,7 @@ const EditUser = () => {
             throw new Error(error);
         }
     }
-    
+
     useEffect(() => {
         getUserById();
     }, []);
@@ -51,8 +53,13 @@ const EditUser = () => {
 
     return (
         <div className="container p-4" style={{ maxWidth: '700px', margin: 'auto' }}>
-            <h1 className='mb-4'>Edit User</h1>
-            <UserForm onFormSubmit={editUser} title={'Edit User'} initialData={initialData}/>
+            <div className="d-flex justify-content-between">
+                <h1 className='mb-4'>Edit User</h1>
+                <button className="d-flex align-item-start border-0" style={{ fontSize: '40px', backgroundColor: 'transparent' }} onClick={() => navigate(-1)}>
+                    <IoChevronBackCircleOutline />
+                </button>
+            </div>
+            <UserForm onFormSubmit={editUser} title={'Edit User'} initialData={initialData} />
         </div >
     );
 };

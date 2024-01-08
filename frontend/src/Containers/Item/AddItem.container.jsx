@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 import ItemForm from "../../Components/ItemForm/ItemForm.component";
 
+import { IoChevronBackCircleOutline } from "react-icons/io5";
+
 const AddItem = () => {
     const navigate = useNavigate();
     const { reset } = useForm()
@@ -43,7 +45,12 @@ const AddItem = () => {
 
     return (
         <div className="container p-4" style={{ maxWidth: '700px', margin: 'auto' }}>
-            <h1 className='mb-4'>Add Item</h1>
+            <div className="d-flex justify-content-between">
+                <h1 className='mb-4'>Add Item</h1>
+                <button className="d-flex align-item-start border-0" style={{ fontSize: '40px', backgroundColor: 'transparent' }} onClick={() => navigate(-1)}>
+                    <IoChevronBackCircleOutline />
+                </button>
+            </div>
             <ItemForm onFormSubmit={addItem} title={'Add Item'}/>
         </div >
     );

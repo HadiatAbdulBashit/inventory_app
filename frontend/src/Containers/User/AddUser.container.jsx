@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 
 import UserForm from "../../Components/UserForm/UserForm.component";
 
+import { IoChevronBackCircleOutline } from "react-icons/io5";
+
 const AddUser = () => {
     const navigate = useNavigate();
     const { reset } = useForm()
 
-    const saveData = async(data) => {
+    const saveData = async (data) => {
         try {
             await axios.post("/api/users", data);
             reset();
@@ -33,8 +35,13 @@ const AddUser = () => {
 
     return (
         <div className="container p-4" style={{ maxWidth: '700px', margin: 'auto' }}>
-            <h1 className='mb-4'>Add User</h1>
-            <UserForm onFormSubmit={addUser} title={'Add User'}/>
+            <div className="d-flex justify-content-between">
+                <h1 className='mb-4'>Add User</h1>
+                <button className="d-flex align-item-start border-0" style={{fontSize: '40px', backgroundColor: 'transparent'}} onClick={() => navigate(-1)}>
+                    <IoChevronBackCircleOutline />
+                </button>
+            </div>
+            <UserForm onFormSubmit={addUser} title={'Add User'} />
         </div >
     );
 };

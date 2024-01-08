@@ -8,6 +8,8 @@ import TransactionForm from "../../Components/TransactionForm/TransactionForm.co
 
 import UserContext from '../../Contexts/UserContext';
 
+import { IoChevronBackCircleOutline } from "react-icons/io5";
+
 const AddSale = () => {
     const navigate = useNavigate();
     const { reset } = useForm()
@@ -41,7 +43,12 @@ const AddSale = () => {
 
     return (
         <div className="container p-4" style={{ maxWidth: '700px', margin: 'auto' }}>
-            <h1 className='mb-4'>Add Sale</h1>
+            <div className="d-flex justify-content-between">
+                <h1 className='mb-4'>Add Sale</h1>
+                <button className="d-flex align-item-start border-0" style={{fontSize: '40px', backgroundColor: 'transparent'}} onClick={() => navigate(-1)}>
+                    <IoChevronBackCircleOutline />
+                </button>
+            </div>
             <TransactionForm onFormSubmit={addSale} title={'Add Sale'} secondParty={'Customer Name'}/>
         </div >
     );

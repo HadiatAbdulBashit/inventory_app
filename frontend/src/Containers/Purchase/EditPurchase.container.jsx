@@ -6,6 +6,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import TransactionForm from "../../Components/TransactionForm/TransactionForm.component";
 
+import { IoChevronBackCircleOutline } from "react-icons/io5";
+
 const EditPurchase = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -50,7 +52,12 @@ const EditPurchase = () => {
 
     return (
         <div className="container p-4" style={{ maxWidth: '700px', margin: 'auto' }}>
-            <h1 className='mb-4'>Edit Purchase</h1>
+            <div className="d-flex justify-content-between">
+                <h1 className='mb-4'>Edit Purchase</h1>
+                <button className="d-flex align-item-start border-0" style={{ fontSize: '40px', backgroundColor: 'transparent' }} onClick={() => navigate(-1)}>
+                    <IoChevronBackCircleOutline />
+                </button>
+            </div>
             <TransactionForm onFormSubmit={editPurchase} initialData={initialData} title={'Edit Purchase'} secondParty={'Suplyer Name'}/>
         </div >
     );

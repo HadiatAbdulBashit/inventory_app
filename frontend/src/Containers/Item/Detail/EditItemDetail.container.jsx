@@ -6,6 +6,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import ItemDetailForm from "../../../Components/ItemDetailForm/ItemDetailForm.component";
 
+import { IoChevronBackCircleOutline } from "react-icons/io5";
+
 const EditItem = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -50,7 +52,12 @@ const EditItem = () => {
 
     return (
         <div className="container p-4" style={{ maxWidth: '700px', margin: 'auto' }}>
-            <h1 className='mb-4'>Edit Unit</h1>
+            <div className="d-flex justify-content-between">
+                <h1 className='mb-4'>Edit Unit</h1>
+                <button className="d-flex align-item-start border-0" style={{ fontSize: '40px', backgroundColor: 'transparent' }} onClick={() => navigate(-1)}>
+                    <IoChevronBackCircleOutline />
+                </button>
+            </div>
             <ItemDetailForm onFormSubmit={editItem} initialData={initialData} title={'Edit Item'} />
         </div >
     );

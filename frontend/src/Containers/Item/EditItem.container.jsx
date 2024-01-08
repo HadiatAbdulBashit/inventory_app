@@ -1,11 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from 'react-toastify';
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 
 import ItemForm from "../../Components/ItemForm/ItemForm.component";
-import { useState } from "react";
+
+import { IoChevronBackCircleOutline } from "react-icons/io5";
 
 const EditItem = () => {
     const { id } = useParams();
@@ -61,7 +62,12 @@ const EditItem = () => {
 
     return (
         <div className="container p-4" style={{ maxWidth: '700px', margin: 'auto' }}>
-            <h1 className='mb-4'>Edit Item</h1>
+            <div className="d-flex justify-content-between">
+                <h1 className='mb-4'>Edit Item</h1>
+                <button className="d-flex align-item-start border-0" style={{ fontSize: '40px', backgroundColor: 'transparent' }} onClick={() => navigate(-1)}>
+                    <IoChevronBackCircleOutline />
+                </button>
+            </div>
             <ItemForm onFormSubmit={editItem} initialData={initialData} title={'Edit Item'}/>
         </div >
     );
