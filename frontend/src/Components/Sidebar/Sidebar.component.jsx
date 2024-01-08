@@ -71,7 +71,11 @@ const SidebarMenu = () => {
                 <MenuItem component={<Link to="/dashboard" />} icon={<GrHomeRounded />} className={`nav-link` + (url === "/dashboard" ? " active" : "")}>Dashboard</MenuItem>
                 <MenuItem component={<Link to="/dashboard/purchase" />} icon={<BiPurchaseTag />} className={`nav-link` + (url === "/dashboard/purchase" ? " active" : "")}>Purchases</MenuItem>
                 <MenuItem component={<Link to="/dashboard/sale" />} icon={<LiaMoneyCheckAltSolid />} className={`nav-link` + (url === "/dashboard/sale" ? " active" : "")}>Sales</MenuItem>
-                <MenuItem component={<Link to="/dashboard/transaction" />} icon={<BsBag />} className={`nav-link` + (url === "/dashboard/transaction" ? " active" : "")}>Transactions</MenuItem>
+                {
+                    user.role === 'Super Admin' || user.role === 'Admin' ? (
+                        <MenuItem component={<Link to="/dashboard/transaction" />} icon={<BsBag />} className={`nav-link` + (url === "/dashboard/transaction" ? " active" : "")}>Transactions</MenuItem>
+                    ) : null
+                }
                 <hr />
                 <MenuItem component={<Link to="/dashboard/item" />} icon={<BsBoxSeam />} className={`nav-link` + (url === "/dashboard/item" ? " active" : "")}>Items</MenuItem>
                 <MenuItem component={<Link to="/dashboard/item/stock" />} icon={<BsInboxes />} className={`nav-link` + (url === "/dashboard/item/stock" ? " active" : "")}>Stock</MenuItem>
