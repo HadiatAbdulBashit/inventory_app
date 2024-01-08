@@ -1,5 +1,6 @@
 aside.container {
     box-shadow: var(--box-shadow);
+    padding: 0 10px;
     border: 0;
 }
 

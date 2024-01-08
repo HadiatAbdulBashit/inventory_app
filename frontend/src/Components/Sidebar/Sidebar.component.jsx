@@ -12,6 +12,7 @@ import { GrHomeRounded } from "react-icons/gr";
 import { TbLogout2 } from "react-icons/tb";
 import { BsBag } from "react-icons/bs";
 import { Link, useLocation } from 'react-router-dom';
+import { RiErrorWarningLine } from "react-icons/ri";
 import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -76,6 +77,8 @@ const SidebarMenu = () => {
                 <MenuItem component={<Link to="/dashboard/item/stock" />} icon={<BsInboxes />} className={`nav-link`  + (url === "/dashboard/item/stock" ?" active" : "")}>Stock</MenuItem>
                 <hr />
                 <MenuItem component={<Link to="/dashboard/user" />} icon={<FiUsers />} className={`nav-link`  + (url === "/dashboard/user" ?" active" : "")}>Users</MenuItem>
+                <hr />
+                <MenuItem component={<Link to="/dashboard/log" />} icon={<RiErrorWarningLine />} className={`nav-link`  + (url === "/dashboard/log" ?" active" : "")}>App Log</MenuItem>
                 <hr />
                 <MenuItem component={<Link to="/dashboard/acount" />} icon={<FiUser />} className={`nav-link`  + (url === "/dashboard/acount" ?" active" : "")}>Acount</MenuItem>
                 <MenuItem onClick={handleLogout} icon={<TbLogout2 />}>Logout</MenuItem>
