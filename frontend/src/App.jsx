@@ -49,6 +49,8 @@ import Transaction from './Containers/Transaction/Transaction.container';
 // App Log Page
 import AppLog from './Containers/AppLog/AppLog.container';
 
+import NotFound from './Containers/NotFound/NotFound.container';
+
 import UserContext from './Contexts/UserContext';
 
 function App() {
@@ -112,6 +114,7 @@ function App() {
             <Route path='log' element={<AppLog />} />
           </Route>
         </Route>
+        <Route path='*' element={<NotFound />} />
       </>
     )
   )
