@@ -16,11 +16,11 @@ import { RiErrorWarningLine } from "react-icons/ri";
 import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 import style from './Sidebar.module.css'
 
 import UserContext from '../../Contexts/UserContext';
-import Swal from 'sweetalert2';
 
 const SidebarMenu = () => {
     const [collapsed, setCollapsed] = useState(false);
@@ -60,7 +60,7 @@ const SidebarMenu = () => {
 
     useEffect(() => {
         setUrl(location.pathname);
-      }, [location]);
+    }, [location]);
 
     return (
         <Sidebar collapsed={collapsed} width="250px" className={style.container + ' nav-pills'}>
@@ -68,19 +68,31 @@ const SidebarMenu = () => {
                 <hr />
                 <MenuItem className={`${style.appName} nav-link`} icon={<FcElectricalSensor />} onClick={() => setCollapsed(!collapsed)}>Mega Electronic</MenuItem>
                 <hr />
-                <MenuItem component={<Link to="/dashboard" />} icon={<GrHomeRounded />} className={`nav-link`  + (url === "/dashboard" ?" active" : "")}>Dashboard</MenuItem>
-                <MenuItem component={<Link to="/dashboard/purchase" />} icon={<BiPurchaseTag />} className={`nav-link`  + (url === "/dashboard/purchase" ?" active" : "")}>Purchases</MenuItem>
-                <MenuItem component={<Link to="/dashboard/sale" />} icon={<LiaMoneyCheckAltSolid />} className={`nav-link`  + (url === "/dashboard/sale" ?" active" : "")}>Sales</MenuItem>
-                <MenuItem component={<Link to="/dashboard/transaction" />} icon={<BsBag />} className={`nav-link`  + (url === "/dashboard/transaction" ?" active" : "")}>Transactions</MenuItem>
+                <MenuItem component={<Link to="/dashboard" />} icon={<GrHomeRounded />} className={`nav-link` + (url === "/dashboard" ? " active" : "")}>Dashboard</MenuItem>
+                <MenuItem component={<Link to="/dashboard/purchase" />} icon={<BiPurchaseTag />} className={`nav-link` + (url === "/dashboard/purchase" ? " active" : "")}>Purchases</MenuItem>
+                <MenuItem component={<Link to="/dashboard/sale" />} icon={<LiaMoneyCheckAltSolid />} className={`nav-link` + (url === "/dashboard/sale" ? " active" : "")}>Sales</MenuItem>
+                <MenuItem component={<Link to="/dashboard/transaction" />} icon={<BsBag />} className={`nav-link` + (url === "/dashboard/transaction" ? " active" : "")}>Transactions</MenuItem>
                 <hr />
-                <MenuItem component={<Link to="/dashboard/item" />} icon={<BsBoxSeam />} className={`nav-link`  + (url === "/dashboard/item" ?" active" : "")}>Items</MenuItem>
-                <MenuItem component={<Link to="/dashboard/item/stock" />} icon={<BsInboxes />} className={`nav-link`  + (url === "/dashboard/item/stock" ?" active" : "")}>Stock</MenuItem>
+                <MenuItem component={<Link to="/dashboard/item" />} icon={<BsBoxSeam />} className={`nav-link` + (url === "/dashboard/item" ? " active" : "")}>Items</MenuItem>
+                <MenuItem component={<Link to="/dashboard/item/stock" />} icon={<BsInboxes />} className={`nav-link` + (url === "/dashboard/item/stock" ? " active" : "")}>Stock</MenuItem>
                 <hr />
-                <MenuItem component={<Link to="/dashboard/user" />} icon={<FiUsers />} className={`nav-link`  + (url === "/dashboard/user" ?" active" : "")}>Users</MenuItem>
-                <hr />
-                <MenuItem component={<Link to="/dashboard/log" />} icon={<RiErrorWarningLine />} className={`nav-link`  + (url === "/dashboard/log" ?" active" : "")}>App Log</MenuItem>
-                <hr />
-                <MenuItem component={<Link to="/dashboard/acount" />} icon={<FiUser />} className={`nav-link`  + (url === "/dashboard/acount" ?" active" : "")}>Acount</MenuItem>
+                {
+                    user.role === 'Super Admin' || user.role === 'Admin' ? (
+                        <>
+                            <MenuItem component={<Link to="/dashboard/user" />} icon={<FiUsers />} className={`nav-link` + (url === "/dashboard/user" ? " active" : "")}>Users</MenuItem>
+                            <hr />
+                        </>
+                    ) : null
+                }
+                {
+                    user.role === 'Super Admin' ? (
+                        <>
+                            <MenuItem component={<Link to="/dashboard/log" />} icon={<RiErrorWarningLine />} className={`nav-link` + (url === "/dashboard/log" ? " active" : "")}>App Log</MenuItem>
+                            <hr />
+                        </>
+                    ) : null
+                }
+                <MenuItem component={<Link to="/dashboard/acount" />} icon={<FiUser />} className={`nav-link` + (url === "/dashboard/acount" ? " active" : "")}>Acount</MenuItem>
                 <MenuItem onClick={handleLogout} icon={<TbLogout2 />}>Logout</MenuItem>
             </Menu>
         </Sidebar>
