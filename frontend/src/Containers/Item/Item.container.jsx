@@ -23,7 +23,7 @@ const Item = () => {
   }
 
   const getItemDetail = async () => {
-    const response = await axios.get(`/api/item-detail?itemId=${id}`);
+    const response = await axios.get(`/api/item-detail/list?itemId=${id}`);
     setItemDetails(response.data);
     setIsLoading(false)
   };
