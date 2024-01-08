@@ -93,9 +93,6 @@ const Login = () => {
                     }
                   </button>
                 </div>
-                <p>
-                  <a href="#">Forgot password?</a>
-                </p>
               </form>
             </div>
           </div>
