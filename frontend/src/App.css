@@ -120,18 +120,6 @@ aside svg {
   color: #555;
 }
 
-.bg-badge-warning {
-  background-color: #fff3a7;
-}
-
-.bg-badge-success {
-  background-color: #b0ffa7;
-}
-
-.bg-badge-danger {
-  background-color: #ffa7a7;
-}
-
 .page-link.active {
   background-color: #555;
   border-color: #555;
@@ -139,6 +127,10 @@ aside svg {
 
 .page-link {
   color: #555;
+}
+
+.bg-primary {
+  background-color: var(--color-two)!important;
 }
 
 .shadow {
