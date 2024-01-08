@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require('dotenv');
-const { notFound, errorHandler } = require('./middleware/error.middleware')
+const { notFound, errorHandler, appLog } = require('./middleware/error.middleware')
 const cookieParser = require('cookie-parser');
 const FileUpload = require("express-fileupload");
 
@@ -49,8 +49,10 @@ require("./routes/transaction.routes")(app);
 require("./routes/transactionDetail.routes")(app);
 require("./routes/returnItem.routes")(app);
 require("./routes/itemDetail.routes")(app);
+require("./routes/app.routes")(app);
 
 app.use(notFound);
+app.use(appLog);
 app.use(errorHandler);
 
 // listen for requests
