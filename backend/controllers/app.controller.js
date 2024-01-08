@@ -164,10 +164,50 @@ exports.appLog = (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     let sort = req.query.sort || "createdAt";
     let total = null
+    let filterMethod = req.query.method || "All";
     req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
+
+    const methodeOption = [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+    ];
+    
+    filterMethod === "All" ? filterMethod = [...methodeOption] : filterMethod = req.query.method.split(",");
 
     var condition = req.query.search ? { message: { [Op.iLike]: `%${req.query.search}%` } } : null;
 
+    condition = req.query.method && condition ? { ...condition, method: { [Op.or]: filterMethod } } : condition ? condition : req.query.method ? { method: { [Op.or]: filterMethod } } : null;
+
+    if (req.query.startDate && req.query.endDate) {
+        let startDate = new Date(req.query.startDate);
+        startDate = startDate.toISOString().split('T')[0];
+
+        let endDate = new Date(req.query.endDate);
+        endDate = endDate.setDate(endDate.getDate() + 1)
+        let newEndDate = new Date(endDate)
+        newEndDate = newEndDate.toISOString().split('T')[0];
+        
+        condition = {
+            ...condition,
+            createdAt: {
+                [Op.between]: [startDate, newEndDate],
+            },
+        };
+    } else if (req.query.month && req.query.year) {
+        const firstDayOfMonth = new Date(req.query.year, req.query.month - 1, 1);
+        const lastDayOfMonth = new Date(req.query.year, req.query.month, 0);
+
+        condition = {
+            ...condition,
+            createdAt: {
+                [Op.gte]: firstDayOfMonth,
+                [Op.lt]: lastDayOfMonth,
+            },
+        };
+    }
+    
     AppLog.count({
         where: condition
     })
@@ -185,12 +225,13 @@ exports.appLog = (req, res) => {
         limit: limit,
         order: [sort]
     })
-        .then(items => {
+        .then(logs => {
             res.send({
                 page,
                 limit,
-                items,
+                logs,
                 total,
+                method: methodeOption
             });
         })
         .catch(err => {
