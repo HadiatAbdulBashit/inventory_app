@@ -6,6 +6,7 @@ const TransactionDetail = require("./transactionDetail.model.js")
 const Item = require("./item.model.js")
 const ItemDetail = require("./itemDetail.model.js")
 const ReturnItem = require("./returnItem.model")
+const AppLog = require("./appLog.model")
 
 const table = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
@@ -30,6 +31,7 @@ db.transactionDetail = TransactionDetail(table);
 db.item = Item(table);
 db.itemDetail = ItemDetail(table);
 db.returnItem = ReturnItem(table);
+db.appLog = AppLog(table);
 
 // User and Transaction Relationship for Office User
 db.transaction.belongsTo(db.user, {
