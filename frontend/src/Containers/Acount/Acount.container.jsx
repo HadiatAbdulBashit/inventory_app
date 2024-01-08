@@ -31,7 +31,6 @@ const Acount = () => {
 
   return (
     <div className="container p-4" style={{ maxWidth: '500px' }}>
-      <h1>Acount</h1>
       <div className="panel p-5">
         <h4>Login as</h4>
         <h2 className='pb-5'>
