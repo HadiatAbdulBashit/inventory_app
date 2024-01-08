@@ -10,6 +10,8 @@ import Sort from '../../Components/Sort'
 import Filter from "../../Components/Filter";
 
 import { RiEyeLine, RiPencilLine, RiDeleteBin2Line } from "react-icons/ri";
+import { LuTable } from "react-icons/lu";
+import { PiCardsLight } from "react-icons/pi";
 
 const Items = () => {
   const [data, setData] = useState([]);
@@ -19,6 +21,8 @@ const Items = () => {
   const [limit, setLimit] = useState(5);
   const [filter, setFilter] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
+  const [showTable, setShowTable] = useState(true)
+
 
   useEffect(() => {
     setIsLoading(true)
@@ -93,7 +97,13 @@ const Items = () => {
               </Link>
               <Search setSearch={(search) => setSearch(search)} />
             </div>
-            <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
+            <div className="d-flex">
+              <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
+              <div className="btn-group">
+                <button className={"btn btn-primary d-flex justify-content-around align-items-center" + (showTable ? ' active' : '')} onClick={() => setShowTable(true)}><LuTable /></button>
+                <button className={"btn btn-primary d-flex justify-content-around align-items-center" + (!showTable ? ' active' : '')} onClick={() => setShowTable(false)}><PiCardsLight /></button>
+              </div>
+            </div>
           </div>
         </div>
         {
@@ -108,7 +118,7 @@ const Items = () => {
               <div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <h1>No Item</h1>
               </div>
-            ) : (
+            ) : showTable ? (
               <div className="panel-body table-responsive">
                 <table className="table">
                   <thead>
@@ -121,37 +131,77 @@ const Items = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {data.items?.map((item) => (
-                      <tr key={item.id}>
-                        <td width={'120px'}>
-                          <ul className="action-list">
-                            <li>
-                              <Link to={`${item.id}/edit`} className="btn btn-primary me-2">
-                                <RiPencilLine />
-                              </Link>
-                            </li>
-                            <li>
-                              <button
-                                onClick={() => deleteItem(item.id)}
-                                className="btn btn-danger"
-                              >
-                                <RiDeleteBin2Line />
-                              </button>
-                            </li>
-                          </ul>
-                        </td>
-                        <td width={'40%'}>{item.name}</td>
-                        <td>{item.category}</td>
-                        <td>{item.merk}</td>
-                        <td>
-                          <Link to={`${item.id}`} className="btn btn-success">
-                            <RiEyeLine />
-                          </Link>
-                        </td>
-                      </tr>
-                    ))}
+                    {
+                      data.items?.map((item) => (
+                        <tr key={item.id}>
+                          <td width={'120px'}>
+                            <ul className="action-list">
+                              <li>
+                                <Link to={`${item.id}/edit`} className="btn btn-primary me-2">
+                                  <RiPencilLine />
+                                </Link>
+                              </li>
+                              <li>
+                                <button
+                                  onClick={() => deleteItem(item.id)}
+                                  className="btn btn-danger"
+                                >
+                                  <RiDeleteBin2Line />
+                                </button>
+                              </li>
+                            </ul>
+                          </td>
+                          <td width={'40%'}>{item.name}</td>
+                          <td>{item.category}</td>
+                          <td>{item.merk}</td>
+                          <td>
+                            <Link to={`${item.id}`} className="btn btn-success">
+                              <RiEyeLine />
+                            </Link>
+                          </td>
+                        </tr>
+                      ))
+                    }
                   </tbody>
                 </table>
+              </div>
+            ) : (
+              <div className="row mx-0 row-cols-3 my-4">
+                {
+                  data.items?.map((item) => (
+                    <div className="col" key={item.id}>
+                      <div className="card">
+                        <div style={{ maxHeight: '200px' }} className='overflow-hidden' >
+                          <img src={item.imageUrl} className="card-img-top img-fluid" alt={item.name} />
+                        </div>
+                        <div className="card-body">
+                          <h5 className="card-title">{item.name}</h5>
+                          <p className="card-text text-truncate">{item.description}</p>
+                        </div>
+                        <ul className="list-group list-group-flush">
+                          <li className="list-group-item">{item.category}</li>
+                          <li className="list-group-item">{item.merk}</li>
+                        </ul>
+                        <div className="card-body d-grid">
+                          <div className="btn-group">
+                            <Link to={`${item.id}/edit`} className="btn btn-primary d-flex justify-content-around align-items-center">
+                              <RiPencilLine /> Edit
+                            </Link>
+                            <button
+                              onClick={() => deleteItem(item.id)}
+                              className="btn btn-danger d-flex justify-content-around align-items-center"
+                            >
+                              <RiDeleteBin2Line /> Delete
+                            </button>
+                            <Link to={`${item.id}`} className="btn btn-success d-flex justify-content-around align-items-center">
+                              <RiEyeLine /> View
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                }
               </div>
             )
           )
