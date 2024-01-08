@@ -82,8 +82,6 @@ const Dashboard = () => {
     },
   };
 
-  console.log(data);
-
   const dataPie = {
     labels: ['Sale', 'Purchase'],
     datasets: [
