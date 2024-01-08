@@ -3,11 +3,14 @@ import {
     Menu,
     MenuItem,
 } from 'react-pro-sidebar';
-import { GoHomeFill } from "react-icons/go";
-import { BiSolidPurchaseTag } from "react-icons/bi";
-import { FaMoneyCheck, FaBox, FaUserGroup, FaUser } from "react-icons/fa6";
-import { IoLogOut } from "react-icons/io5";
+import { BiPurchaseTag } from "react-icons/bi";
+import { FiUsers, FiUser } from "react-icons/fi";
+import { BsBoxSeam, BsInboxes } from "react-icons/bs";
 import { FcElectricalSensor } from "react-icons/fc";
+import { LiaMoneyCheckAltSolid } from "react-icons/lia";
+import { GrHomeRounded } from "react-icons/gr";
+import { TbLogout2 } from "react-icons/tb";
+import { BsBag } from "react-icons/bs";
 import { Link, useLocation } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
@@ -59,23 +62,23 @@ const SidebarMenu = () => {
       }, [location]);
 
     return (
-        <Sidebar collapsed={collapsed} width="230px" className={style.container}>
+        <Sidebar collapsed={collapsed} width="250px" className={style.container + ' nav-pills'}>
             <Menu>
                 <hr />
-                <MenuItem className={`${style.appName} nav-link`  + (url === "/dashboard" ?" active" : "")} icon={<FcElectricalSensor />} onClick={() => setCollapsed(!collapsed)}>Mega Electronic</MenuItem>
+                <MenuItem className={`${style.appName} nav-link`} icon={<FcElectricalSensor />} onClick={() => setCollapsed(!collapsed)}>Mega Electronic</MenuItem>
                 <hr />
-                <MenuItem component={<Link to="/dashboard" />} icon={<GoHomeFill />} className={`nav-link`  + (url === "/dashboard" ?" active" : "")}>Dashboard</MenuItem>
-                <MenuItem component={<Link to="/dashboard/purchase" />} icon={<BiSolidPurchaseTag />}  className={`nav-link`  + (url === "/dashboard/purchase" ?" active" : "")}>Purchases</MenuItem>
-                <MenuItem component={<Link to="/dashboard/sale" />} icon={<FaMoneyCheck />}>Sales</MenuItem>
-                <MenuItem component={<Link to="/dashboard/transaction" />} icon={<FaMoneyCheck />}>Transactions</MenuItem>
+                <MenuItem component={<Link to="/dashboard" />} icon={<GrHomeRounded />} className={`nav-link`  + (url === "/dashboard" ?" active" : "")}>Dashboard</MenuItem>
+                <MenuItem component={<Link to="/dashboard/purchase" />} icon={<BiPurchaseTag />} className={`nav-link`  + (url === "/dashboard/purchase" ?" active" : "")}>Purchases</MenuItem>
+                <MenuItem component={<Link to="/dashboard/sale" />} icon={<LiaMoneyCheckAltSolid />} className={`nav-link`  + (url === "/dashboard/sale" ?" active" : "")}>Sales</MenuItem>
+                <MenuItem component={<Link to="/dashboard/transaction" />} icon={<BsBag />} className={`nav-link`  + (url === "/dashboard/transaction" ?" active" : "")}>Transactions</MenuItem>
                 <hr />
-                <MenuItem component={<Link to="/dashboard/item" />} icon={<FaBox />}>Items</MenuItem>
-                <MenuItem component={<Link to="/dashboard/item/stock" />} icon={<FaBox />}>Stock</MenuItem>
+                <MenuItem component={<Link to="/dashboard/item" />} icon={<BsBoxSeam />} className={`nav-link`  + (url === "/dashboard/item" ?" active" : "")}>Items</MenuItem>
+                <MenuItem component={<Link to="/dashboard/item/stock" />} icon={<BsInboxes />} className={`nav-link`  + (url === "/dashboard/item/stock" ?" active" : "")}>Stock</MenuItem>
                 <hr />
-                <MenuItem component={<Link to="/dashboard/user" />} icon={<FaUserGroup />}>Users</MenuItem>
+                <MenuItem component={<Link to="/dashboard/user" />} icon={<FiUsers />} className={`nav-link`  + (url === "/dashboard/user" ?" active" : "")}>Users</MenuItem>
                 <hr />
-                <MenuItem component={<Link to="/dashboard/acount" />} icon={<FaUser />}>{user.name}</MenuItem>
-                <MenuItem onClick={handleLogout} icon={<IoLogOut />}>Logout</MenuItem>
+                <MenuItem component={<Link to="/dashboard/acount" />} icon={<FiUser />} className={`nav-link`  + (url === "/dashboard/acount" ?" active" : "")}>Acount</MenuItem>
+                <MenuItem onClick={handleLogout} icon={<TbLogout2 />}>Logout</MenuItem>
             </Menu>
         </Sidebar>
     )
