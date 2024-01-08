@@ -46,6 +46,9 @@ import EditItemDetail from './Containers/Item/Detail/EditItemDetail.container';
 import Transactions from './Containers/Transaction/Transactions.container';
 import Transaction from './Containers/Transaction/Transaction.container';
 
+// App Log Page
+import AppLog from './Containers/AppLog/AppLog.container';
+
 import UserContext from './Contexts/UserContext';
 
 function App() {
@@ -106,6 +109,7 @@ function App() {
               <Route path=':id/edit' element={<EditPurchase />} />
             </Route>
             <Route path='acount' element={<Acount />} />
+            <Route path='log' element={<AppLog />} />
           </Route>
         </Route>
       </>
