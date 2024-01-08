@@ -5,18 +5,12 @@ const Pagination = ({ page, total, limit, setPage }) => {
 		setPage(newPage);
 	};
 
-	const handlePrevious = () => {
-		if (page === 1) {
-			return
-		}
-		setPage(page - 1)
+	const handleFirst = () => {
+		setPage(1)
 	}
 
-	const handleNext = () => {
-		if (page === total) {
-			return
-		}
-		setPage(page + 1)
+	const handleLast = () => {
+		setPage(totalPages)
 	}
 
 	const renderPageNumbers = () => {
@@ -44,11 +38,11 @@ const Pagination = ({ page, total, limit, setPage }) => {
 		<>
 			<ul className="pagination justify-content-end m-0">
 				<li className={"page-item " + (page === 1 ? 'disabled' : null)}>
-					<button className="page-link" onClick={() => handlePrevious()}>&laquo;</button>
+					<button className="page-link" onClick={() => handleFirst()}>&laquo;</button>
 				</li>
 				{renderPageNumbers()}
 				<li className="page-item">
-					<button className={"page-link " + (page === totalPages ? 'disabled' : null)} onClick={() => handleNext()}>&raquo;</button>
+					<button className={"page-link " + (page === totalPages ? 'disabled' : null)} onClick={() => handleLast()}>&raquo;</button>
 				</li>
 			</ul>
 			of <b>{String(totalPages)}</b> pages
