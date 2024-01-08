@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -7,30 +7,33 @@ import Swal from 'sweetalert2'
 import Pagination from '../../Components/Pagination'
 import Search from '../../Components/Search'
 import Sort from '../../Components/Sort'
-import Filter from "../../Components/Filter";
+// import Filter from "../../Components/Filter";
 
 import { RiPencilLine, RiDeleteBin2Line, RiKeyLine } from "react-icons/ri";
 
+import UserContext from '../../Contexts/UserContext';
+
 const Users = () => {
+  const { user } = useContext(UserContext)
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState({ sort: "createdAt", order: "asc" });
   const [limit, setLimit] = useState(5);
-  const [filter, setFilter] = useState([]);
+  // const [filter, setFilter] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     setIsLoading(true)
     getUser();
-  }, [page, search, sort, filter, limit]);
+  }, [page, search, sort, limit]);
 
   useEffect(() => {
     setPage(1);
-  }, [search, limit, filter]);
+  }, [search, limit]);
 
   const getUser = async () => {
-    const response = await axios.get(`/api/users?page=${page}&search=${search}&sort=${sort.sort},${sort.order}&role=${filter}&limit=${limit}`);
+    const response = await axios.get(`/api/users?page=${page}&search=${search}&sort=${sort.sort},${sort.order}&limit=${limit}&role=` + (user.role === 'Super Admin' ? 'Admin' : 'Office,Warehouse'));
     setData(response.data);
     setIsLoading(false)
   };
@@ -227,11 +230,11 @@ const Users = () => {
               </div>
             </div>
             <div className="d-flex align-items-center gap-2">
-              <Filter
+              {/* <Filter
                 listFilter={data.role ? data.role : []}
                 setFilter={(filtered) => setFilter(filtered)}
-                title='Category'
-              />
+                title='Role'
+              /> */}
               <Pagination
                 page={page}
                 limit={data.limit ? data.limit : 0}
