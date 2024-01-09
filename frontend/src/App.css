@@ -136,3 +136,24 @@ aside svg {
 .shadow {
   box-shadow: var(--box-shadow)!important;
 }
+
+aside.ps-sidebar-root.ps-collapsed>div>nav>ul>li>a {
+  margin-left: -12%;
+}
+
+aside.ps-sidebar-root.ps-collapsed>div>nav>ul>li>a:hover {
+  margin-left: -5px;
+  background-color: var(--color-three);
+  border-radius: 5px;
+}
+
+aside.ps-sidebar-root>div>nav>ul>li>a:hover {
+  margin-left: 5px;
+  background-color: var(--color-three)!important;
+  border-radius: 5px;
+}
+
+aside.ps-sidebar-root>div>nav>ul>li.active:hover {
+  background-color: var(--color-three)!important;
+  border-radius: 5px;
+}
