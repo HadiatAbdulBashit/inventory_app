@@ -16,7 +16,7 @@ import ProtectedRoute from './Containers/ProtectedRoute/ProtectedRoute.container
 import Dashboard from './Containers/Dashboard/Dashboard.container';
 
 // Purchase Page
-import Purchase from './Containers/Purchase/Purchase.container';
+import Purchases from './Containers/Purchase/Purchases.container';
 import AddPurchase from './Containers/Purchase/AddPurchase.container';
 import EditPurchase from './Containers/Purchase/EditPurchase.container';
 
@@ -100,7 +100,7 @@ function App() {
               <Route path=':id/edit' element={<EditSale />} />
             </Route>
             <Route path='purchase'>
-              <Route index element={<Purchase />} />
+              <Route index element={<Purchases />} />
               <Route path='add' element={<AddPurchase />} />
               <Route path=':id/edit' element={<EditPurchase />} />
             </Route>
