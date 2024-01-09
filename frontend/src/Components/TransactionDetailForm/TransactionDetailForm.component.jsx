@@ -141,7 +141,7 @@ const TransactionDetailForm = ({
                 />
             </div>
             <div className={'col-3'}>
-                <label className="form-label">Unit {maxItem === null ? null : <span className="badge bg-light text-dark">Stock: {maxItem}</span>}</label>
+                <label className="form-label">Unit {maxItem === null || type === 'In' ? null : <span className="badge bg-light text-dark">Stock: {maxItem}</span>}</label>
                 <Select
                     options={optionsItemDetail}
                     isDisabled={optionsItemDetail.length === 0 || initialData ? true : false}
