@@ -99,7 +99,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="container p-4">
+    <div className="container p-4" style={{ minWidth: '1000px' }}>
       {
         isLoading ? (
           <div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
