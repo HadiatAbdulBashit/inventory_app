@@ -334,7 +334,7 @@ exports.delete = (req, res) => {
             // Validation if return have same detail transaction
             if (dataReturnItem) {
                 const typeTransaction = dataReturnItem.transactionDetail.transaction.type
-                const updateStock = typeTransaction === 'Out' ? dataReturnItem.transactionDetail.itemDetail.stock - dataReturnItem.totalItem : dataReturnItem.transactionDetail.itemDetail.stock - dataReturnItem.totalItem
+                const updateStock = typeTransaction === 'Out' ? dataReturnItem.transactionDetail.itemDetail.stock - dataReturnItem.totalItem : dataReturnItem.transactionDetail.itemDetail.stock + dataReturnItem.totalItem
                 const oldTotalPrice = dataReturnItem.transactionDetail.transaction.totalPrice
                 const oldPrice = dataReturnItem.totalItem * dataReturnItem.transactionDetail.itemDetail.price
 
