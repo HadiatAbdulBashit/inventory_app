@@ -144,6 +144,54 @@ exports.dashboard = async (req, res) => {
             }]
         });
 
+        // Get success purchase
+        const successPurchase = await Transaction.count({
+            where: {
+                type: 'In',
+                status: ['Success'],
+            },
+        });
+
+        // Get success purchase
+        const successWithReturnPurchase = await Transaction.count({
+            where: {
+                type: 'In',
+                status: ['Success with Return'],
+            },
+        });
+
+        // Get success purchase
+        const canceledPurchase = await Transaction.count({
+            where: {
+                type: 'In',
+                status: ['Canceled'],
+            },
+        });
+        
+        // Get success sale
+        const successSale = await Transaction.count({
+            where: {
+                type: 'Out',
+                status: ['Success'],
+            },
+        });
+
+        // Get success sale
+        const successWithReturnSale = await Transaction.count({
+            where: {
+                type: 'Out',
+                status: ['Success with Return'],
+            },
+        });
+
+        // Get success sale
+        const canceledSale = await Transaction.count({
+            where: {
+                type: 'Out',
+                status: ['Canceled'],
+            },
+        });
+
         res.send({
             totalPurchase,
             totalSale,
@@ -156,7 +204,9 @@ exports.dashboard = async (req, res) => {
             totalSaleThisMonth,
             lastPurchase,
             lastSale,
-            newItem
+            newItem,
+            piePurchaseStatus: { label: ['Success', 'Return', 'Canceled'], data: [successPurchase, successWithReturnPurchase, canceledPurchase] },
+            pieSaleStatus: { label: ['Success', 'Return', 'Canceled'], data: [successSale, successWithReturnSale, canceledSale] }
         });
     } catch (error) {
         console.log(error);

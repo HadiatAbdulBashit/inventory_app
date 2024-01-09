@@ -63,17 +63,17 @@ const Dashboard = () => {
       {
         label: 'Sale',
         data: data.barChartDataSale,
-        backgroundColor: '#d1e7dd',
+        backgroundColor: '#cff4fc',
       },
       {
         label: 'Purchase',
         data: data.barChartDataPurchase,
-        backgroundColor: '#fff3cd',
+        backgroundColor: '#cfe2ff',
       },
     ],
   };
 
-  const optionsPie = {
+  const optionsPieTransaction = {
     responsive: true,
     plugins: {
       title: {
@@ -83,15 +83,67 @@ const Dashboard = () => {
     },
   };
 
-  const dataPie = {
+  const dataPieTransaction = {
     labels: ['Sale', 'Purchase'],
     datasets: [
       {
         label: 'Transaction',
         data: [data.totalSaleThisMonth, data.totalPurchaseThisMonth],
         backgroundColor: [
+          '#cff4fc',
+          '#cfe2ff',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+  
+  const optionsPiePurchase = {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Percentage Purchase by Status this Month',
+      },
+    },
+  };
+
+  const dataPiePurchase = {
+    labels: data.piePurchaseStatus?.label,
+    datasets: [
+      {
+        label: 'Transaction',
+        data: data.piePurchaseStatus?.data,
+        backgroundColor: [
           '#d1e7dd',
           '#fff3cd',
+          '#f8d7da'
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+  
+  const optionsPieSale = {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Percentage Sale by Status this Month',
+      },
+    },
+  };
+
+  const dataPieSale = {
+    labels: data.piePurchaseStatus?.label,
+    datasets: [
+      {
+        label: 'Transaction',
+        data: data.pieSaleStatus?.data,
+        backgroundColor: [
+          '#d1e7dd',
+          '#fff3cd',
+          '#f8d7da'
         ],
         borderWidth: 1,
       },
@@ -127,12 +179,18 @@ const Dashboard = () => {
                 <h2>{data.itemsInWarehouse}</h2>
               </div>
             </div>
-            <div className="panel p-5 row mx-0 mb-4">
+            <div className="panel p-5 row mx-0 mb-4 row-gap-5 justify-content-center">
               <div className="col-8">
                 <Bar options={optionsBar} data={dataBar} />
               </div>
               <div className="col-4">
-                <Pie options={optionsPie} data={dataPie} />
+                <Pie options={optionsPieTransaction} data={dataPieTransaction} />
+              </div>
+              <div className="col-4">
+                <Pie options={optionsPiePurchase} data={dataPiePurchase} />
+              </div>
+              <div className="col-4">
+                <Pie options={optionsPieSale} data={dataPieSale} />
               </div>
             </div>
             <div className='d-flex gap-3 mb-4'>
