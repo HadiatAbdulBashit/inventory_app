@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -11,10 +11,15 @@ import Sort from '../../Components/Sort'
 import Filter from "../../Components/Filter";
 
 import { RiEyeLine, RiPencilLine, RiDeleteBin2Line } from "react-icons/ri";
+import { LuRefreshCcw } from "react-icons/lu";
 
 import formatRupiah from "../../Utils/formatRupiah";
 
+import UserContext from '../../Contexts/UserContext';
+
 const Transactions = () => {
+  const { user } = useContext(UserContext)
+
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -114,7 +119,7 @@ const Transactions = () => {
   };
 
   return (
-    <div className="p-4" style={{minWidth: '1100px'}}>
+    <div className="p-4" style={{ minWidth: '1100px' }}>
       <h1>List Transaction</h1>
       <div className="panel">
         <div className="panel-heading">
@@ -142,7 +147,10 @@ const Transactions = () => {
                 ) : null
               }
             </div>
-            <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
+            <div className="d-flex">
+              <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
+              <button className="btn btn-primary" onClick={() => { setIsLoading(true), getTransactions() }}><LuRefreshCcw /></button>
+            </div>
           </div>
         </div>
         {
@@ -162,7 +170,11 @@ const Transactions = () => {
                 <table className="table">
                   <thead>
                     <tr>
-                      <th>Action</th>
+                      {
+                        user.role === 'Admin' ? (
+                          <th scope="col">Action</th>
+                        ) : null
+                      }
                       <th>Type</th>
                       <th>Customer/Suplyer</th>
                       <th>Total Price</th>
@@ -176,23 +188,27 @@ const Transactions = () => {
                   <tbody>
                     {data.transactions?.map((transaction) => (
                       <tr key={transaction.id}>
-                        <td width={'120px'}>
-                          <ul className="action-list">
-                            <li>
-                              <Link to={'/dashboard/' + (transaction.type === 'Out' ? 'sale' : 'purchase') + `/${transaction.id}/edit`} className="btn btn-primary me-2">
-                                <RiPencilLine />
-                              </Link>
-                            </li>
-                            <li>
-                              <button
-                                onClick={() => deleteTransaction(transaction.id)}
-                                className="btn btn-danger"
-                              >
-                                <RiDeleteBin2Line />
-                              </button>
-                            </li>
-                          </ul>
-                        </td>
+                        {
+                          user.role === 'Admin' ? (
+                            <td width={'120px'}>
+                              <ul className="action-list">
+                                <li>
+                                  <Link to={'/dashboard/' + (transaction.type === 'Out' ? 'sale' : 'purchase') + `/${transaction.id}/edit`} className="btn btn-primary me-2">
+                                    <RiPencilLine />
+                                  </Link>
+                                </li>
+                                <li>
+                                  <button
+                                    onClick={() => deleteTransaction(transaction.id)}
+                                    className="btn btn-danger"
+                                  >
+                                    <RiDeleteBin2Line />
+                                  </button>
+                                </li>
+                              </ul>
+                            </td>
+                          ) : null
+                        }
                         <td>{transaction.type}</td>
                         <td width={'20%'}>{transaction.secondParty}</td>
                         <td>{formatRupiah(transaction.totalPrice || 0)}</td>

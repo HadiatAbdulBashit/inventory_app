@@ -1,11 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Swal from 'sweetalert2'
+
 import formatRupiah from "../../Utils/formatRupiah";
 
+import UserContext from '../../Contexts/UserContext';
+
+import { LuRefreshCcw } from "react-icons/lu";
+
 const Item = () => {
+  const { user } = useContext(UserContext)
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [item, setItem] = useState([]);
@@ -113,35 +120,52 @@ const Item = () => {
                 <img src={item.imageUrl} alt="Preview Image" className="img-fluid p-3" />
               </div>
               <div className="col-6">
-                <h2>
-                  {item.merk} {item.name}
-                </h2>
+                <div className="d-flex justify-content-between">
+                  <h2>
+                    {item.merk} {item.name}
+                  </h2>
+                  <button className="btn btn-primary ratio ratio-1x1" style={{ maxHeight: '40px', maxWidth: '40px', border: '0' }} onClick={() => { setIsLoading(true), getItemById(), getItemDetail() }}><LuRefreshCcw /></button>
+                </div>
                 <p>
                   {item.description}
                 </p>
                 <p>
                   Category: {item.category}
                 </p>
-                <Link to={`edit`} className="btn btn-primary me-1">
-                  Edit
-                </Link>
-                <button
-                  onClick={() => deleteItem(item.id)}
-                  className="btn btn-danger me-1"
-                >
-                  Delete
-                </button>
-                <Link to={`/dashboard/item-detail/add/${item.id}`} className="btn btn-primary">
-                  Add New Unit
-                </Link>
-                <div className="panel-body table-responsive shadow mt-4 rounded-4">
+                {
+                  user.role === 'Admin' ? (
+                    <>
+                      <Link to={`edit`} className="btn btn-primary me-1">
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => deleteItem(item.id)}
+                        className="btn btn-danger me-1"
+                      >
+                        Delete
+                      </button>
+                    </>
+                  ) : null
+                }
+                {
+                  user.role === 'Admin' || user.role === 'Office' ? (
+                    <Link to={`/dashboard/item-detail/add/${item.id}`} className="btn btn-primary">
+                      Add New Unit
+                    </Link>
+                  ) : null
+                }
+                <div className="panel-body table-responsive shadow mt-4 rounded-2">
                   <table className="table table-striped align-middle">
                     <thead>
                       <tr>
                         <th scope="col">Unit</th>
                         <th scope="col">Stock</th>
                         <th scope="col">Price</th>
-                        <th scope="col">Action</th>
+                        {
+                          user.role === 'Admin' ? (
+                            <th scope="col">Action</th>
+                          ) : null
+                        }
                       </tr>
                     </thead>
                     <tbody>
@@ -160,17 +184,21 @@ const Item = () => {
                               <td>{item.unit}</td>
                               <td>{item.stock}</td>
                               <td>{formatRupiah(item.price)}</td>
-                              <td>
-                                <Link to={`/dashboard/item-detail/${item.id}/edit`} className="btn btn-primary me-1">
-                                  Edit
-                                </Link>
-                                <button
-                                  onClick={() => deleteItemDetail(item.id)}
-                                  className="btn btn-danger"
-                                >
-                                  Delete
-                                </button>
-                              </td>
+                              {
+                                user.role === 'Admin' ? (
+                                  <td>
+                                    <Link to={`/dashboard/item-detail/${item.id}/edit`} className="btn btn-primary me-1">
+                                      Edit
+                                    </Link>
+                                    <button
+                                      onClick={() => deleteItemDetail(item.id)}
+                                      className="btn btn-danger"
+                                    >
+                                      Delete
+                                    </button>
+                                  </td>
+                                ) : null
+                              }
                             </tr>
                           ))
                         )

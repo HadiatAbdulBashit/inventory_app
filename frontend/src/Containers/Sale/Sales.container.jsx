@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -11,10 +11,15 @@ import Sort from '../../Components/Sort'
 import Filter from "../../Components/Filter";
 
 import { RiEyeLine, RiPencilLine, RiDeleteBin2Line } from "react-icons/ri";
+import { LuRefreshCcw } from "react-icons/lu";
 
 import formatRupiah from "../../Utils/formatRupiah";
 
+import UserContext from '../../Contexts/UserContext';
+
 const Sales = () => {
+  const { user } = useContext(UserContext)
+
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -109,15 +114,19 @@ const Sales = () => {
   };
 
   return (
-    <div className="container p-4" style={{minWidth: '1130px'}}>
+    <div className="container p-4" style={{ minWidth: '1130px' }}>
       <h1>List Sales</h1>
       <div className="panel">
         <div className="panel-heading">
           <div className="d-flex justify-content-between">
             <div className="d-flex">
-              <Link to="/dashboard/sale/add" className="btn btn-primary me-2">
-                Add New Sales
-              </Link>
+              {
+                user.role === 'Office' ? (
+                  <Link to="/dashboard/sale/add" className="btn btn-primary me-2">
+                    Add New Sales
+                  </Link>
+                ) : null
+              }
               <Search setSearch={(search) => setSearch(search)} />
               <div className="dropdown me-2">
                 <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownFilterDate" data-bs-toggle="dropdown" aria-expanded="false">
@@ -140,7 +149,10 @@ const Sales = () => {
                 ) : null
               }
             </div>
-            <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
+            <div className="d-flex">
+              <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
+              <button className="btn btn-primary" onClick={() => { setIsLoading(true), getTransaction() }}><LuRefreshCcw /></button>
+            </div>
           </div>
         </div>
         {
@@ -160,7 +172,11 @@ const Sales = () => {
                 <table className="table">
                   <thead>
                     <tr>
-                      <th>Action</th>
+                      {
+                        user.role === 'Admin' || user.role === 'Office' ? (
+                          <th>Action</th>
+                        ) : null
+                      }
                       <th>Customer</th>
                       <th>Total Price</th>
                       <th>Status</th>
@@ -171,23 +187,28 @@ const Sales = () => {
                   <tbody>
                     {data.transactions?.map((transaction) => (
                       <tr key={transaction.id}>
-                        <td width={'120px'}>
-                          <ul className="action-list">
-                            <li>
-                              <Link to={`${transaction.id}/edit`} className="btn btn-primary me-2">
-                                <RiPencilLine />
-                              </Link>
-                            </li>
-                            <li>
-                              <button
-                                onClick={() => deleteTransaction(transaction.id)}
-                                className="btn btn-danger"
-                              >
-                                <RiDeleteBin2Line />
-                              </button>
-                            </li>
-                          </ul>
-                        </td>
+                        {
+                          user.role === 'Admin' || user.role === 'Office' ? (
+                            <td width={'120px'}>
+                              <ul className="action-list">
+                                <li>
+                                  <Link to={`${transaction.id}/edit`} className={"btn btn-primary me-2" + (user.role === 'Office' && transaction.status !== 'Inisialization' ? ' disabled' : transaction.pocOffice !== user.id ? ' disabled' : '')}>
+                                    <RiPencilLine />
+                                  </Link>
+                                </li>
+                                <li>
+                                  <button
+                                    onClick={() => deleteTransaction(transaction.id)}
+                                    className="btn btn-danger"
+                                    disabled={user.role === 'Office' && transaction.status !== 'Inisialization' ? true : transaction.pocOffice !== user.id ? true : false}
+                                  >
+                                    <RiDeleteBin2Line />
+                                  </button>
+                                </li>
+                              </ul>
+                            </td>
+                          ) : null
+                        }
                         <td width={'40%'}>{transaction.secondParty}</td>
                         <td>{formatRupiah(transaction.totalPrice || 0)}</td>
                         <td>

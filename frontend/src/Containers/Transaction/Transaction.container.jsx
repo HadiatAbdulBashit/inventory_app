@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -10,7 +10,12 @@ import formatRupiah from "../../Utils/formatRupiah";
 import TransactionDetailForm from "../../Components/TransactionDetailForm/TransactionDetailForm.component";
 import ReturnForm from "../../Components/ReturnForm/ReturnForm.component";
 
+import UserContext from '../../Contexts/UserContext';
+
+import { LuRefreshCcw } from "react-icons/lu";
+
 const Transaction = () => {
+  const { user } = useContext(UserContext)
   const { id } = useParams();
   const navigate = useNavigate();
   const [transaction, setTransaction] = useState([]);
@@ -321,9 +326,12 @@ const Transaction = () => {
             <>
               <div className="col-12">
                 <div>
-                  <h2>
-                    {transaction.type === 'In' ? 'Purchase from' : 'Sale to'} {transaction.secondParty} <span className={"badge border " + (transaction.status === 'Success' || transaction.status === 'Success with Return' ? 'bg-success-subtle text-success-emphasis border-success-subtle' : transaction.status === 'Canceled' ? 'bg-danger-subtle text-danger-emphasis border-danger-subtle' : 'bg-warning-subtle text-warning-emphasis border-warning-subtle')}>{transaction.status}</span>
-                  </h2>
+                  <div className="d-flex justify-content-between">
+                    <h2>
+                      {transaction.type === 'In' ? 'Purchase from' : 'Sale to'} {transaction.secondParty} <span className={"badge border " + (transaction.status === 'Success' || transaction.status === 'Success with Return' ? 'bg-success-subtle text-success-emphasis border-success-subtle' : transaction.status === 'Canceled' ? 'bg-danger-subtle text-danger-emphasis border-danger-subtle' : 'bg-warning-subtle text-warning-emphasis border-warning-subtle')}>{transaction.status}</span>
+                    </h2>
+                    <button className="btn btn-primary ratio ratio-1x1" style={{ maxHeight: '40px', maxWidth: '40px', border: '0' }} onClick={() => { setIsLoading(true), getTransactionById(), getTransactionDetail(), getReturnItem() }}><LuRefreshCcw /></button>
+                  </div>
                   <table width={'100%'} className='my-3'>
                     <tbody>
                       <tr>
@@ -362,24 +370,34 @@ const Transaction = () => {
                       </tr>
                     </tbody>
                   </table>
-                  <Link to={'/dashboard/' + (transaction.type === 'Out' ? 'sale' : 'purchase') + `/${id}/edit`} className="btn btn-primary me-1">
-                    Edit
-                  </Link>
-                  <button
-                    onClick={() => deleteTransaction(transaction.id)}
-                    className="btn btn-danger me-1"
-                  >
-                    Delete
-                  </button>
                   {
-                    showFormItem === false && transaction.status === 'Inisialization' ? (
+                    user.role === 'Admin' || user.role === 'Office' && transaction.pocOffice === user.id && transaction.status === 'Inisialization' ? (
+                      <>
+                        <Link to={'/dashboard/' + (transaction.type === 'Out' ? 'sale' : 'purchase') + `/${id}/edit`} className="btn btn-primary me-1">
+                          Edit
+                        </Link>
+                        {
+                          transactionDetails.length === 0 ? (
+                            <button
+                              onClick={() => deleteTransaction(transaction.id)}
+                              className="btn btn-danger me-1"
+                            >
+                              Delete
+                            </button>
+                          ) : null
+                        }
+                      </>
+                    ) : null
+                  }
+                  {
+                    showFormItem === false && transaction.status === 'Inisialization' && user.role === 'Office' && transaction.pocOffice === user.id ? (
                       <button className="btn btn-primary me-1" onClick={() => onButtonAddItemClick()}>
                         Add Item
                       </button>
                     ) : null
                   }
                   {
-                    transaction.status === 'Inisialization' && transactionDetails.length !== 0 ? (
+                    transaction.status === 'Inisialization' && transactionDetails.length !== 0 && user.role === 'Office' ? (
                       <button
                         onClick={() => updateStatusTransaction(transaction.id, 'Ready to Check')}
                         className="btn btn-success"
@@ -389,7 +407,7 @@ const Transaction = () => {
                     ) : null
                   }
                   {
-                    transaction.status === 'Ready to Check' ? (
+                    transaction.status === 'Ready to Check' && user.role === 'Warehouse' ? (
                       <button
                         onClick={() => updateStatusTransaction(transaction.id, 'On Check')}
                         className="btn btn-success"
@@ -399,7 +417,7 @@ const Transaction = () => {
                     ) : null
                   }
                   {
-                    transaction.status === 'On Check' ? (
+                    transaction.status === 'On Check' && user.role === 'Warehouse' && transaction.pocWarehouse === user.id ? (
                       <button
                         onClick={() => updateStatusTransaction(transaction.id, 'Done')}
                         className="btn btn-success"
@@ -412,7 +430,7 @@ const Transaction = () => {
 
                 {/* Items / Detail Transaction */}
                 <h2 className="mt-4">Items</h2>
-                <div className="panel-body table-responsive shadow mt-4 rounded-4">
+                <div className="panel-body table-responsive shadow mt-4 rounded-2">
                   <div className={"collapse " + (showFormItem ? 'show' : null)}>
                     <TransactionDetailForm
                       onFormSubmit={submitFormTransactionDetail}
@@ -512,7 +530,7 @@ const Transaction = () => {
                                     <button
                                       onClick={() => onButtonUpdateStatusItemClick(transactionDetail.id, 'Accept')}
                                       className="btn btn-primary me-1"
-                                      disabled={showFormReturn ?? false}
+                                      disabled={showFormReturn || transaction.pocWarehouse !== user.id ? true : false}
                                     >
                                       Accept
                                     </button>
@@ -521,7 +539,7 @@ const Transaction = () => {
                                         <button
                                           onClick={() => onButtonReturnClick(transactionDetail.id, 'Return')}
                                           className="btn btn-warning me-1"
-                                          disabled={showFormReturn ?? false}
+                                          disabled={showFormReturn || transaction.pocWarehouse !== user.id ? true : false}
                                         >
                                           Return
                                         </button>
@@ -530,7 +548,7 @@ const Transaction = () => {
                                     <button
                                       onClick={() => onButtonReturnClick(transactionDetail.id, 'Cancel')}
                                       className="btn btn-danger"
-                                      disabled={showFormReturn ?? false}
+                                      disabled={showFormReturn || transaction.pocWarehouse !== user.id ? true : false}
                                     >
                                       Cancel
                                     </button>
@@ -558,17 +576,17 @@ const Transaction = () => {
                   returnItems.length === 0 ? null : (
                     <>
                       <h2 className="mt-4">Return</h2>
-                      <div className="panel-body table-responsive shadow mt-4 rounded-4">
+                      <div className="panel-body table-responsive shadow mt-4 rounded-2">
                         <table className="table table-striped align-middle">
                           <thead>
                             <tr>
                               <th scope="col">Item Name</th>
                               <th scope="col">Unit</th>
-                              <th scope="col">Total Item</th>
+                              <th scope="col">Accept Item</th>
                               <th scope="col">Return Item</th>
                               <th scope="col">Description</th>
                               {
-                                transaction.status === 'Inisialization' || transaction.status === 'On Check' ? (
+                                transaction.status === 'Inisialization' || transaction.status === 'On Check' && transaction.pocWarehouse === user.id ? (
                                   <th scope="col">Action</th>
                                 ) : null
                               }
@@ -580,11 +598,11 @@ const Transaction = () => {
                                 <tr key={returnItem.id}>
                                   <td>{`${returnItem?.transactionDetail?.itemDetail?.item?.merk} ${returnItem?.transactionDetail?.itemDetail?.item?.name}`}</td>
                                   <td>{returnItem?.transactionDetail?.itemDetail?.unit}</td>
-                                  <td width={'105px'}>{returnItem?.transactionDetail?.totalItem}</td>
+                                  <td width={'120px'}>{returnItem?.transactionDetail?.totalItem - returnItem.totalItem}</td>
                                   <td width={'120px'}>{returnItem.totalItem}</td>
                                   <td>{returnItem.description}</td>
                                   {
-                                    transaction.status === 'On Check' ? (
+                                    transaction.status === 'On Check' && transaction.pocWarehouse === user.id ? (
                                       <td>
                                         <button
                                           onClick={() => editReturn(returnItem.id, returnItem?.transactionDetail?.totalItem === returnItem.totalItem ? 'Cancel' : 'Return')}

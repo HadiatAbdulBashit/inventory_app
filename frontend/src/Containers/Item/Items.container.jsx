@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -10,10 +10,14 @@ import Sort from '../../Components/Sort'
 import Filter from "../../Components/Filter";
 
 import { RiEyeLine, RiPencilLine, RiDeleteBin2Line } from "react-icons/ri";
-import { LuTable } from "react-icons/lu";
+import { LuTable, LuRefreshCcw } from "react-icons/lu";
 import { PiCardsLight } from "react-icons/pi";
 
+import UserContext from '../../Contexts/UserContext';
+
 const Items = () => {
+  const { user } = useContext(UserContext)
+
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -86,23 +90,28 @@ const Items = () => {
   ];
 
   return (
-    <div className="container p-4" style={{minWidth: '750px'}}>
+    <div className="container p-4" style={{ minWidth: '750px' }}>
       <h1>List Item</h1>
       <div className="panel">
         <div className="panel-heading">
           <div className="d-flex justify-content-between">
             <div className="d-flex">
-              <Link to="/dashboard/item/add" className="btn btn-primary me-2">
-                Add New
-              </Link>
+              {
+                user.role === 'Admin' || user.role === 'Office' ? (
+                  <Link to="/dashboard/item/add" className="btn btn-primary me-2">
+                    Add New
+                  </Link>
+                ) : null
+              }
               <Search setSearch={(search) => setSearch(search)} />
             </div>
-            <div className="d-flex">
+            <div className="d-flex gap-1">
               <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
               <div className="btn-group">
                 <button className={"btn btn-primary d-flex justify-content-around align-items-center" + (showTable ? ' active' : '')} onClick={() => setShowTable(true)}><LuTable /></button>
                 <button className={"btn btn-primary d-flex justify-content-around align-items-center" + (!showTable ? ' active' : '')} onClick={() => setShowTable(false)}><PiCardsLight /></button>
               </div>
+              <button className="btn btn-primary" onClick={() => { setIsLoading(true), getItem() }}><LuRefreshCcw /></button>
             </div>
           </div>
         </div>
@@ -123,7 +132,11 @@ const Items = () => {
                 <table className="table">
                   <thead>
                     <tr>
-                      <th>Action</th>
+                      {
+                        user.role === 'Admin' ? (
+                          <th>Action</th>
+                        ) : null
+                      }
                       <th>Name</th>
                       <th>Category</th>
                       <th>Merk</th>
@@ -134,23 +147,27 @@ const Items = () => {
                     {
                       data.items?.map((item) => (
                         <tr key={item.id}>
-                          <td width={'120px'}>
-                            <ul className="action-list">
-                              <li>
-                                <Link to={`${item.id}/edit`} className="btn btn-primary me-2">
-                                  <RiPencilLine />
-                                </Link>
-                              </li>
-                              <li>
-                                <button
-                                  onClick={() => deleteItem(item.id)}
-                                  className="btn btn-danger"
-                                >
-                                  <RiDeleteBin2Line />
-                                </button>
-                              </li>
-                            </ul>
-                          </td>
+                          {
+                            user.role === 'Admin' ? (
+                              <td width={'120px'}>
+                                <ul className="action-list">
+                                  <li>
+                                    <Link to={`${item.id}/edit`} className="btn btn-primary me-2">
+                                      <RiPencilLine />
+                                    </Link>
+                                  </li>
+                                  <li>
+                                    <button
+                                      onClick={() => deleteItem(item.id)}
+                                      className="btn btn-danger"
+                                    >
+                                      <RiDeleteBin2Line />
+                                    </button>
+                                  </li>
+                                </ul>
+                              </td>
+                            ) : null
+                          }
                           <td width={'40%'}>{item.name}</td>
                           <td>{item.category}</td>
                           <td>{item.merk}</td>
@@ -184,16 +201,22 @@ const Items = () => {
                         </ul>
                         <div className="card-body d-grid">
                           <div className="btn-group">
-                            <Link to={`${item.id}/edit`} className="btn btn-primary d-flex justify-content-around align-items-center">
-                              <RiPencilLine /> Edit
-                            </Link>
-                            <button
-                              onClick={() => deleteItem(item.id)}
-                              className="btn btn-danger d-flex justify-content-around align-items-center"
-                            >
-                              <RiDeleteBin2Line /> Delete
-                            </button>
-                            <Link to={`${item.id}`} className="btn btn-success d-flex justify-content-around align-items-center">
+                            {
+                              user.role === 'Admin' ? (
+                                <>
+                                  <Link to={`${item.id}/edit`} className="btn btn-primary d-flex justify-content-around align-items-center">
+                                    <RiPencilLine /> Edit
+                                  </Link>
+                                  <button
+                                    onClick={() => deleteItem(item.id)}
+                                    className="btn btn-danger d-flex justify-content-around align-items-center"
+                                  >
+                                    <RiDeleteBin2Line /> Delete
+                                  </button>
+                                </>
+                              ) : null
+                            }
+                            <Link to={`${item.id}`} className={"btn btn-success d-flex align-items-center" + (user.role === 'Admin' ? ' justify-content-around' : ' justify-content-center gap-3')}>
                               <RiEyeLine /> View
                             </Link>
                           </div>

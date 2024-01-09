@@ -10,6 +10,7 @@ import Sort from '../../Components/Sort'
 // import Filter from "../../Components/Filter";
 
 import { RiPencilLine, RiDeleteBin2Line, RiKeyLine } from "react-icons/ri";
+import { LuRefreshCcw } from "react-icons/lu";
 
 import UserContext from '../../Contexts/UserContext';
 
@@ -148,7 +149,10 @@ const Users = () => {
               </Link>
               <Search setSearch={(search) => setSearch(search)} />
             </div>
-            <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
+            <div className="d-flex">
+              <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
+              <button className="btn btn-primary" onClick={() => { setIsLoading(true), getUser() }}><LuRefreshCcw /></button>
+            </div>
           </div>
         </div>
         {

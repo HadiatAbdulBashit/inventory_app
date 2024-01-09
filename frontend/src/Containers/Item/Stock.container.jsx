@@ -6,6 +6,8 @@ import Search from '../../Components/Search'
 import Sort from '../../Components/Sort'
 import Filter from "../../Components/Filter";
 
+import { LuRefreshCcw } from "react-icons/lu";
+
 const Stock = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
@@ -46,7 +48,7 @@ const Stock = () => {
   ];
 
   return (
-    <div className="container p-4" style={{minWidth: '720px'}}>
+    <div className="container p-4" style={{ minWidth: '720px' }}>
       <h1>List Stock</h1>
       <div className="panel">
         <div className="panel-heading">
@@ -54,7 +56,10 @@ const Stock = () => {
             <div className="d-flex">
               <Search setSearch={(search) => setSearch(search)} />
             </div>
-            <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
+            <div className="d-flex">
+              <Sort sort={sort} setSort={(sort) => setSort(sort)} listSort={sortBy} />
+              <button className="btn btn-primary" onClick={() => {setIsLoading(true) ,getItem()}}><LuRefreshCcw /></button>
+            </div>
           </div>
         </div>
         {
