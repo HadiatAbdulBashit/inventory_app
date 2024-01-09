@@ -42,7 +42,7 @@ const Pagination = ({ page, total, limit, setPage }) => {
 				</li>
 				{renderPageNumbers()}
 				<li className="page-item">
-					<button className={"page-link " + (page === totalPages ? 'disabled' : null)} onClick={() => handleLast()}>&raquo;</button>
+					<button className={"page-link " + (page === totalPages || totalPages === 0 ? 'disabled' : null)} onClick={() => handleLast()}>&raquo;</button>
 				</li>
 			</ul>
 			of <b>{String(totalPages)}</b> pages
