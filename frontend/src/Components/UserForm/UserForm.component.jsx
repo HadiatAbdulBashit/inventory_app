@@ -1,7 +1,11 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
+import UserContext from '../../Contexts/UserContext';
+
 const UserForm = ({ onFormSubmit, initialData, title }) => {
+    const { user } = useContext(UserContext)
+
     const {
         register,
         handleSubmit,
@@ -50,10 +54,16 @@ const UserForm = ({ onFormSubmit, initialData, title }) => {
                     disabled={initialData}
                 >
                     <option disabled value={''}>-- Role --</option>
-                    <option value={'Super Admin'}>Super Admin</option>
-                    <option value={'Admin'}>Admin</option>
-                    <option value={'Office'}>Office Staff</option>
-                    <option value={'Warehouse'}>Warehouse Staff</option>
+                    {
+                        user.role === 'Super Admin' ? (
+                            <option value={'Admin'}>Admin</option>
+                        ) : (
+                            <>
+                                <option value={'Office'}>Office Staff</option>
+                                <option value={'Warehouse'}>Warehouse Staff</option>
+                            </>
+                        )
+                    }
                 </select>
                 <div className="invalid-feedback">
                     {errors.role && errors.role.message}
