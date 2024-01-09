@@ -45,7 +45,7 @@ const Pagination = ({ page, total, limit, setPage }) => {
 					<button className={"page-link " + (page === totalPages || totalPages === 0 ? 'disabled' : null)} onClick={() => handleLast()}>&raquo;</button>
 				</li>
 			</ul>
-			of <b>{String(totalPages)}</b> pages
+			of <b>{String(totalPages || 0)}</b> pages
 		</>
 	);
 };
