@@ -1,7 +1,6 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
 import { useState, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
-import axios from 'axios';
 
 import 'react-toastify/dist/ReactToastify.css';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -49,25 +48,20 @@ import Transaction from './Containers/Transaction/Transaction.container';
 // App Log Page
 import AppLog from './Containers/AppLog/AppLog.container';
 
+// Not Found Page
 import NotFound from './Containers/NotFound/NotFound.container';
 
 import UserContext from './Contexts/UserContext';
+
+import verifyUser from "./Utils/verifyUser";
 
 function App() {
   const [user, setUser] = useState({
     isLoggedIn: false,
   })
 
-  const getUser = async () => {
-    const isLogin = JSON.parse(localStorage.getItem('user'))
-    if (isLogin) {
-      const response = await axios.get('/api/auth/me')
-      setUser({ ...response.data, isLoggedIn: true })
-    }
-  }
-
   useEffect(() => {
-    getUser()
+    verifyUser(setUser)
   }, [])
 
   const router = createBrowserRouter(
