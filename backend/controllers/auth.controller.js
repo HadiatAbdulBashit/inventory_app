@@ -31,7 +31,7 @@ exports.authUser = asyncHandler(async (req, res) => {
     }
 });
 
-// @desc    get user / get user from token
+// @desc    get user from token
 // @route   get /api/auth/me
 // @access  Private
 exports.getUser = asyncHandler(async (req, res) => {
