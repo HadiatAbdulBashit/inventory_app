@@ -46,7 +46,7 @@ const Stock = () => {
   ];
 
   return (
-    <div className="container p-4">
+    <div className="container p-4" style={{minWidth: '720px'}}>
       <h1>List Stock</h1>
       <div className="panel">
         <div className="panel-heading">

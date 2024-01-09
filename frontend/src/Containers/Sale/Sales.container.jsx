@@ -109,7 +109,7 @@ const Sales = () => {
   };
 
   return (
-    <div className="container p-4">
+    <div className="container p-4" style={{minWidth: '1130px'}}>
       <h1>List Sales</h1>
       <div className="panel">
         <div className="panel-heading">

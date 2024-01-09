@@ -11,6 +11,7 @@ import {
 } from 'chart.js';
 import { useState, useEffect } from 'react';
 import { Bar, Pie } from 'react-chartjs-2';
+import moment from 'moment';
 
 import formatRupiah from "../../Utils/formatRupiah";
 
@@ -141,7 +142,7 @@ const Dashboard = () => {
                   data.lastPurchase.map((purchase, i) => (
                     <li className="list-group-item d-flex justify-content-between align-items-center" key={i}>
                       {purchase.secondParty}
-                      <span className={"badge rounded-pill " + (purchase.status === 'Success' || purchase.status === 'Success with Return' ? 'bg-success-subtle text-success-emphasis' : purchase.status === 'Canceled' ? 'bg-danger-subtle text-danger-emphasis' : 'bg-warning-subtle text-warning-emphasis')}>{purchase.status}</span>
+                      <span className={"badge rounded-pill " + (purchase.status === 'Success' || purchase.status === 'Success with Return' ? 'bg-success-subtle text-success-emphasis' : purchase.status === 'Canceled' ? 'bg-danger-subtle text-danger-emphasis' : 'bg-warning-subtle text-warning-emphasis')}>{moment(purchase.updatedAt).fromNow()}</span>
                     </li>
                   ))
                 }
@@ -152,7 +153,7 @@ const Dashboard = () => {
                   data.lastSale.map((sale, i) => (
                     <li className="list-group-item d-flex justify-content-between align-items-center" key={i}>
                       {sale.secondParty}
-                      <span className={"badge rounded-pill " + (sale.status === 'Success' || sale.status === 'Success with Return' ? 'bg-success-subtle text-success-emphasis' : sale.status === 'Canceled' ? 'bg-danger-subtle text-danger-emphasis' : 'bg-warning-subtle text-warning-emphasis')}>{sale.status}</span>
+                      <span className={"badge rounded-pill " + (sale.status === 'Success' || sale.status === 'Success with Return' ? 'bg-success-subtle text-success-emphasis' : sale.status === 'Canceled' ? 'bg-danger-subtle text-danger-emphasis' : 'bg-warning-subtle text-warning-emphasis')}>{moment(sale.updatedAt).fromNow()}</span>
                     </li>
                   ))
                 }

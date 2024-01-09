@@ -67,7 +67,7 @@ const AppLog = () => {
   };
 
   return (
-    <div className="container p-4">
+    <div className="container p-4" style={{minWidth: '950px'}}>
       <h1>App Log</h1>
       <div className="panel">
         <div className="panel-heading">
@@ -127,9 +127,9 @@ const AppLog = () => {
                       <tr key={log.id}>
                         <td>{log.ipAddress}</td>
                         <td>{log.method}</td>
-                        <td>{log.url}</td>
-                        <td width={'40%'}>{log.message}</td>
-                        <td>{moment(log.createdAt).format('llll')}</td>
+                        <td className="text-truncate" style={{ maxWidth: '350px'}}>{log.url}</td>
+                        <td>{log.message}</td>
+                        <td style={{ minWidth: '230px'}}>{moment(log.createdAt).format('llll')}</td>
                       </tr>
                     ))}
                   </tbody>

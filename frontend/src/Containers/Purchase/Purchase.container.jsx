@@ -109,7 +109,7 @@ const Purchase = () => {
   };
 
   return (
-    <div className="container p-4">
+    <div className="container p-4" style={{minWidth: '1150px'}}>
       <h1>List Purchases</h1>
       <div className="panel">
         <div className="panel-heading">

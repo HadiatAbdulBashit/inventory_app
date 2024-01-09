@@ -86,7 +86,7 @@ const Items = () => {
   ];
 
   return (
-    <div className="container p-4">
+    <div className="container p-4" style={{minWidth: '750px'}}>
       <h1>List Item</h1>
       <div className="panel">
         <div className="panel-heading">
@@ -166,10 +166,10 @@ const Items = () => {
                 </table>
               </div>
             ) : (
-              <div className="row mx-0 row-cols-3 my-4">
+              <div className="row mx-0 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 my-3 g-3">
                 {
                   data.items?.map((item) => (
-                    <div className="col" key={item.id}>
+                    <div className="col m-0" key={item.id}>
                       <div className="card">
                         <div style={{ maxHeight: '200px' }} className='overflow-hidden' >
                           <img src={item.imageUrl} className="card-img-top img-fluid" alt={item.name} />
@@ -179,8 +179,8 @@ const Items = () => {
                           <p className="card-text text-truncate">{item.description}</p>
                         </div>
                         <ul className="list-group list-group-flush">
-                          <li className="list-group-item">{item.category}</li>
-                          <li className="list-group-item">{item.merk}</li>
+                          <li className="list-group-item">Category : {item.category}</li>
+                          <li className="list-group-item">Brand : {item.merk}</li>
                         </ul>
                         <div className="card-body d-grid">
                           <div className="btn-group">

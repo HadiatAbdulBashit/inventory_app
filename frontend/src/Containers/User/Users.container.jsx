@@ -137,7 +137,7 @@ const Users = () => {
   ];
 
   return (
-    <div className="container p-4">
+    <div className="container p-4" style={{minWidth: '650px'}}>
       <h1>List User</h1>
       <div className="panel">
         <div className="panel-heading">

@@ -114,7 +114,7 @@ const Transactions = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4" style={{minWidth: '1100px'}}>
       <h1>List Transaction</h1>
       <div className="panel">
         <div className="panel-heading">
