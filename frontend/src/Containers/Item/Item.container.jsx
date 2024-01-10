@@ -117,7 +117,7 @@ const Item = () => {
           ) : (
             <>
               <div className="col-6">
-                <img src={item.imageUrl} alt="Preview Image" className="img-fluid p-3" />
+                <img src={item.imageUrl} alt="Preview Image" className="p-3" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
               </div>
               <div className="col-6">
                 <div className="d-flex justify-content-between">

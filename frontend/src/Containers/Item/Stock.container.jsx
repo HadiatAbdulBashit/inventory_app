@@ -6,6 +6,8 @@ import Search from '../../Components/Search'
 import Sort from '../../Components/Sort'
 import Filter from "../../Components/Filter";
 
+import formatRupiah from "../../Utils/formatRupiah";
+
 import { LuRefreshCcw } from "react-icons/lu";
 
 const Stock = () => {
@@ -94,7 +96,7 @@ const Stock = () => {
                         <td>{item.item.name}</td>
                         <td>{item.item.category}</td>
                         <td>{item.unit}</td>
-                        <td>{item.price}</td>
+                        <td>{formatRupiah(item.price || 0)}</td>
                         <td>{item.stock}</td>
                       </tr>
                     ))}

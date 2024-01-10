@@ -90,7 +90,7 @@ const Items = () => {
   ];
 
   return (
-    <div className="container p-4" style={{ minWidth: '750px' }}>
+    <div className="container p-4" style={{ minWidth: '900px' }}>
       <h1>List Item</h1>
       <div className="panel">
         <div className="panel-heading">
@@ -183,16 +183,16 @@ const Items = () => {
                 </table>
               </div>
             ) : (
-              <div className="row mx-0 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 my-3 g-3">
+              <div className="row mx-0 row-cols-3 row-cols-xxl-4 my-3 row-gap-3">
                 {
                   data.items?.map((item) => (
                     <div className="col m-0" key={item.id}>
                       <div className="card">
-                        <div style={{ maxHeight: '200px' }} className='overflow-hidden' >
-                          <img src={item.imageUrl} className="card-img-top img-fluid" alt={item.name} />
+                        <div style={{ height: '200px' }} className='overflow-hidden' >
+                          <img src={item.imageUrl} className="card-img-top" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={item.name} />
                         </div>
                         <div className="card-body">
-                          <h5 className="card-title">{item.name}</h5>
+                          <h5 className="card-title text-truncate">{item.name}</h5>
                           <p className="card-text text-truncate">{item.description}</p>
                         </div>
                         <ul className="list-group list-group-flush">
