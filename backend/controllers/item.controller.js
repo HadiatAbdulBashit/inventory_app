@@ -8,7 +8,10 @@ const db = require("../models");
 const Item = db.item;
 const Op = Sequelize.Op;
 
-// Create and Save a new Item
+
+// @desc    Create and Save a new Item
+// @route   POST /api/auth
+// @access  Private
 exports.create = async (req, res) => {
     // Validate request
     if (!req.body.name) {

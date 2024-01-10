@@ -6,7 +6,7 @@ const asyncHandler = require('express-async-handler');
 
 // @desc    Auth user & get token
 // @route   POST /api/auth
-// @access  Only Super Admin
+// @access  Public
 exports.authUser = asyncHandler(async (req, res) => {
     const { username, password } = req.body;
 
