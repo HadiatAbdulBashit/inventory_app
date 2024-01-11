@@ -47,7 +47,7 @@ exports.onlyAdmin = asyncHandler(async (req, res, next) => {
         }
       });
 
-      if (req.user.role !== 'Super Admin' || req.user.role !== 'Admin') {
+      if (req.user.role !== 'Super Admin' && req.user.role !== 'Admin') {
         res.status(403)
         throw new Error('Forbiden Access');
       }
