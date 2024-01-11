@@ -103,7 +103,7 @@ const Transaction = () => {
 
       Swal.fire({
         title: "Error",
-        text: "An error occurred while deleting the transaction.",
+        text: error.response.data.msg,
         icon: "error"
       });
     }
@@ -397,7 +397,7 @@ const Transaction = () => {
                     ) : null
                   }
                   {
-                    transaction.status === 'Inisialization' && transactionDetails.length !== 0 && user.role === 'Office' ? (
+                    transaction.status === 'Inisialization' && transactionDetails.length !== 0 && user.role === 'Office' && transaction.pocOffice === user.id ? (
                       <button
                         onClick={() => updateStatusTransaction(transaction.id, 'Ready to Check')}
                         className="btn btn-success"
@@ -457,7 +457,7 @@ const Transaction = () => {
                           ) : null
                         }
                         {
-                          transaction.status === 'Inisialization' || transaction.status === 'On Check' ? (
+                          transaction.status === 'Inisialization' && transaction.pocOffice === user.id || transaction.status === 'On Check' ? (
                             <th scope="col">{transaction.status === 'On Check' ? 'Action/Status' : 'Action'}</th>
                           ) : null
                         }
@@ -491,7 +491,7 @@ const Transaction = () => {
                                       {transactionDetail.status}
                                     </span>
                                     {
-                                      transactionDetail.status === 'Accept' && transaction.status === 'On Check' ? (
+                                      transactionDetail.status === 'Accept' && transaction.status === 'On Check' && transaction.pocWarehouse === user.id ? (
                                         <button
                                           onClick={() => onButtonUpdateStatusItemClick(transactionDetail.id, 'Ready to Check')}
                                           className="btn btn-warning ms-3"
@@ -505,7 +505,7 @@ const Transaction = () => {
                                 ) : null
                               }
                               {
-                                transaction.status === 'Inisialization' ? (
+                                transaction.status === 'Inisialization' && transaction.pocOffice === user.id ? (
                                   <td>
                                     <button
                                       onClick={() => editTransactionDetail(transactionDetail.id)}

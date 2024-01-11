@@ -62,7 +62,7 @@ const Users = () => {
     } catch (error) {
       Swal.fire({
         title: "Error",
-        text: "An error occurred while deleting the user.",
+        text: error.response.data.msg,
         icon: "error"
       });
     }

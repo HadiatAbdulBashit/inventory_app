@@ -72,7 +72,7 @@ const Purchases = () => {
 
       Swal.fire({
         title: "Error",
-        text: "An error occurred while deleting the transaction.",
+        text: error.response.data.msg,
         icon: "error"
       });
     }
@@ -173,7 +173,7 @@ const Purchases = () => {
                   <thead>
                     <tr>
                       {
-                        user.role === 'Admin' || user.role === 'Office' ? (
+                        user.role === 'Office' ? (
                           <th>Action</th>
                         ) : null
                       }
@@ -188,7 +188,7 @@ const Purchases = () => {
                     {data.transactions?.map((transaction) => (
                       <tr key={transaction.id}>
                         {
-                          user.role === 'Admin' || user.role === 'Office' ? (
+                          user.role === 'Office' ? (
                             <td width={'120px'}>
                               <ul className="action-list">
                                 <li>
@@ -210,7 +210,7 @@ const Purchases = () => {
                           ) : null
                         }
                         <td width={'30%'}>{transaction.secondParty}</td>
-                        <td>{formatRupiah(transaction.totalPrice)}</td>
+                        <td style={{textAlign: 'right'}}>{formatRupiah(transaction.totalPrice)}</td>
                         <td>
                           <span className={"badge " + (transaction.status === 'Success' || transaction.status === 'Success with Return' ? 'bg-success-subtle text-success-emphasis' : transaction.status === 'Canceled' ? 'bg-danger-subtle text-danger-emphasis' : 'bg-warning-subtle text-warning-emphasis')}>
                             {transaction.status}

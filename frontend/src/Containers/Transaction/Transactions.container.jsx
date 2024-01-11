@@ -73,7 +73,7 @@ const Transactions = () => {
 
       Swal.fire({
         title: "Error",
-        text: "An error occurred while deleting the transaction.",
+        text: error.response.data.msg,
         icon: "error"
       });
     }
@@ -211,7 +211,7 @@ const Transactions = () => {
                         }
                         <td>{transaction.type}</td>
                         <td width={'20%'}>{transaction.secondParty}</td>
-                        <td>{formatRupiah(transaction.totalPrice || 0)}</td>
+                        <td style={{textAlign: 'right'}}>{formatRupiah(transaction.totalPrice || 0)}</td>
                         <td>
                           <span className={"badge " + (transaction.status === 'Success' || transaction.status === 'Success with Return' ? 'bg-success-subtle text-success-emphasis' : transaction.status === 'Canceled' ? 'bg-danger-subtle text-danger-emphasis' : 'bg-warning-subtle text-warning-emphasis')}>
                             {transaction.status}

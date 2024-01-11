@@ -187,7 +187,7 @@ const Item = () => {
                             <tr key={item.id}>
                               <td>{item.unit}</td>
                               <td>{item.stock}</td>
-                              <td>{formatRupiah(item.price)}</td>
+                              <td style={{textAlign: 'right'}}>{formatRupiah(item.price)}</td>
                               {
                                 user.role === 'Admin' ? (
                                   <td>

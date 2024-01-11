@@ -96,7 +96,7 @@ const Stock = () => {
                         <td>{item.item.name}</td>
                         <td>{item.item.category}</td>
                         <td>{item.unit}</td>
-                        <td>{formatRupiah(item.price || 0)}</td>
+                        <td style={{textAlign: 'right'}}>{formatRupiah(item.price || 0)}</td>
                         <td>{item.stock}</td>
                       </tr>
                     ))}
