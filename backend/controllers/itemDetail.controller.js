@@ -4,6 +4,7 @@ const { Sequelize } = require('sequelize');
 const db = require("../models");
 
 const ItemDetail = db.itemDetail
+const TransactionDetail = db.transactionDetail
 const Item = db.item;
 const Op = Sequelize.Op;
 
@@ -172,23 +173,42 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
     const id = req.params.id;
 
-    ItemDetail.destroy({
-        where: { id: id }
+    TransactionDetail.findAll({
+        where: {
+            itemDetailId: { [Op.iLike]: req.params.id },
+        }
     })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "ItemDetail was deleted successfully!"
+        .then(async dataTransactionDetail => {
+            if (dataTransactionDetail.length > 0) {
+                res.status(402).send({
+                    msg: "This Unit is use in transaction!"
                 });
             } else {
-                res.send({
-                    message: `Cannot delete Item Detail with id=${id}. Maybe Item Detail was not found!`
-                });
+                ItemDetail.destroy({
+                    where: { id: id }
+                })
+                    .then(num => {
+                        if (num == 1) {
+                            res.send({
+                                message: "ItemDetail was deleted successfully!"
+                            });
+                        } else {
+                            res.send({
+                                message: `Cannot delete Item Detail with id=${id}. Maybe Item Detail was not found!`
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        res.status(500).send({
+                            message: "Could not delete Item Detail with id=" + id
+                        });
+                    });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Could not delete Item Detail with id=" + id
+                msg:
+                    err.message || "Some error occurred while retrieving transaction detail."
             });
         });
 };

@@ -5,6 +5,7 @@ const asyncHandler = require('express-async-handler');
 const db = require("../models");
 
 const User = db.user;
+const Transaction = db.transaction;
 const Op = Sequelize.Op;
 
 // Create and Save a new User
@@ -181,8 +182,8 @@ exports.resetPassword = asyncHandler(async (req, res) => {
         if (!(await argon2.verify(user.password, req.body.password))) {
             res.status(402).send({ msg: "Password was wrong." });
             return;
-        } 
-        
+        }
+
         if (req.body.newPassword !== req.body.confirmNewPassword) {
             res.status(402).send({ msg: "Confirmation password dont march with new password" });
             return;
@@ -216,23 +217,45 @@ exports.resetPassword = asyncHandler(async (req, res) => {
 exports.delete = (req, res) => {
     const id = req.params.id;
 
-    User.destroy({
-        where: { id: id }
+    Transaction.findAll({
+        where: {
+            [Op.or]: [
+                { pocOffice: req.params.id },
+                { pocWarehouse: req.params.id },
+            ]
+        }
     })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    msg: "User was deleted successfully!"
+        .then(async dataTransaction => {
+            if (dataTransaction.length > 0) {
+                res.status(402).send({
+                    msg: "This user is use in transaction!"
                 });
             } else {
-                res.send({
-                    msg: `Cannot delete User with id=${id}. Maybe User was not found!`
-                });
+                User.destroy({
+                    where: { id: id }
+                })
+                    .then(num => {
+                        if (num == 1) {
+                            res.send({
+                                msg: "User was deleted successfully!"
+                            });
+                        } else {
+                            res.send({
+                                msg: `Cannot delete User with id=${id}. Maybe User was not found!`
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        res.status(500).send({
+                            msg: "Could not delete User with id=" + id
+                        });
+                    });
             }
         })
         .catch(err => {
             res.status(500).send({
-                msg: "Could not delete User with id=" + id
+                msg:
+                    err.message || "Some error occurred while retrieving transaction detail."
             });
         });
 };

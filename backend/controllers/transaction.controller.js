@@ -69,7 +69,7 @@ exports.findAll = (req, res) => {
         endDate = endDate.setDate(endDate.getDate() + 1)
         let newEndDate = new Date(endDate)
         newEndDate = newEndDate.toISOString().split('T')[0];
-        
+
         condition = {
             ...condition,
             createdAt: {
@@ -233,23 +233,42 @@ exports.update = async (req, res) => {
 exports.delete = (req, res) => {
     const id = req.params.id;
 
-    Transaction.destroy({
-        where: { id: id }
+    TransactionDetail.findAll({
+        where: {
+            transactionId: { [Op.iLike]: req.params.id },
+        }
     })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    msg: "Transaction was deleted successfully!"
+        .then(async dataTransactionDetail => {
+            if (dataTransactionDetail.length > 0) {
+                res.status(402).send({
+                    msg: "This Transaction is use in detail transaction!"
                 });
             } else {
-                res.send({
-                    msg: `Cannot delete Transaction with id=${id}. Maybe Transaction was not found!`
-                });
+                Transaction.destroy({
+                    where: { id: id }
+                })
+                    .then(num => {
+                        if (num == 1) {
+                            res.send({
+                                msg: "Transaction was deleted successfully!"
+                            });
+                        } else {
+                            res.send({
+                                msg: `Cannot delete Transaction with id=${id}. Maybe Transaction was not found!`
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        res.status(500).send({
+                            msg: "Could not delete Transaction with id=" + id
+                        });
+                    });
             }
         })
         .catch(err => {
             res.status(500).send({
-                msg: "Could not delete Transaction with id=" + id
+                msg:
+                    err.message || "Some error occurred while retrieving transaction detail."
             });
         });
 };

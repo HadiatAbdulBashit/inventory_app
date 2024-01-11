@@ -6,6 +6,8 @@ const { v4 } = require('uuid');
 const db = require("../models");
 
 const Item = db.item;
+const ItemDetail = db.itemDetail;
+const TransactionDetail = db.transactionDetail
 const Op = Sequelize.Op;
 
 
@@ -203,20 +205,43 @@ exports.delete = async (req, res) => {
     });
     if (!item) return res.status(404).json({ msg: "No Data Found" });
 
-    try {
-        const splitUrl = item.imageUrl.split('/');
-        const imageName = splitUrl[splitUrl.length - 1];
-        const filePath = `./backend/public/images/items/${imageName}`;
-        fs.unlinkSync(filePath);
-        await Item.destroy({
+    TransactionDetail.findAll({
+        include: [{
+            model: ItemDetail,
+            as: 'itemDetail',
             where: {
-                id: req.params.id
+                itemId: { [Op.iLike]: req.params.id },
             }
+        }]
+    })
+        .then(async dataTransactionDetail => {
+            if (dataTransactionDetail.length > 0) {
+                res.status(402).send({
+                    msg: "This item is use in transaction!"
+                });
+            } else {
+                try {
+                    const splitUrl = item.imageUrl.split('/');
+                    const imageName = splitUrl[splitUrl.length - 1];
+                    const filePath = `./backend/public/images/items/${imageName}`;
+                    fs.unlinkSync(filePath);
+                    await Item.destroy({
+                        where: {
+                            id: req.params.id
+                        }
+                    });
+                    res.status(200).json({ msg: "Item Deleted Successfuly" });
+                } catch (error) {
+                    res.status(500).send({
+                        msg: "Could not delete Item with id = " + req.params.id + ", maybe image has deleted"
+                    });
+                }
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                msg:
+                    err.message || "Some error occurred while retrieving transaction detail."
+            });
         });
-        res.status(200).json({ msg: "Item Deleted Successfuly" });
-    } catch (error) {
-        res.status(500).send({
-            msg: "Could not delete Item with id = " + req.params.id + ", maybe image has deleted"
-        });
-    }
 };
