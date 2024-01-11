@@ -68,7 +68,7 @@ const Items = () => {
 
       Swal.fire({
         title: "Error",
-        text: "An error occurred while deleting the item.",
+        text: error.response.data.msg,
         icon: "error"
       });
     }

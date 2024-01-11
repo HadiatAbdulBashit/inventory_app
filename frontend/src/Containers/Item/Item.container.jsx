@@ -66,7 +66,7 @@ const Item = () => {
 
       Swal.fire({
         title: "Error",
-        text: "An error occurred while deleting the item.",
+        text: error.response.data.msg,
         icon: "error"
       });
     }
@@ -97,7 +97,7 @@ const Item = () => {
 
       Swal.fire({
         title: "Error",
-        text: "An error occurred while deleting the item.",
+        text: error.response.data.msg,
         icon: "error"
       });
     }
@@ -138,12 +138,16 @@ const Item = () => {
                       <Link to={`edit`} className="btn btn-primary me-1">
                         Edit
                       </Link>
-                      <button
-                        onClick={() => deleteItem(item.id)}
-                        className="btn btn-danger me-1"
-                      >
-                        Delete
-                      </button>
+                      {
+                        itemDetails.length === 0 ? (
+                          <button
+                            onClick={() => deleteItem(item.id)}
+                            className="btn btn-danger me-1"
+                          >
+                            Delete
+                          </button>
+                        ) : null
+                      }
                     </>
                   ) : null
                 }
