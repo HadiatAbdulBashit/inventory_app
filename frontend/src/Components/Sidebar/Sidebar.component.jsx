@@ -96,7 +96,7 @@ const SidebarMenu = () => {
                         </>
                     ) : null
                 }
-                <MenuItem component={<Link to="/dashboard/acount" />} icon={<FiUser />} className={`nav-link` + (url === "/dashboard/acount" ? " active" : "")}>Acount</MenuItem>
+                <MenuItem component={<Link to="/dashboard/acount" />} icon={<FiUser />} className={`nav-link` + (url === "/dashboard/acount" ? " active" : "")}>{user.name}</MenuItem>
                 <MenuItem onClick={handleLogout} icon={<TbLogout2 />}>Logout</MenuItem>
             </Menu>
         </Sidebar>
