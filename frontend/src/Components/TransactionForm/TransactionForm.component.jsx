@@ -37,6 +37,7 @@ const TransactionForm = ({ onFormSubmit, initialData, title, secondParty }) => {
                         <input
                             {...register('totalPrice', { required: 'Total Price is Require' })}
                             type={'number'}
+                            min={0}
                             className={"form-control " + (errors.totalPrice && errors.totalPrice.message ? 'is-invalid' : null)}
                         />
                         <div className="invalid-feedback">
