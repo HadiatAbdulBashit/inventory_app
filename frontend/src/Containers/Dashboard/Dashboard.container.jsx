@@ -10,7 +10,7 @@ import {
   ArcElement,
 } from 'chart.js';
 import { useState, useEffect } from 'react';
-import { Bar, Pie } from 'react-chartjs-2';
+import { Pie } from 'react-chartjs-2';
 import moment from 'moment';
 
 import formatRupiah from "../../Utils/formatRupiah";
@@ -44,34 +44,34 @@ const Dashboard = () => {
     getData()
   }, [])
 
-  const optionsBar = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Transaction last 7 months',
-      },
-    },
-  };
+  // const optionsBar = {
+  //   responsive: true,
+  //   plugins: {
+  //     legend: {
+  //       position: 'top',
+  //     },
+  //     title: {
+  //       display: true,
+  //       text: 'Transaction last 7 months',
+  //     },
+  //   },
+  // };
 
-  const dataBar = {
-    labels: data.barChartLabels,
-    datasets: [
-      {
-        label: 'Sale',
-        data: data.barChartDataSale,
-        backgroundColor: '#cff4fc',
-      },
-      {
-        label: 'Purchase',
-        data: data.barChartDataPurchase,
-        backgroundColor: '#cfe2ff',
-      },
-    ],
-  };
+  // const dataBar = {
+  //   labels: data.barChartLabels,
+  //   datasets: [
+  //     {
+  //       label: 'Sale',
+  //       data: data.barChartDataSale,
+  //       backgroundColor: '#cff4fc',
+  //     },
+  //     {
+  //       label: 'Purchase',
+  //       data: data.barChartDataPurchase,
+  //       backgroundColor: '#cfe2ff',
+  //     },
+  //   ],
+  // };
 
   const optionsPieTransaction = {
     responsive: true,
@@ -180,9 +180,9 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="panel p-5 row mx-0 mb-4 row-gap-5 justify-content-center">
-              <div className="col-8">
+              {/* <div className="col-8">
                 <Bar options={optionsBar} data={dataBar} />
-              </div>
+              </div> */}
               <div className="col-4">
                 <Pie options={optionsPieTransaction} data={dataPieTransaction} />
               </div>
