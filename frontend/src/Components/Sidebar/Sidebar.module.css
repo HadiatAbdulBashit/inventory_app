@@ -1,0 +1,18 @@
+aside.container {
+    box-shadow: var(--box-shadow);
+    padding: 0 10px;
+    border: 0;
+}
+
+.container>div {
+    background-color: #fff;
+}
+
+.appName>a {
+    font-size: large;
+    font-weight: bold;
+}
+
+.appName svg {
+    font-size: 90px;
+}

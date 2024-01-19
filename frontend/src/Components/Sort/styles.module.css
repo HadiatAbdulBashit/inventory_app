@@ -1,0 +1,20 @@
+.arrow_btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	outline: none;
+	margin-left: 5px;
+	border-radius: 4px;
+	background-color: #fff;
+	max-width: 50px;
+}
+
+.arrow_btn p {
+	margin: 0;
+}
+
+.up_arrow,
+.down_arrow {
+	font-size: 18px;
+	font-weight: bold;
+}
